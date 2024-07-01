@@ -115,8 +115,10 @@ public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<Sync
                     holder.mGender.setImageResource(R.drawable.patient_female);
                 }
             }
+        } else {
+            holder.mGender.setImageResource(R.drawable.patient_male);
         }
-        if (patient.isDeceased()) {
+        if (patient.isDeceased() != null && patient.isDeceased()) {
             holder.mRowLayout.setCardBackgroundColor(mContext.getResources().getColor(R.color.deceased_red));
         }
         try {

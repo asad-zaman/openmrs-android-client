@@ -403,7 +403,7 @@ public class PatientRepository extends BaseRepository {
                 //return fetchSimilarPatientsFromServer(patient); //Uncomment this line when server API is fixed
                 return fetchSimilarPatientsAndCalculateLocally(patient); //Remove this line when server API is fixed
             } else {
-                ToastUtil.notifyLong(context.getString(R.string.registration_core_info));
+//                ToastUtil.notifyLong(context.getString(R.string.registration_core_info));
                 return fetchSimilarPatientsAndCalculateLocally(patient);
             }
         });

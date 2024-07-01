@@ -20,6 +20,7 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import com.openmrs.android_sdk.library.OpenmrsAndroid
 import com.openmrs.android_sdk.library.models.Patient
+import com.openmrs.android_sdk.utilities.NetworkUtils
 import com.openmrs.android_sdk.utilities.StringUtils.notEmpty
 import dagger.hilt.android.AndroidEntryPoint
 import org.openmrs.mobile.R
@@ -95,7 +96,11 @@ class SyncedPatientsActivity : ACBaseActivity() {
 
             override fun onQueryTextChange(query: String): Boolean {
                 val syncedPatientsFragment = supportFragmentManager.findFragmentById(R.id.syncedPatientsContentFrame) as SyncedPatientsFragment?
-                syncedPatientsFragment?.fetchSyncedPatients(query)
+                if(NetworkUtils.isOnline()){
+                    syncedPatientsFragment?.fetchSyncedPatientsOnRefresh(query)
+                } else {
+                    syncedPatientsFragment?.fetchSyncedPatients(query)
+                }
                 return true
             }
         })

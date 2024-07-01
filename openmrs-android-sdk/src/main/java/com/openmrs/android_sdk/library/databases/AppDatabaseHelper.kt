@@ -299,7 +299,7 @@ object AppDatabaseHelper {
     @JvmStatic
     fun convert(patient: Patient): PatientEntity {
         val patientEntity = PatientEntity()
-        patientEntity.display = patient.name.nameString
+        patientEntity.display = patient.display
         patientEntity.uuid = patient.uuid
         patientEntity.isSynced = patient.isSynced
         if (patient.identifier != null) {
@@ -307,9 +307,11 @@ object AppDatabaseHelper {
         } else {
             patientEntity.identifier = null
         }
-        patientEntity.givenName = patient.name.givenName
-        patientEntity.middleName = patient.name.middleName
-        patientEntity.familyName = patient.name.familyName
+        if(patient.name != null){
+            patientEntity.givenName = if(patient.name.givenName != null) patient.name.givenName else ""
+            patientEntity.middleName = if(patient.name.middleName != null) patient.name.middleName else ""
+            patientEntity.familyName = if(patient.name.familyName != null) patient.name.familyName else ""
+        }
         patientEntity.gender = patient.gender
         patientEntity.birthDate = patient.birthdate
         patientEntity.deathDate = null
@@ -337,7 +339,7 @@ object AppDatabaseHelper {
             patientEntity.city = patient.address.cityVillage
         }
         patientEntity.encounters = patient.encounters
-        patientEntity.deceased = patient.isDeceased.toString()
+        patientEntity.deceased = if(patient.isDeceased != null) patient.isDeceased.toString() else ""
         return patientEntity
     }
 

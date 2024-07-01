@@ -141,6 +141,7 @@
                     android:focusable="true"
                     android:fontFamily="@font/montserrat"
                     android:inputType="text"
+                    android:text="admin"
                     android:maxLines="1"
                     android:textColor="@color/dark_grey_8x"
                     android:textColorHint="@color/dark_grey_8x" />
@@ -164,6 +165,7 @@
                     android:focusable="true"
                     android:fontFamily="@font/montserrat"
                     android:inputType="textPassword|text"
+                    android:text="Admin123"
                     android:maxLines="1"
                     android:textColor="@color/dark_grey_8x"
                     android:textColorHint="@color/dark_grey_8x" />

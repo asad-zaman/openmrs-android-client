@@ -72,6 +72,10 @@ class SyncedPatientsFragment : BaseFragment() {
         viewModel.fetchSyncedPatients()
     }
 
+    fun fetchSyncedPatientsOnRefresh(query: String) {
+        viewModel.fetchSyncedPatientsOnRefresh(query)
+    }
+
     fun fetchSyncedPatients(query: String) {
         viewModel.fetchSyncedPatients(query)
     }

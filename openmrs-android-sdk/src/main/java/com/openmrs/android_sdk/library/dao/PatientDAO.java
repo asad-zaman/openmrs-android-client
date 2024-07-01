@@ -27,6 +27,8 @@ import com.openmrs.android_sdk.library.databases.AppDatabase;
 import com.openmrs.android_sdk.library.databases.AppDatabaseHelper;
 import com.openmrs.android_sdk.library.databases.entities.PatientEntity;
 import com.openmrs.android_sdk.library.models.Patient;
+import com.openmrs.android_sdk.library.models.Person;
+import com.openmrs.android_sdk.library.models.PersonName;
 
 /**
  * The type Patient dao.

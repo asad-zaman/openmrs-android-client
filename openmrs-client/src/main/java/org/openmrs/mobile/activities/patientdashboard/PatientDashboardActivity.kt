@@ -61,8 +61,7 @@ class PatientDashboardActivity : ACBaseActivity() {
 
         setupObserver()
         setupActionFABs()
-        if (NetworkUtils.isOnline()) viewModel.syncPatientData()
-        else initViewPager()
+        if (NetworkUtils.isOnline()) viewModel.syncPatientData() else initViewPager()
     }
 
     private fun setupObserver() {
