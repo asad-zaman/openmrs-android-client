@@ -28,6 +28,7 @@ import retrofit2.http.Url;
 import com.openmrs.android_sdk.library.databases.entities.ConceptEntity;
 import com.openmrs.android_sdk.library.databases.entities.FormResourceEntity;
 import com.openmrs.android_sdk.library.databases.entities.LocationEntity;
+import com.openmrs.android_sdk.library.models.AllLocation;
 import com.openmrs.android_sdk.library.models.Allergy;
 import com.openmrs.android_sdk.library.models.AllergyCreate;
 import com.openmrs.android_sdk.library.models.Appointment;
@@ -99,6 +100,10 @@ public interface RestApi {
     Call<Results<LocationEntity>> getLocations(@Url String url,
                                                @Query("tag") String tag,
                                                @Query("v") String representation);
+
+    @GET()
+    Call<AllLocation> getDivisionList(@Url String url,
+                                               @Query("parentLocationIds") Integer plID);
 
     /**
      * Gets system property.

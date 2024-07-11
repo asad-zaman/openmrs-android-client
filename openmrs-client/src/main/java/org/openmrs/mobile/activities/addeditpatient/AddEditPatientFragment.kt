@@ -47,6 +47,7 @@ import androidx.annotation.StringDef
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
@@ -55,13 +56,8 @@ import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.material.snackbar.Snackbar
-import com.openmrs.android_sdk.library.models.ConceptAnswers
+import com.openmrs.android_sdk.library.models.*
 import com.openmrs.android_sdk.library.models.OperationType.PatientRegistering
-import com.openmrs.android_sdk.library.models.Patient
-import com.openmrs.android_sdk.library.models.PersonAddress
-import com.openmrs.android_sdk.library.models.PersonName
-import com.openmrs.android_sdk.library.models.Result
-import com.openmrs.android_sdk.library.models.ResultType
 import com.openmrs.android_sdk.utilities.ApplicationConstants
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.COUNTRIES_BUNDLE
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.PATIENT_ID_BUNDLE
@@ -81,6 +77,7 @@ import com.openmrs.android_sdk.utilities.ToastUtil
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCrop.REQUEST_CROP
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_patient_info.*
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
@@ -139,13 +136,15 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
 
         setupPermissionsHandler()
 
-        setupObservers()
-
         initPlaces()
+
+        viewModel.fetchServerDivisions()
 
         setupViewsListeners()
 
         fillFormFields()
+
+        setupObservers()
 
         return binding.root
     }
@@ -184,11 +183,161 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
                 else -> throw IllegalStateException()
             }
         })
+
         viewModel.similarPatientsLiveData.observe(viewLifecycleOwner, Observer { similarPatients ->
             hideLoading()
             if (similarPatients.isEmpty()) registerPatient()
             else showSimilarPatientsDialog(similarPatients, viewModel.patient)
         })
+
+        viewModel.divisionList.observe(viewLifecycleOwner, Observer { divisionList ->
+            hideLoading()
+            if (divisionList.isNotEmpty()){
+                updateDivisionSpinner(divisionList)
+            }
+        })
+
+        viewModel.districtList.observe(viewLifecycleOwner, Observer { districtList ->
+            hideLoading()
+            if (districtList.isNotEmpty()){
+                updateDistrictSpinner(districtList)
+            }
+        })
+
+        viewModel.upazilaList.observe(viewLifecycleOwner, Observer { upazilaList ->
+            hideLoading()
+            if (upazilaList.isNotEmpty()){
+                updateUpazilaSpinner(upazilaList)
+            }
+        })
+
+        viewModel.paurasavaList.observe(viewLifecycleOwner, Observer { paurasavaList ->
+            hideLoading()
+            if (paurasavaList.isNotEmpty()){
+                updatePaurasavaSpinner(paurasavaList)
+            }
+        })
+
+        viewModel.unionList.observe(viewLifecycleOwner, Observer { unionList ->
+            hideLoading()
+            if (unionList.isNotEmpty()){
+                updateUnionSpinner(unionList)
+            }
+        })
+
+        viewModel.wardList.observe(viewLifecycleOwner, Observer { wardList ->
+            hideLoading()
+            if (wardList.isNotEmpty()){
+                updateWardSpinner(wardList)
+            }
+        })
+    }
+
+    private fun updateDivisionSpinner(divs: List<LocationData>) = with(binding.spinnerDivision) {
+        val dList = arrayListOf("select division")
+        divs.forEach { dList.add(it.description!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerDivision.selectedItem.equals("select division")){
+                    viewModel.rxSelectedDivision = MutableLiveData()
+                } else {
+                    viewModel.rxSelectedDivision.value = divs[i - 1]
+                    viewModel.fetchServerDistricts()
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateDistrictSpinner(divs: List<LocationData>) = with(binding.spinnerDistrict) {
+        val dList = arrayListOf("select district")
+        divs.forEach { dList.add(it.description!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerDistrict.selectedItem.equals("select district")){
+                    viewModel.rxSelectedDistrict = MutableLiveData()
+                } else {
+                    viewModel.rxSelectedDistrict.value = divs[i - 1]
+                    viewModel.fetchServerUpazilas()
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateUpazilaSpinner(divs: List<LocationData>) = with(binding.spinnerUpazilla) {
+        val dList = arrayListOf("select upazila")
+        divs.forEach { dList.add(it.description!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerUpazilla.selectedItem.equals("select upazila")){
+                    viewModel.rxSelectedUpazila = MutableLiveData()
+                } else {
+                    viewModel.rxSelectedUpazila.value = divs[i - 1]
+                    viewModel.fetchServerPaurasavas()
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updatePaurasavaSpinner(divs: List<LocationData>) = with(binding.spinnerPaurasava) {
+        val dList = arrayListOf("select paurasava")
+        divs.forEach { dList.add(it.description!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerPaurasava.selectedItem.equals("select paurasava")){
+                    viewModel.rxSelectedPaurasava = MutableLiveData()
+                } else {
+                    viewModel.rxSelectedPaurasava.value = divs[i - 1]
+                    viewModel.fetchServerUnions()
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateUnionSpinner(divs: List<LocationData>) = with(binding.spinnerUnion) {
+        val dList = arrayListOf("select union")
+        divs.forEach { dList.add(it.description!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerUnion.selectedItem.equals("select union")){
+                    viewModel.rxSelectedUnion = MutableLiveData()
+                } else {
+                    viewModel.rxSelectedUnion.value = divs[i - 1]
+                    viewModel.fetchServerWards()
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateWardSpinner(divs: List<LocationData>) = with(binding.spinnerWard) {
+        val dList = arrayListOf("select ward")
+        divs.forEach { dList.add(it.description!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerWard.selectedItem.equals("select ward")){
+                    viewModel.rxSelectedWard = MutableLiveData()
+                } else {
+                    viewModel.rxSelectedWard.value = divs[i - 1]
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
     }
 
     private fun findSimilarPatients() {

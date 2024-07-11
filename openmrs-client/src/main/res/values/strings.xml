@@ -20,6 +20,19 @@
     <string name="action_settings">Settings</string>
     <string name="action_logout">Logout</string>
     <string name="action_location">Location</string>
+    <string name="nav_drawer_open">nv_open</string>
+    <string name="nav_drawer_close">nv_close</string>
+
+    <string name="drawer_member_profile">Member profile</string>
+    <string name="drawer_find_patient">Find patient</string>
+    <string name="drawer_add_patient">Add patient</string>
+    <string name="drawer_add_member">Add member</string>
+    <string name="drawer_find_member">Find member</string>
+    <string name="drawer_referral_list">Referred member list</string>
+    <string name="drawer_stock_management">Stock management</string>
+    <string name="drawer_active_visits">Active visits</string>
+    <string name="drawer_form_entry">Form entry</string>
+    <string name="drawer_manage_providers">Manage providers</string>
 
     <string name="alphanumeric_postal_code">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 </string>
 
@@ -118,10 +131,13 @@
 
     <!-- FindPatients activity -->
     <string name="action_find_patients">Find Patients</string>
+    <string name="action_member_profile">Member profile</string>
     <string name="action_synced_patients">Synced Patients</string>
+    <string name="action_member_list">Member List</string>
     <string name="action_download_patients">Download Patients</string>
     <string name="search_patient_hint">Patient name</string>
     <string name="search_patient_no_results">No patients exist in database</string>
+    <string name="search_member_no_results">No members exist in database</string>
     <string name="search_patient_no_result_for_query">No results found for query \"%1$s\"</string>
     <string name="select_all_downloadable_data">Select all</string>
     <string name="download_selected_patient_data">Download Patient Data</string>
@@ -157,6 +173,9 @@
     <string name="download_started">"Downloading…"</string>
     <string name="action_starting_visit">"Starting Visit"</string>
     <string name="visit_start_error">Failed to start a visit</string>
+
+    <string name="service_form_title">Service Form</string>
+    <string name="service_history_title">Service History</string>
 
     <!--SyncedPatient Activity-->
     <string name="patient_update_successful">Patient %1$s Updated</string>

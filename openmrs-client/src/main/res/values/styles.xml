@@ -115,5 +115,16 @@
         <item name="android:textColor">#8affffff</item>
     </style>
 
+    <style name="noRipple" parent="Theme.MaterialComponents">
+        <item name="rippleColor">@android:color/transparent</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlayExtended" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">50%</item>
+        <item name="cornerSizeTopRight">50%</item>
+        <item name="cornerSizeBottomLeft">50%</item>
+        <item name="cornerSizeBottomRight">50%</item>
+    </style>
 
 </resources>

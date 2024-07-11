@@ -29,8 +29,8 @@ object ApplicationConstants {
     const val LAST_SESSION_TOKEN = "last_session_id"
     const val LAST_LOGIN_SERVER_URL = "last_login_server_url"
 //    const val DEFAULT_OPEN_MRS_URL = "https://demo.openmrs.org/openmrs"
-//    const val DEFAULT_OPEN_MRS_URL = "https://openmrs-o3.mpower-social.com/openmrs"
-    const val DEFAULT_OPEN_MRS_URL = "https://openmrs-o3-dev.mpower-social.com/openmrs"
+    const val DEFAULT_OPEN_MRS_URL = "https://openmrs-o3.mpower-social.com/openmrs"
+//    const val DEFAULT_OPEN_MRS_URL = "https://openmrs-o3-dev.mpower-social.com/openmrs"
 //    const val DEFAULT_OPEN_MRS_URL = "https://o3.openmrs.org/openmrs"
     const val DB_NAME = "openmrs.db"
     const val DB_PASSWORD_BCRYPT_PEPPER = "$2a$08\$iUp3M1VapYpjcAXQBNX6uu"
@@ -63,6 +63,8 @@ object ApplicationConstants {
     const val PRIMARY_KEY_ID = "_id"
     const val MIN_NUMBER_OF_PATIENTS_TO_SHOW = 7;
     const val ABOUT_OPENMRS_URL = "https://openmrs.org/about/"
+
+    const val COUNTRY_CODE_BD = 24525
 
     object OpenMRSSharedPreferenceNames {
         const val SHARED_PREFERENCES_NAME = "shared_preferences"
@@ -190,6 +192,12 @@ object ApplicationConstants {
         const val VITALS_TAB_POS = 4
         const val CHARTS_TAB_POS = 5
         const val TAB_COUNT = 6
+    }
+
+    object MemberProfileTabs {
+        const val SERVICE_FORM = 0
+        const val SERVICE_HISTORY = 1
+        const val TAB_COUNT = 2
     }
 
     object ConceptDownloadService {

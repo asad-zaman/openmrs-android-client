@@ -16,6 +16,7 @@ package com.openmrs.android_sdk.library.api.repository
 import com.openmrs.android_sdk.library.OpenmrsAndroid
 import com.openmrs.android_sdk.library.databases.AppDatabaseHelper.createObservableIO
 import com.openmrs.android_sdk.library.databases.entities.LocationEntity
+import com.openmrs.android_sdk.library.models.LocationData
 import com.openmrs.android_sdk.utilities.ApplicationConstants
 import rx.Observable
 import javax.inject.Inject
@@ -57,6 +58,16 @@ class LocationRepository @Inject constructor() : BaseRepository() {
             restApi.getLocations(locationEndPoint, "Login Location", "full").execute().run {
                 if (isSuccessful && body() != null) return@Callable body()!!.results
                 else throw Exception("Error fetching concepts: ${message()}")
+            }
+        })
+    }
+
+    fun getAddresses(cCode: Int): Observable<List<LocationData>> {
+        return createObservableIO(Callable {
+            val locationEndPoint = ApplicationConstants.DEFAULT_OPEN_MRS_URL + ApplicationConstants.API.REST_ENDPOINT + "custom-location/childLocation"
+            restApi.getDivisionList(locationEndPoint, cCode).execute().run {
+                if (isSuccessful && body() != null) return@Callable body()!!.locationList
+                else throw Exception("Error fetching divisions: ${message()}")
             }
         })
     }

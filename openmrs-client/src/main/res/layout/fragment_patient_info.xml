@@ -280,51 +280,6 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/linearLayout_gender"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/reg_ques_gender"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/gendererror"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="2dp"
-                            android:text="@string/emptyerror"
-                            android:textColor="@color/red"
-                            android:textSize="14sp"
-                            android:visibility="gone" />
-
-                        <RadioGroup
-                            android:id="@+id/gender"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <RadioButton
-                                android:id="@+id/male"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/male" />
-
-                            <RadioButton
-                                android:id="@+id/female"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/female" />
-
-                        </RadioGroup>
-
-                    </LinearLayout>
-
-                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -458,6 +413,51 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/linearLayout_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/reg_ques_gender"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/gendererror"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:text="@string/emptyerror"
+                            android:textColor="@color/red"
+                            android:textSize="14sp"
+                            android:visibility="gone" />
+
+                        <RadioGroup
+                            android:id="@+id/gender"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <RadioButton
+                                android:id="@+id/male"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/male" />
+
+                            <RadioButton
+                                android:id="@+id/female"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/female" />
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -498,6 +498,7 @@
                         android:visibility="gone" />
 
                     <TextView
+                        android:id="@+id/addressTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -505,9 +506,70 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
+                    <Spinner
+                        android:id="@+id/spinnerDivision"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/admission_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/addressTitle" />
+
+                    <Spinner
+                        android:id="@+id/spinnerDistrict"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/admission_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/spinnerDivision" />
+
+                    <Spinner
+                        android:id="@+id/spinnerUpazilla"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/admission_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/spinnerDistrict" />
+
+                    <Spinner
+                        android:id="@+id/spinnerPaurasava"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/admission_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/spinnerUpazilla" />
+
+                    <Spinner
+                        android:id="@+id/spinnerUnion"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/admission_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/spinnerPaurasava" />
+
+                    <Spinner
+                        android:id="@+id/spinnerWard"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/admission_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/spinnerUnion" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputLayoutAddress"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:layout_constraintTop_toBottomOf="@id/spinnerWard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp">
@@ -517,7 +579,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:focusable="true"
-                            android:hint="@string/addr1_hint"
+                            android:hint="Address"
                             android:imeOptions="actionNext"
                             android:inputType="textCapWords"
                             android:maxLines="1"
@@ -556,7 +618,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            app:layout_constraintGuide_percent="0.5" />
+                            app:layout_constraintGuide_begin="184dp" />
 
                         <LinearLayout
                             android:id="@+id/country_picker_layout"

@@ -17,6 +17,19 @@
     <string name="action_settings">समायोजन</string>
     <string name="action_logout">लॉग आउट</string>
     <string name="action_location">स्थान</string>
+    <string name="nav_drawer_open">nv_open</string>
+    <string name="nav_drawer_close">nv_close</string>
+
+    <string name="drawer_member_profile">Member profile</string>
+    <string name="drawer_find_patient">Find patient</string>
+    <string name="drawer_add_patient">Add patient</string>
+    <string name="drawer_add_member">Add member</string>
+    <string name="drawer_find_member">Find member</string>
+    <string name="drawer_referral_list">Referred member list</string>
+    <string name="drawer_stock_management">Stock management</string>
+    <string name="drawer_active_visits">Active visits</string>
+    <string name="drawer_form_entry">Form entry</string>
+    <string name="drawer_manage_providers">Manage providers</string>
 
     <string name="alphanumeric_postal_code">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 </string>
 
@@ -120,10 +133,13 @@
 
     <!-- FindPatients activity -->
     <string name="action_find_patients">मरीजों का पता लगाएं </string>
+    <string name="action_member_profile">Member profile</string>
     <string name="action_synced_patients">सिंक किए गए मरीज</string>
+    <string name="action_member_list">Member List</string>
     <string name="action_download_patients">मरीजों को डाउनलोड करें</string>
     <string name="search_patient_hint">रोगी का नाम</string>
     <string name="search_patient_no_results">डेटाबेस में कोई भी मरीज मौजूद नहीं है </string>
+    <string name="search_member_no_results">No members exist in database</string>
     <string name="search_patient_no_result_for_query">क्वेरी \"%1$s\" के लिए कोई परिणाम नहीं मिला \</string>
     <string name="select_all_downloadable_data">सभी चुनें</string>
     <string name="download_selected_patient_data">रोगी डेटा डाउनलोड करें</string>
@@ -158,6 +174,9 @@
     <string name="download_started">"डाउनलोडिंग…"</string>
     <string name="action_starting_visit">"प्रारंभ पर जाएँ"</string>
     <string name="visit_start_error">विज़िट प्रारंभ करने में विफल</string>
+
+    <string name="service_form_title">Service Form</string>
+    <string name="service_history_title">Service History</string>
 
     <!-- fragment_patient_details layout -->
     <string name="patient_identifier"># %1$s</string>

@@ -38,6 +38,7 @@ import com.openmrs.android_sdk.utilities.DateUtils;
 
 import org.openmrs.mobile.R;
 import org.openmrs.mobile.activities.ACBaseActivity;
+import org.openmrs.mobile.activities.memberProfile.MemberProfileActivity;
 import org.openmrs.mobile.activities.patientdashboard.PatientDashboardActivity;
 
 public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<SyncedPatientsRecyclerViewAdapter.PatientViewHolder> {
@@ -177,7 +178,8 @@ public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<Sync
             });
             itemView.setOnClickListener(view -> {
                 if (!multiSelect) {
-                    Intent intent = new Intent(mContext.getActivity(), PatientDashboardActivity.class);
+//                    Intent intent = new Intent(mContext.getActivity(), PatientDashboardActivity.class);
+                    Intent intent = new Intent(mContext.getActivity(), MemberProfileActivity.class);
                     intent.putExtra(ApplicationConstants.BundleKeys.PATIENT_ID_BUNDLE, value.getId());
                     mContext.startActivity(intent);
                 } else {

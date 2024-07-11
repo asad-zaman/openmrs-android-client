@@ -13,34 +13,73 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
 
-<RelativeLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.syncedpatients.SyncedPatientsActivity">
 
-    <ProgressBar
-        android:id="@+id/syncedPatientsInitialProgressBar"
-        android:visibility="visible"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <data>
+        <variable
+            name="vm"
+            type="org.openmrs.mobile.activities.syncedpatients.SyncedPatientsViewModel" />
+    </data>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeLayout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/syncedPatientRecyclerView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:id="@+id/dashboard_content_body">
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <ProgressBar
+                android:id="@+id/syncedPatientsInitialProgressBar"
+                android:visibility="visible"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    <TextView android:id="@+id/emptySyncedPatientList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-</RelativeLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/syncedPatientRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <TextView android:id="@+id/emptySyncedPatientList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddPatient"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_add"
+            android:visibility="visible"
+            app:fabCustomSize="50dp"
+            app:maxImageSize="40dp"
+            app:useCompatPadding="false"
+            app:backgroundTint="@color/primary"
+            app:elevation="@dimen/eight_dp"
+            app:layout_anchorGravity="bottom|right"
+            app:tint="@null"
+            app:layout_anchor="@id/dashboard_content_body"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtended"
+            style="@style/noRipple"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

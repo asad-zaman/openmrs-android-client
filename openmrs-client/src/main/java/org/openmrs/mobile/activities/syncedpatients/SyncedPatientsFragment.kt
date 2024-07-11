@@ -13,10 +13,12 @@
  */
 package org.openmrs.mobile.activities.syncedpatients
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +27,7 @@ import com.openmrs.android_sdk.library.models.Result
 import dagger.hilt.android.AndroidEntryPoint
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.BaseFragment
+import org.openmrs.mobile.activities.addeditpatient.AddEditPatientActivity
 import org.openmrs.mobile.databinding.FragmentSyncedPatientsBinding
 import org.openmrs.mobile.utilities.makeGone
 import org.openmrs.mobile.utilities.makeInvisible
@@ -32,21 +35,31 @@ import org.openmrs.mobile.utilities.makeVisible
 import java.util.ArrayList
 
 @AndroidEntryPoint
-class SyncedPatientsFragment : BaseFragment() {
+class SyncedPatientsFragment : BaseFragment(), View.OnClickListener{
     private var _binding: FragmentSyncedPatientsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: SyncedPatientsViewModel by viewModels()
+    private val viewModel: SyncedPatientsViewModel by activityViewModels()
+
+    companion object {
+        fun newInstance(): SyncedPatientsFragment {
+            return SyncedPatientsFragment()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSyncedPatientsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val linearLayoutManager = LinearLayoutManager(this.activity)
         with(binding) {
             syncedPatientRecyclerView.setHasFixedSize(true)
             syncedPatientRecyclerView.layoutManager = linearLayoutManager
             syncedPatientRecyclerView.adapter = SyncedPatientsRecyclerViewAdapter(this@SyncedPatientsFragment, ArrayList())
-
+            setupListeners()
             setupObserver()
             fetchSyncedPatients()
 
@@ -55,7 +68,10 @@ class SyncedPatientsFragment : BaseFragment() {
                 swipeLayout.isRefreshing = false
             }
         }
-        return binding.root
+    }
+
+    private fun setupListeners() {
+        binding.fabAddPatient.setOnClickListener(this@SyncedPatientsFragment)
     }
 
     private fun setupObserver() {
@@ -127,9 +143,14 @@ class SyncedPatientsFragment : BaseFragment() {
         _binding = null
     }
 
-    companion object {
-        fun newInstance(): SyncedPatientsFragment {
-            return SyncedPatientsFragment()
+    private fun gotoRegisterPatient() {
+        val intent = Intent(activity, AddEditPatientActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            binding.fabAddPatient.id -> gotoRegisterPatient()
         }
     }
 }

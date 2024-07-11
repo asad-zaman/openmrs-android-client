@@ -40,6 +40,7 @@ import org.openmrs.mobile.activities.BaseFragment
 import org.openmrs.mobile.activities.community.contact.ContactUsActivity
 import org.openmrs.mobile.activities.dashboard.DashboardActivity
 import org.openmrs.mobile.activities.dialog.CustomFragmentDialog
+import org.openmrs.mobile.activities.syncedpatients.SyncedPatientsActivity
 import org.openmrs.mobile.application.OpenMRS
 import org.openmrs.mobile.bundle.CustomDialogBundle
 import org.openmrs.mobile.databinding.FragmentLoginBinding
@@ -264,7 +265,8 @@ class LoginFragment : BaseFragment() {
 
     private fun onUserAuthenticated() {
         OpenMRS.getInstance().applicationContext.apply {
-            val intent = Intent(this, DashboardActivity::class.java)
+//            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, SyncedPatientsActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
 

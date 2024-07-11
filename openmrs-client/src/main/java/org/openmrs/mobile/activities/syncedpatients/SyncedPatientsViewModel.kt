@@ -1,5 +1,8 @@
 package org.openmrs.mobile.activities.syncedpatients
 
+import android.content.Context
+import android.view.View
+import androidx.lifecycle.MutableLiveData
 import com.openmrs.android_sdk.library.api.repository.PatientRepository
 import com.openmrs.android_sdk.library.dao.PatientDAO
 import com.openmrs.android_sdk.library.dao.VisitDAO
@@ -9,12 +12,32 @@ import com.openmrs.android_sdk.utilities.NetworkUtils
 import com.openmrs.android_sdk.utilities.ToastUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.openmrs.mobile.activities.BaseViewModel
+import org.openmrs.mobile.listeners.ItemClickListener
+import org.openmrs.mobile.models.NavDrawerItem
+import org.openmrs.mobile.resources.Constants
 import org.openmrs.mobile.utilities.FilterUtil
 import rx.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 @HiltViewModel
-class SyncedPatientsViewModel @Inject constructor(private val patientDAO: PatientDAO, private val visitDAO: VisitDAO, private val patientRepository: PatientRepository) : BaseViewModel<List<Patient>>() {
+class SyncedPatientsViewModel @Inject constructor(private val patientDAO: PatientDAO, private val visitDAO: VisitDAO, private val patientRepository: PatientRepository) : BaseViewModel<List<Patient>>(),
+    ItemClickListener {
+    var drawerItems = arrayListOf<NavDrawerItem>()
+    val drawerItemListAdapter: NavDrawerAdapter = NavDrawerAdapter(this, drawerItems)
+
+    var loadFindPatient : MutableLiveData<Boolean> = MutableLiveData()
+    var loadAddPatient : MutableLiveData<Boolean> = MutableLiveData()
+    var loadActiveVisits : MutableLiveData<Boolean> = MutableLiveData()
+    var loadFormEntry : MutableLiveData<Boolean> = MutableLiveData()
+    var loadManageProviders : MutableLiveData<Boolean> = MutableLiveData()
+    var loadMemberList : MutableLiveData<Boolean> = MutableLiveData()
+    var loadReferredMemberList : MutableLiveData<Boolean> = MutableLiveData()
+    var loadMemberProfile : MutableLiveData<Boolean> = MutableLiveData()
+    var loadAddMember : MutableLiveData<Boolean> = MutableLiveData()
+
+    fun loadDrawerItems(context: Context) {
+        drawerItemListAdapter.updateModuleItems(NavDrawerItem.getNavDrawerItems(context))
+    }
 
     fun fetchSyncedPatients() {
         setLoading()
@@ -79,4 +102,73 @@ class SyncedPatientsViewModel @Inject constructor(private val patientDAO: Patien
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
+
+    fun gotoRegisterPatient(view: View) {
+        if(loadAddPatient.value == null)
+            loadAddPatient.value = true
+    }
+
+    override fun onItemClicked(item: Any?) {
+        val navDrawer = item as NavDrawerItem
+        if(navDrawer.id == Constants.ITEM_FIND_PATIENT) {
+            if(loadFindPatient.value == null)
+                loadFindPatient.value = true
+            else {
+                loadFindPatient.value = loadFindPatient.value != true
+            }
+        } else if(navDrawer.id == Constants.ITEM_ADD_PATIENT) {
+            if(loadAddPatient.value == null)
+                loadAddPatient.value = true
+            else {
+                loadAddPatient.value = loadAddPatient.value != true
+            }
+        } else if(navDrawer.id == Constants.ITEM_ACTIVE_VISITS) {
+            if(loadActiveVisits.value == null)
+                loadActiveVisits.value = true
+            else {
+                loadActiveVisits.value = loadActiveVisits.value != true
+            }
+        } else if(navDrawer.id == Constants.ITEM_FORM_ENTRY) {
+            if(loadFormEntry.value == null)
+                loadFormEntry.value = true
+            else {
+                loadFormEntry.value = loadFormEntry.value != true
+            }
+        } else if(navDrawer.id == Constants.ITEM_MANAGE_PROVIDERS) {
+            if(loadManageProviders.value == null)
+                loadManageProviders.value = true
+            else {
+                loadManageProviders.value = loadManageProviders.value != true
+            }
+        }
+        else if(navDrawer.id == Constants.ITEM_FIND_MEMBER) {
+            if(loadMemberList.value == null)
+                loadMemberList.value = true
+            else {
+                loadMemberList.value = loadMemberList.value != true
+            }
+        }
+        else if(navDrawer.id == Constants.ITEM_REFERRED_MEMBER_LIST) {
+            if(loadReferredMemberList.value == null)
+                loadReferredMemberList.value = true
+            else {
+                loadReferredMemberList.value = loadReferredMemberList.value != true
+            }
+        }
+        else if(navDrawer.id == Constants.ITEM_ADD_MEMBER) {
+            if(loadAddMember.value == null)
+                loadAddMember.value = true
+            else {
+                loadAddMember.value = loadAddMember.value != true
+            }
+        }
+        else if(navDrawer.id == Constants.ITEM_MEMBER_PROFILE) {
+            if(loadMemberProfile.value == null)
+                loadMemberProfile.value = true
+            else {
+                loadMemberProfile.value = loadMemberProfile.value != true
+            }
+        }
+    }
+
 }

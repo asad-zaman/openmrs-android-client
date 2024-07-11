@@ -17,31 +17,55 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.openmrs.android_sdk.library.OpenmrsAndroid
 import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.utilities.NetworkUtils
 import com.openmrs.android_sdk.utilities.StringUtils.notEmpty
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_new_dashboard.view.*
+import kotlinx.android.synthetic.main.fragment_synced_patients.view.*
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.ACBaseActivity
+import org.openmrs.mobile.activities.activevisits.ActiveVisitsActivity
+import org.openmrs.mobile.activities.addeditpatient.AddEditPatientActivity
+import org.openmrs.mobile.activities.formentrypatientlist.FormEntryPatientListActivity
 import org.openmrs.mobile.activities.lastviewedpatients.LastViewedPatientsActivity
+import org.openmrs.mobile.activities.memberList.MemberListActivity
+import org.openmrs.mobile.activities.memberProfile.MemberProfileActivity
+import org.openmrs.mobile.activities.providermanagerdashboard.ProviderManagerDashboardActivity
+import org.openmrs.mobile.databinding.ActivityNewDashboardBinding
+
 
 @AndroidEntryPoint
-class SyncedPatientsActivity : ACBaseActivity() {
+class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
     private var query: String? = null
     private var addPatientMenuItem: MenuItem? = null
+    private lateinit var mBinding: ActivityNewDashboardBinding
+    private val mViewModel: SyncedPatientsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_find_patients)
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_dashboard)
+        mBinding.viewModel = mViewModel
+        mBinding.lifecycleOwner = this
+        mBinding.executePendingBindings()
 
         supportActionBar?.let {
             it.elevation = 0f
             it.setDisplayHomeAsUpEnabled(true)
             it.setTitle(R.string.action_synced_patients)
+            it.setHomeAsUpIndicator(R.drawable.ic_drawer)
         }
-
         // Create fragment
         var syncedPatientsFragment = supportFragmentManager.findFragmentById(R.id.syncedPatientsContentFrame) as SyncedPatientsFragment?
         if (syncedPatientsFragment == null) {
@@ -51,6 +75,34 @@ class SyncedPatientsActivity : ACBaseActivity() {
             addFragmentToActivity(supportFragmentManager,
                     syncedPatientsFragment, R.id.syncedPatientsContentFrame)
         }
+
+        mViewModel.loadDrawerItems(this)
+        mBinding.drawerItemList.adapter = mViewModel.drawerItemListAdapter
+
+        mBinding.drawerView.buttonLogout.setOnClickListener(this)
+        observeData()
+    }
+
+    private fun observeData() {
+
+        mViewModel.loadFindPatient.observe(this, Observer { gotoPatientList() })
+
+        mViewModel.loadAddPatient.observe(this, Observer { gotoRegisterPatient() })
+
+        mViewModel.loadActiveVisits.observe(this, Observer { gotoActiveVisits() })
+
+        mViewModel.loadFormEntry.observe(this, Observer { gotoFormEntry() })
+
+        mViewModel.loadManageProviders.observe(this, Observer { gotoManageProviders() })
+
+        mViewModel.loadMemberList.observe(this, Observer { gotoMemberList() })
+
+        mViewModel.loadAddMember.observe(this, Observer { gotoAddMember() })
+
+        mViewModel.loadReferredMemberList.observe(this, Observer { gotoReferredMemberList() })
+
+        mViewModel.loadMemberProfile.observe(this, Observer { gotoMemberProfile() })
+
     }
 
     fun deletePatient(patient: Patient) {
@@ -67,7 +119,9 @@ class SyncedPatientsActivity : ACBaseActivity() {
                 val intent = Intent(this, LastViewedPatientsActivity::class.java)
                 startActivity(intent)
             }
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> {
+                openCloseDrawer()
+            }
             else -> {
             }
         }
@@ -112,6 +166,76 @@ class SyncedPatientsActivity : ACBaseActivity() {
         addPatientMenuItem?.let {
             it.isEnabled = enabled
             it.setIcon(resId)
+        }
+    }
+
+    private fun openCloseDrawer() {
+        val dl = mBinding.drawerLayout
+        if(dl.isDrawerOpen(GravityCompat.START)){
+            dl.closeDrawer(GravityCompat.START);
+        }
+        else {
+            dl.openDrawer(GravityCompat.START);
+        }
+    }
+
+    fun gotoPatientList() {
+        openCloseDrawer()
+        val intent = Intent(this, SyncedPatientsActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoRegisterPatient() {
+        openCloseDrawer()
+        val intent = Intent(this, AddEditPatientActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoActiveVisits() {
+        openCloseDrawer()
+        val intent = Intent(this, ActiveVisitsActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoFormEntry() {
+        openCloseDrawer()
+        val intent = Intent(this, FormEntryPatientListActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoManageProviders() {
+        openCloseDrawer()
+        val intent = Intent(this, ProviderManagerDashboardActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoMemberList() {
+        openCloseDrawer()
+        val intent = Intent(this, MemberListActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoAddMember() {
+        openCloseDrawer()
+        val intent = Intent(this, AddEditPatientActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoReferredMemberList() {
+        openCloseDrawer()
+        val intent = Intent(this, MemberListActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoMemberProfile() {
+        openCloseDrawer()
+        val intent = Intent(this, MemberProfileActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            mBinding.drawerView.buttonLogout.id -> {}
         }
     }
 }

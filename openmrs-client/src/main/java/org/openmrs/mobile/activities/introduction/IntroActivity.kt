@@ -22,6 +22,7 @@ import com.github.appintro.AppIntro2
 import com.github.appintro.AppIntroFragment
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.dashboard.DashboardActivity
+import org.openmrs.mobile.activities.syncedpatients.SyncedPatientsActivity
 
 class IntroActivity : AppIntro2() {
 
@@ -75,21 +76,24 @@ class IntroActivity : AppIntro2() {
         ))
 
         if (!OpenmrsAndroid.getFirstTime()) {
-            startActivity(Intent(this, DashboardActivity::class.java))
+//            startActivity(Intent(this, DashboardActivity::class.java))
+            startActivity(Intent(this, SyncedPatientsActivity::class.java))
             finish()
         }
     }
 
     override fun onSkipPressed(currentFragment: Fragment?) {
         super.onSkipPressed(currentFragment)
-        startActivity(Intent(this, DashboardActivity::class.java))
+//        startActivity(Intent(this, DashboardActivity::class.java))
+        startActivity(Intent(this, SyncedPatientsActivity::class.java))
         OpenmrsAndroid.setUserFirstTime(false)
         finish()
     }
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
-        startActivity(Intent(this, DashboardActivity::class.java))
+//        startActivity(Intent(this, DashboardActivity::class.java))
+        startActivity(Intent(this, SyncedPatientsActivity::class.java))
         OpenmrsAndroid.setUserFirstTime(false)
         finish()
     }
