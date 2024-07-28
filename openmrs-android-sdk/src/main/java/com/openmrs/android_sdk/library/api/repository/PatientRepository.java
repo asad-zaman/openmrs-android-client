@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -56,6 +57,9 @@ import com.openmrs.android_sdk.library.models.PatientIdentifier;
 import com.openmrs.android_sdk.library.models.PatientPhoto;
 import com.openmrs.android_sdk.library.models.ResultType;
 import com.openmrs.android_sdk.library.models.Results;
+import com.openmrs.android_sdk.library.models.SearchRequest;
+import com.openmrs.android_sdk.library.models.SearchUser;
+import com.openmrs.android_sdk.library.models.SearchUserResponse;
 import com.openmrs.android_sdk.library.models.SystemProperty;
 import com.openmrs.android_sdk.utilities.ApplicationConstants;
 import com.openmrs.android_sdk.utilities.ModuleUtils;
@@ -322,6 +326,18 @@ public class PatientRepository extends BaseRepository {
             }
         }
         return null;
+    }
+
+    public Observable<SearchUser> getUserBySearchIdentifier(SearchRequest searchBody) {
+        return AppDatabaseHelper.createObservableIO(() -> {
+            Call<SearchUserResponse> call = restApi.getUserBySearch(searchBody);
+            Response<SearchUserResponse> response = call.execute();
+            if (response.isSuccessful() && response.body() != null) {
+                return response.body().getSearchUser();
+            } else {
+                throw new Exception("Error with searching user by identifier: " + response.message());
+            }
+        });
     }
 
     /**

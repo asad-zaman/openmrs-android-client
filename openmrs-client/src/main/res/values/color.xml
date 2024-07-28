@@ -19,8 +19,11 @@
     <color name="white">#FFF</color>
     <color name="black">#000</color>
     <color name="dark_teal">#00463f</color>
-    <color name="primary">#00463f</color>
-    <color name="primary_dark">#01302b</color>
+<!--    <color name="primary">#00463f</color>-->
+    <color name="primary">#970004</color>
+<!--    <color name="primary_dark">#01302b</color>-->
+    <color name="primary_dark">#970004</color>
+    <color name="primary_light">#af3e2b</color>
     <color name="color_accent">#F8793B</color>
     <color name="dark_purple">#363463</color>
     <color name="dark_grey">#231F20</color>

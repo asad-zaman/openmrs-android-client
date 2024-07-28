@@ -2,9 +2,7 @@ package com.openmrs.android_sdk.library.api.repository
 
 import com.openmrs.android_sdk.library.dao.ConceptRoomDAO
 import com.openmrs.android_sdk.library.databases.AppDatabaseHelper
-import com.openmrs.android_sdk.library.models.ConceptAnswers
-import com.openmrs.android_sdk.library.models.ConceptMembers
-import com.openmrs.android_sdk.library.models.SystemProperty
+import com.openmrs.android_sdk.library.models.*
 import com.openmrs.android_sdk.utilities.ApplicationConstants.API.FULL
 import rx.Observable
 import javax.inject.Inject
@@ -55,6 +53,20 @@ class ConceptRepository @Inject constructor(private val conceptRoomDAO: ConceptR
             restApi.getConceptMembersFromUUID(uuid).execute().run {
                 if (isSuccessful && body() != null) return@Callable body()!!
                 else throw Exception("Error fetching concept members: ${message()}")
+            }
+        })
+    }
+
+
+    fun getConceptOptions(uuid: String): Observable<ConceptApiResponse> {
+        return AppDatabaseHelper.createObservableIO(Callable {
+//            if (!NetworkUtils.isOnline()) throw Exception("To retrieve observations, an internet connection is required.")
+            restApi.getConceptAnswers(uuid).execute().run {
+                if (isSuccessful && body() != null) {
+                    return@Callable this.body()!!
+                } else {
+                    throw Exception("Get Observations error: ${message()}")
+                }
             }
         })
     }

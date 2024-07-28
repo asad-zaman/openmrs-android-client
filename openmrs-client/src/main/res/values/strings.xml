@@ -59,8 +59,28 @@
     <string name="reg_firstname_hint">First Name*</string>
     <string name="reg_midname_hint">Middle Name</string>
     <string name="reg_surname_hint">Family Name*</string>
+    <string name="reg_mobile_no">Mobile No</string>
+    <string name="reg_nid">NID*</string>
+    <string name="reg_birth_place">Birth Place*</string>
+    <string name="reg_nationality">Nationality</string>
+    <string name="reg_occupation">Occupation</string>
+    <string name="reg_disability_type">Disability Type</string>
+    <string name="reg_ethnicity">Ethnicity</string>
+    <string name="reg_edu_qualification">Educational Qualification</string>
+    <string name="reg_brid">Birth Registration Number</string>
+    <string name="reg_full_name_bangla">Full Name in Bangla</string>
+    <string name="reg_mother_name">Mother\'s Name*</string>
+    <string name="reg_father_name">Father\'s Name</string>
+    <string name="reg_spouse_name">Spouse\'s Name</string>
+    <string name="reg_mother_name_bangla">Mother\'s Name in Bangla</string>
+    <string name="reg_father_name_bangla">Father\'s Name in Bangla</string>
+    <string name="reg_spouse_name_bangla">Spouse\'s Name in Bangla</string>
     <string name="reg_ques_name">Patient\’s Name</string>
-    <string name="reg_ques_gender">Patient\'s gender*</string>
+    <string name="reg_ques_gender">Patient\'s gender</string>
+    <string name="reg_marital_status">Patient\'s marital status</string>
+    <string name="reg_blood_group">Patient\'s blood group</string>
+    <string name="reg_religion">Patient\'s religion</string>
+    <string name="reg_identifier_type">Patient\'s identifier type</string>
     <string name="reg_ques_dob">Patient\'s birth date*</string>
     <string name="label_or">OR</string>
     <string name="reg_ques_address">Address</string>
@@ -71,11 +91,13 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="dob_hint">Date of Birth (dd/MM/yyyy)</string>
+    <string name="date_hint">DOB (dd/MM/yyyy)</string>
     <string name="estyr">Estimated Years</string>
     <string name="estmonth">Estimated Months</string>
     <string name="age_out_of_bounds_message">Patient\'s age must be between 0 and %d</string>
     <string name="register_patient_error">Patient cannot be registered due to server error</string>
     <string name="update_patient_success">Patient %s updated</string>
+    <string name="search_user_successful">Information retrieved successfully</string>
     <string name="update_patient_error">Patient %s cannot be updated due to server error</string>
 
     <!-- Offline Mode -->

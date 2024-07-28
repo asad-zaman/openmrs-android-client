@@ -16,12 +16,12 @@ package com.openmrs.android_sdk.library.api.repository
 import com.openmrs.android_sdk.library.OpenmrsAndroid
 import com.openmrs.android_sdk.library.databases.AppDatabaseHelper.createObservableIO
 import com.openmrs.android_sdk.library.databases.entities.LocationEntity
-import com.openmrs.android_sdk.library.models.LocationData
+import com.openmrs.android_sdk.library.models.*
 import com.openmrs.android_sdk.utilities.ApplicationConstants
 import rx.Observable
+import java.util.concurrent.Callable
 import javax.inject.Inject
 import javax.inject.Singleton
-import java.util.concurrent.Callable
 
 /**
  * The type Location repository.
@@ -68,6 +68,30 @@ class LocationRepository @Inject constructor() : BaseRepository() {
             restApi.getDivisionList(locationEndPoint, cCode).execute().run {
                 if (isSuccessful && body() != null) return@Callable body()!!.locationList
                 else throw Exception("Error fetching divisions: ${message()}")
+            }
+        })
+    }
+
+    fun getUserBySearchIdentifier(searchBody: SearchRequest): Observable<SearchUser> {
+        return createObservableIO(Callable {
+            restApi.getUserBySearch(searchBody).execute().run {
+                if (isSuccessful && body() != null) {
+                    return@Callable body()!!.searchUser!!
+                } else {
+                    throw Exception(errorBody().toString())
+                }
+            }
+        })
+    }
+
+    fun postPatientCreate(patientCreate: PatientCreate): Observable<SearchUser> {
+        return createObservableIO(Callable {
+            restApi.createPatient(patientCreate).execute().run {
+                if (isSuccessful && body() != null) {
+                    return@Callable body()!!.searchUser!!
+                } else {
+                    throw Exception(errorBody().toString())
+                }
             }
         })
     }

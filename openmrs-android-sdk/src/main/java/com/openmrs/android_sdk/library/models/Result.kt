@@ -28,7 +28,8 @@ enum class OperationType {
     ProviderRegistering,
     ProviderUpdating,
     Login,
-    LocationsFetching
+    LocationsFetching,
+    FetchingSearchUser
 }
 
 enum class ResultType {

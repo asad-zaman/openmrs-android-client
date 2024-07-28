@@ -9,6 +9,7 @@ import com.openmrs.android_sdk.library.api.repository.LocationRepository
 import com.openmrs.android_sdk.library.api.repository.PatientRepository
 import com.openmrs.android_sdk.library.dao.PatientDAO
 import com.openmrs.android_sdk.library.models.*
+import com.openmrs.android_sdk.library.models.OperationType.FetchingSearchUser
 import com.openmrs.android_sdk.library.models.OperationType.PatientRegistering
 import com.openmrs.android_sdk.utilities.ApplicationConstants
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.COUNTRIES_BUNDLE
@@ -18,8 +19,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import org.joda.time.DateTime
 import org.openmrs.mobile.activities.BaseViewModel
 import rx.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
 import java.io.File
+import javax.inject.Inject
+
 
 @HiltViewModel
 class AddEditPatientViewModel @Inject constructor(
@@ -54,14 +56,55 @@ class AddEditPatientViewModel @Inject constructor(
     private val _wardList = MutableLiveData<List<LocationData>>()
     val wardList: LiveData<List<LocationData>> get() = _wardList
 
+    private val _blockList = MutableLiveData<List<LocationData>>()
+    val blockList: LiveData<List<LocationData>> get() = _blockList
+
+    private val _mStatusOptionList = MutableLiveData<List<ConceptOption>>()
+    val mStatusOptionList: LiveData<List<ConceptOption>> get() = _mStatusOptionList
+
+    var selectedMaritalStatusOption : ConceptOption = ConceptOption()
+
+    private val _bloodGroupOptionList = MutableLiveData<List<ConceptOption>>()
+    val bloodGroupOptionList: LiveData<List<ConceptOption>> get() = _bloodGroupOptionList
+
+    var selectedBloodGroupOption : ConceptOption = ConceptOption()
+
+    private val _religionOptionList = MutableLiveData<List<ConceptOption>>()
+    val religionOptionList: LiveData<List<ConceptOption>> get() = _religionOptionList
+
+    var selectedReligionOption : ConceptOption = ConceptOption()
+
+
+    val genderList: List<String> = arrayListOf("Male", "Female", "Other", "Unknown")
+    var selectedGender = ""
+
+    val mStatusList: List<String> = arrayListOf("Divorced", "Married", "Single")
+    var selectedMaritalStatus = ""
+
+    val mIdentifierList: List<String> = arrayListOf("NID", "HID", "BRID")
+    var selectedIdentifier = ""
+
+    val mIdentifierTypeList: List<String> = arrayListOf("NID", "BRN", "কোনটা না")
+    var selectedIdentifierType = ""
+
+    val bGroupList: List<String> = arrayListOf("A-", "A+", "AB-", "AB+", "B-", "B+", "O-", "O+")
+    var selectedBloodGroup = ""
+
+    val religionList: List<String> = arrayListOf("Buddhism", "Christianity", "Hinduism", "Islam", "Other")
+    var selectedReligion = ""
+
     var rxSelectedDivision: MutableLiveData<LocationData> = MutableLiveData()
     var rxSelectedDistrict: MutableLiveData<LocationData> = MutableLiveData()
     var rxSelectedUpazila: MutableLiveData<LocationData> = MutableLiveData()
     var rxSelectedPaurasava: MutableLiveData<LocationData> = MutableLiveData()
     var rxSelectedUnion: MutableLiveData<LocationData> = MutableLiveData()
     var rxSelectedWard: MutableLiveData<LocationData> = MutableLiveData()
+    var rxSelectedBlock: MutableLiveData<LocationData> = MutableLiveData()
 
     var patientValidator: PatientValidator
+
+    private val _mSearchUser = MutableLiveData<SearchUser>()
+    val mSearchUser: LiveData<SearchUser> get() = _mSearchUser
 
     var isUpdatePatient = false
         private set
@@ -76,6 +119,7 @@ class AddEditPatientViewModel @Inject constructor(
 
     var placesClient: PlacesClient? = null
     var dateHolder: DateTime? = null
+    var identifierDateHolder: DateTime? = null
     var capturedPhotoFile: File? = null
 
     init {
@@ -104,9 +148,10 @@ class AddEditPatientViewModel @Inject constructor(
     }
 
     fun confirmPatient() {
+        val aa = patientValidator.validate()
         if (!patientValidator.validate()) return
-        if (isUpdatePatient) updatePatient()
-        else registerPatient()
+        /*if (isUpdatePatient) updatePatient()
+        else registerPatient()*/
     }
 
     fun fetchSimilarPatients() {
@@ -119,6 +164,61 @@ class AddEditPatientViewModel @Inject constructor(
         addSubscription(patientRepository.fetchSimilarPatients(patient)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { _similarPatientsLiveData.value = it }
+        )
+    }
+
+    fun onSearch(searchBody: SearchRequest) {
+        setLoading()
+        addSubscription(
+            locationRepository.getUserBySearchIdentifier(searchBody)
+//            patientRepository.getUserBySearchIdentifier(searchBody)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { _mSearchUser.value = it },
+                { setError(it, FetchingSearchUser) }
+            )
+        )
+    }
+
+    fun onSignUp(patientCreateBody: PatientCreate) {
+        setLoading()
+        addSubscription(
+            locationRepository.postPatientCreate(patientCreateBody)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { _mSearchUser.value = it },
+                    { setError(it, FetchingSearchUser) }
+                )
+        )
+    }
+
+    fun fetchMaritalStatusOptions() {
+        setLoading()
+        addSubscription(conceptRepository.getConceptOptions(ApplicationConstants.PATIENTS_MARITAL_STATUS_OPTIONS_UUID)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                _mStatusOptionList.value = it.answers
+            }
+        )
+    }
+
+    fun fetchBloodGroupOptions() {
+        setLoading()
+        addSubscription(conceptRepository.getConceptOptions(ApplicationConstants.PATIENTS_BLOOD_GROUP_OPTIONS_UUID)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                _bloodGroupOptionList.value = it.answers
+            }
+        )
+    }
+
+    fun fetchReligionOptions() {
+        setLoading()
+        addSubscription(conceptRepository.getConceptOptions(ApplicationConstants.PATIENTS_RELIGION_OPTIONS_UUID)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                _religionOptionList.value = it.answers
+            }
         )
     }
 
@@ -177,6 +277,16 @@ class AddEditPatientViewModel @Inject constructor(
         addSubscription(locationRepository.getAddresses(rxSelectedUnion.value?.locationId!!)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { _wardList.value = it }
+        )
+    }
+
+    fun fetchServerBlocks() {
+        setLoading()
+        addSubscription(locationRepository.getAddresses(rxSelectedWard.value?.locationId!!)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                _blockList.value = it
+            }
         )
     }
 

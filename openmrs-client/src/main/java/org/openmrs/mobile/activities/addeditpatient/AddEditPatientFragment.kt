@@ -57,6 +57,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.material.snackbar.Snackbar
 import com.openmrs.android_sdk.library.models.*
+import com.openmrs.android_sdk.library.models.OperationType.FetchingSearchUser
 import com.openmrs.android_sdk.library.models.OperationType.PatientRegistering
 import com.openmrs.android_sdk.utilities.ApplicationConstants
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.COUNTRIES_BUNDLE
@@ -77,6 +78,8 @@ import com.openmrs.android_sdk.utilities.ToastUtil
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCrop.REQUEST_CROP
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_add_provider.*
+import kotlinx.android.synthetic.main.fragment_matching_patients.*
 import kotlinx.android.synthetic.main.fragment_patient_info.*
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
@@ -138,7 +141,7 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
 
         initPlaces()
 
-        viewModel.fetchServerDivisions()
+        initSpinners()
 
         setupViewsListeners()
 
@@ -179,6 +182,9 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
                 is Result.Error -> if (result.operationType == PatientRegistering) {
                     hideLoading()
                     ToastUtil.error(getString(R.string.register_patient_error))
+                } else {
+                    hideLoading()
+                    ToastUtil.error(result.throwable.message!!.toString())
                 }
                 else -> throw IllegalStateException()
             }
@@ -188,6 +194,12 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
             hideLoading()
             if (similarPatients.isEmpty()) registerPatient()
             else showSimilarPatientsDialog(similarPatients, viewModel.patient)
+        })
+
+        viewModel.mSearchUser.observe(viewLifecycleOwner, Observer { searchUser ->
+            hideLoading()
+            ToastUtil.success(String.format(getString(R.string.search_user_successful)))
+            searchUser?.let { populateUserInformation(it) }
         })
 
         viewModel.divisionList.observe(viewLifecycleOwner, Observer { divisionList ->
@@ -231,6 +243,69 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
                 updateWardSpinner(wardList)
             }
         })
+
+        viewModel.blockList.observe(viewLifecycleOwner, Observer { blockList ->
+            hideLoading()
+            if (blockList.isNotEmpty()){
+                updateBlockSpinner(blockList)
+            }
+        })
+
+        viewModel.mStatusOptionList.observe(viewLifecycleOwner, Observer { mStatusList ->
+            hideLoading()
+            if (mStatusList.isNotEmpty()){
+                updateMaritalStatusSpinner()
+            }
+        })
+
+        viewModel.bloodGroupOptionList.observe(viewLifecycleOwner, Observer { mStatusList ->
+            hideLoading()
+            if (mStatusList.isNotEmpty()){
+                updateBloodGroupSpinner()
+            }
+        })
+
+        viewModel.religionOptionList.observe(viewLifecycleOwner, Observer { mStatusList ->
+            hideLoading()
+            if (mStatusList.isNotEmpty()){
+                updateReligionSpinner()
+            }
+        })
+    }
+
+    private fun populateUserInformation(searchUser: SearchUser) = with(binding) {
+        with(searchUser){
+            val mNames = fullNameEnglish?.split(" ")?.toTypedArray()
+            if(mNames != null && mNames.isNotEmpty()) firstName.setText(mNames[0])
+            if(mNames != null && mNames.size > 1) middlename.setText(mNames[1])
+            if(mNames != null && mNames.size > 2) etFamilyName.setText(mNames[mNames.size - 1])
+            etMotherName.setText(motherNameEnglish)
+            etMotherNameBangla.setText(motherNameBangla)
+            etFullNameBangla.setText(fullNameBangla)
+            etFatherName.setText(fatherNameEnglish)
+            etSelectedIdentifierValue.setText(nid)
+            dobEditText.setText(dob)
+            etMobileNo.setText(mobile)
+            nationality?.let { etNationality.setText(it) }
+            when(gender){
+                "M" -> {
+                    spinnerGender.setSelection(1)
+                    viewModel.selectedGender = spinnerGender.selectedItem.toString()
+                }
+                "F" -> {
+                    spinnerGender.setSelection(2)
+                    viewModel.selectedGender = spinnerGender.selectedItem.toString()
+                }
+                "O" -> {
+                    spinnerGender.setSelection(3)
+                    viewModel.selectedGender = spinnerGender.selectedItem.toString()
+                }
+                else -> {
+                    spinnerGender.setSelection(4)
+                    viewModel.selectedGender = spinnerGender.selectedItem.toString()
+                }
+            }
+        }
     }
 
     private fun updateDivisionSpinner(divs: List<LocationData>) = with(binding.spinnerDivision) {
@@ -333,6 +408,24 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
                     viewModel.rxSelectedWard = MutableLiveData()
                 } else {
                     viewModel.rxSelectedWard.value = divs[i - 1]
+                    viewModel.fetchServerBlocks()
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateBlockSpinner(divs: List<LocationData>) = with(binding.spinnerBlock) {
+        val dList = arrayListOf("select block")
+        divs.forEach { dList.add(it.description!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerBlock.selectedItem.equals("select block")){
+                    viewModel.rxSelectedBlock = MutableLiveData()
+                } else {
+                    viewModel.rxSelectedBlock.value = divs[i - 1]
                 }
             }
 
@@ -378,78 +471,26 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
             // Change to Update Patient Form
             requireActivity().title = getString(R.string.action_update_patient_data)
 
-            // No need for un-identification option once the patient is registered
-            binding.unidentifiedCheckbox.makeGone()
-            // Show deceased option only when patient is registered
-            binding.deceasedCardview.makeVisible()
-
             binding.firstName.setText(name.givenName)
             binding.middlename.setText(name.middleName)
-            binding.surname.setText(name.familyName)
+            binding.etFamilyName.setText(name.familyName)
 
             if (notNull(birthdate) || notEmpty(birthdate)) {
                 viewModel.dateHolder = convertTimeString(birthdate)
                 binding.dobEditText.setText(convertTime(convertTime(viewModel.dateHolder.toString(), DateUtils.OPEN_MRS_REQUEST_FORMAT)!!,
                         DateUtils.DEFAULT_DATE_FORMAT))
             }
-            if (StringValue.MALE == gender) {
+            /*if (StringValue.MALE == gender) {
                 binding.gender.check(R.id.male)
             } else if (StringValue.FEMALE == gender) {
                 binding.gender.check(R.id.female)
-            }
+            }*/
             binding.addressOne.setText(address.address1)
-            binding.addressTwo.setText(address.address2)
-            binding.cityAutoComplete.setText(address.cityVillage)
-            binding.stateAutoComplete.setText(address.stateProvince)
-            binding.postalCode.setText(address.postalCode)
-            if (photo != null) binding.patientPhoto.setImageBitmap(resizedPhoto)
-
-            binding.deceasedCheckbox.isChecked = isDeceased
+//            if (photo != null) binding.patientPhoto.setImageBitmap(resizedPhoto)
         }
     }
 
     private fun validateFormInputsAndUpdateViewModel() = with(binding) {
-        viewModel.isPatientUnidentified = unidentifiedCheckbox.isChecked
-        viewModel.patient.isDeceased = deceasedCheckbox.isChecked
-
-        if (unidentifiedCheckbox.isChecked) {
-            /* Names */
-            viewModel.patient.names = listOf(PersonName().apply {
-                familyName = getString(R.string.unidentified_patient_name)
-                givenName = getString(R.string.unidentified_patient_name)
-            })
-
-            /* Address */
-            viewModel.patient.addresses = emptyList()
-
-            /* Birth date */
-            if (isBlank(getInput(estimatedYear)) && isBlank(getInput(estimatedMonth))) {
-                dobError.text = getString(R.string.dob_error_for_unidentified)
-                dobError.makeVisible()
-                scrollToTop()
-            } else {
-                dobError.makeGone()
-                viewModel.patient.birthdateEstimated = true
-                val yearDiff = if (isEmpty(estimatedYear)) 0 else estimatedYear.text.toString().toInt()
-                val monthDiff = if (isEmpty(estimatedMonth)) 0 else estimatedMonth.text.toString().toInt()
-                viewModel.dateHolder = getDateTimeFromDifference(yearDiff, monthDiff)
-                viewModel.patient.birthdate = DateTimeFormat.forPattern(DateUtils.OPEN_MRS_REQUEST_PATIENT_FORMAT).print(viewModel.dateHolder)
-            }
-
-            /* Gender */
-            val genderChoices = arrayOf(StringValue.MALE, StringValue.FEMALE)
-            val index = gender.indexOfChild(requireActivity().findViewById(gender.checkedRadioButtonId))
-            if (index == -1) {
-                gendererror.makeVisible()
-                viewModel.patient.gender = null
-                scrollToTop()
-            } else {
-                gendererror.makeGone()
-                viewModel.patient.gender = genderChoices[index]
-            }
-
-            return
-        }
 
         /* Names */
 
@@ -476,11 +517,11 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
         }
 
         // Family name validation
-        if (isEmpty(surname)) {
+        if (isEmpty(etFamilyName)) {
             textInputLayoutSurname.isErrorEnabled = true
             textInputLayoutSurname.error = getString(R.string.emptyerror)
             scrollToTop()
-        } else if (!validateText(getInput(surname), ILLEGAL_CHARACTERS)) {
+        } else if (!validateText(getInput(etFamilyName), ILLEGAL_CHARACTERS)) {
             textInputLayoutSurname.isErrorEnabled = true
             textInputLayoutSurname.error = getString(R.string.lname_invalid_error)
             scrollToTop()
@@ -491,11 +532,11 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
         viewModel.patient.names = listOf(PersonName().apply {
             givenName = getInput(firstName)
             middleName = getInput(middlename)
-            familyName = getInput(surname)
+            familyName = getInput(etFamilyName)
         })
 
         /* Gender */
-        val genderChoices = arrayOf(StringValue.MALE, StringValue.FEMALE)
+        /*val genderChoices = arrayOf(StringValue.MALE, StringValue.FEMALE)
         val index = gender.indexOfChild(requireActivity().findViewById(gender.checkedRadioButtonId))
         if (index == -1) {
             gendererror.makeVisible()
@@ -504,36 +545,28 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
         } else {
             gendererror.makeGone()
             viewModel.patient.gender = genderChoices[index]
-        }
+        }*/
 
         /* Addresses */
-        if (isEmpty(addressOne) && isEmpty(addressTwo) || isCountryCodePickerEmpty(countryCodeSpinner)) {
+
+        if (isEmpty(addressOne)) {
             addressError.makeVisible()
             addressError.text = getString(R.string.atleastone)
             textInputLayoutAddress.error = getString(R.string.atleastone)
             scrollToTop()
-        } else if (!validateText(getInput(addressOne), ILLEGAL_ADDRESS_CHARACTERS)
-                || !validateText(getInput(addressTwo), ILLEGAL_ADDRESS_CHARACTERS)) {
+        } else if (!validateText(getInput(addressOne), ILLEGAL_ADDRESS_CHARACTERS)) {
             addressError.makeVisible()
             addressError.text = getString(R.string.addr_invalid_error)
             scrollToTop()
             if (!validateText(getInput(addressOne), ILLEGAL_ADDRESS_CHARACTERS)) textInputLayoutAddress.error = getString(R.string.addr_invalid_error)
             else textInputLayoutAddress.isErrorEnabled = false
-            if (!validateText(getInput(addressTwo), ILLEGAL_ADDRESS_CHARACTERS)) textInputLayoutAddress2.error = getString(R.string.addr_invalid_error)
-            else textInputLayoutAddress2.isErrorEnabled = false
         } else {
             addressError.makeGone()
             textInputLayoutAddress.isErrorEnabled = false
-            textInputLayoutAddress2.isErrorEnabled = false
         }
 
         viewModel.patient.addresses = listOf(PersonAddress().apply {
             address1 = getInput(addressOne)
-            address2 = getInput(addressTwo)
-            cityVillage = getInput(cityAutoComplete)
-            postalCode = getInput(this@with.postalCode)
-            country = countryCodeSpinner.selectedCountryName
-            stateProvince = getInput(stateAutoComplete)
             preferred = true
         })
 
@@ -587,21 +620,8 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
     }
 
     private fun setupViewsListeners() = with(binding) {
-        unidentifiedCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                linearLayoutName.makeGone()
-                constraintLayoutDOB.makeGone()
-                linearLayoutContactInfo.makeGone()
-                viewModel.isPatientUnidentified = true
-            } else {
-                linearLayoutName.makeVisible()
-                constraintLayoutDOB.makeVisible()
-                linearLayoutContactInfo.makeVisible()
-                viewModel.isPatientUnidentified = false
-            }
-        }
 
-        gender.setOnCheckedChangeListener { _, _ -> gendererror.makeGone() }
+//        gender.setOnCheckedChangeListener { _, _ -> gendererror.makeGone() }
 
         dobEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -627,6 +647,37 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
                 }
             }
         })
+
+        btnIdentifierSearch.setOnClickListener {
+//            viewModel.onSearch(SearchRequest(spinnerIdentifier.selectedItem.toString().toLowerCase(), binding.etIdentifierDOB.text.toString(), binding.etIdentifierValue.text.toString()))
+            viewModel.onSearch(SearchRequest("nid", "2000-02-18", "6915166281"))
+        }
+
+        btnIdentifierDOB.setOnClickListener {
+            val cYear: Int
+            val cMonth: Int
+            val cDay: Int
+            if (viewModel.identifierDateHolder == null) Calendar.getInstance().let {
+                cYear = it[Calendar.YEAR]
+                cMonth = it[Calendar.MONTH]
+                cDay = it[Calendar.DAY_OF_MONTH]
+            } else viewModel.identifierDateHolder!!.run {
+                cYear = year
+                cMonth = monthOfYear - 1
+                cDay = dayOfMonth
+            }
+
+            val dateSetListener = { _: DatePicker?, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+                val adjustedMonth = selectedMonth + 1
+//                etIdentifierDOB.setText(String.format("%02d", selectedDay) + "-" + String.format("%02d", adjustedMonth) + "-" + selectedYear)
+                etIdentifierDOB.setText(selectedYear.toString() + "-" + String.format("%02d", adjustedMonth) + "-" + String.format("%02d", selectedDay))
+                viewModel.identifierDateHolder = LocalDate(selectedYear, adjustedMonth, selectedDay).toDateTimeAtStartOfDay()
+            }
+            DatePickerDialog(requireActivity(), dateSetListener, cYear, cMonth, cDay).apply {
+                datePicker.maxDate = System.currentTimeMillis()
+                setTitle(getString(R.string.date_picker_title))
+            }.show()
+        }
 
         datePicker.setOnClickListener {
             val cYear: Int
@@ -660,7 +711,7 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
             estimatedYear.addTextChangedListener(it)
         }
 
-        capturePhoto.setOnClickListener {
+        /*capturePhoto.setOnClickListener {
             val dialogList = mutableListOf(
                     CustomDialogModel(getString(R.string.dialog_take_photo), R.drawable.ic_photo_camera),
                     CustomDialogModel(getString(R.string.dialog_choose_photo), R.drawable.ic_photo_library)
@@ -681,114 +732,8 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
             } else if (viewModel.patient.photo != null) {
                 viewModel.patient.run { ImageUtils.showPatientPhoto(requireContext(), photo, name.nameString) }
             }
-        }
+        }*/
 
-        stateAutoComplete.onFocusChangeListener = View.OnFocusChangeListener { _, _ -> addSuggestionsToCities() }
-
-        // Check for cities available on searching
-        cityAutoComplete.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotBlank()) cityProgressBar.makeVisible()
-                val cityList = mutableListOf<String>()
-                val token = AutocompleteSessionToken.newInstance()
-                val request = FindAutocompletePredictionsRequest.builder()
-                        .setCountry(countryCodeSpinner.selectedCountryNameCode.toLowerCase())
-                        .setTypeFilter(TypeFilter.CITIES)
-                        .setSessionToken(token)
-                        .setQuery(cityAutoComplete.text.toString())
-                        .build()
-                viewModel.placesClient?.findAutocompletePredictions(request)?.addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
-                    cityProgressBar.makeGone()
-                    for (autocompletePrediction in response.autocompletePredictions) {
-                        cityList.add(autocompletePrediction.getFullText(null).toString())
-                    }
-
-                    // Creating an array from ArrayList to create adapter
-                    val address = arrayOfNulls<String>(cityList.size)
-                    for (`in` in cityList.indices) address[`in`] = cityList[`in`]
-                    val adapter = ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, address)
-                    cityAutoComplete.setAdapter(adapter)
-                    cityAutoComplete.onItemClickListener = AdapterView.OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-                        val primary_text = response.autocompletePredictions[position].getPrimaryText(null).toString()
-                        val secondary_text = response.autocompletePredictions[position].getSecondaryText(null).toString()
-                        cityAutoComplete.setText(primary_text)
-                        /*
-                         * if it is a city , then format received will be :
-                         * CITY, STATE, COUNTRY
-                         * else it is a union territory, then it will show :
-                         * CITY, COUNTRY
-                         */
-                        if (secondary_text.contains(",")) {
-                            val index = secondary_text.indexOf(',')
-                            val state = secondary_text.substring(0, index)
-                            stateAutoComplete.setText(state)
-                        } else {
-                            stateAutoComplete.setText(primary_text)
-                        }
-                    }
-                }?.addOnFailureListener { exception: Exception? ->
-                    if (exception is ApiException) {
-                        Log.i("Place API", "Place not found: " + exception.statusCode)
-                    }
-                    cityProgressBar.makeGone()
-                }
-            }
-
-            override fun afterTextChanged(s: Editable) {}
-        })
-
-        deceasedCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                deceasedProgressBar.makeVisible()
-                deceasedSpinner.makeGone()
-                showCauseOfDeathOptions()
-            } else {
-                deceasedProgressBar.makeGone()
-                deceasedSpinner.makeGone()
-                viewModel.patient.isDeceased = false
-                viewModel.patient.causeOfDeath = null
-            }
-        }
-    }
-
-    private fun showCauseOfDeathOptions() {
-        viewModel.fetchCausesOfDeath().observeOnce(viewLifecycleOwner, Observer {
-            if (it.answers.isNotEmpty()) updateCauseOfDeathSpinner(it)
-            else showCannotMarkDeceased()
-        })
-    }
-
-    private fun showCannotMarkDeceased() = with(binding) {
-        deceasedProgressBar.makeGone()
-        deceasedSpinner.makeGone()
-        deceasedCheckbox.isChecked = false
-        ToastUtil.error(getString(R.string.mark_patient_deceased_no_concepts))
-    }
-
-    private fun updateCauseOfDeathSpinner(concept: ConceptAnswers) = with(binding) {
-        deceasedProgressBar.makeGone()
-        deceasedSpinner.makeVisible()
-
-        val answers = concept.answers
-        val answerDisplays = arrayOfNulls<String>(answers.size)
-        for (i in answers.indices) {
-            answerDisplays[i] = answers[i].display
-        }
-
-        deceasedSpinner.adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_list_item_1, answerDisplays)
-        deceasedSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, pos: Int, l: Long) {
-                val display = deceasedSpinner.selectedItem.toString()
-                for (i in answers.indices) {
-                    if (display == answers[i].display) {
-                        viewModel.patient.causeOfDeath = answers[i]
-                    }
-                }
-            }
-
-            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-        }
     }
 
     private fun initPlaces() {
@@ -803,19 +748,118 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
         }
     }
 
-    private fun addSuggestionsToCities() {
-        var countryName = binding.countryCodeSpinner.selectedCountryName
-        countryName = countryName.replace("(", "")
-        countryName = countryName.replace(")", "")
-        countryName = countryName.replace(" ", "")
-        countryName = countryName.replace("-", "_")
-        countryName = countryName.replace(".", "")
-        countryName = countryName.replace("'", "")
-        val resourceId = resources.getIdentifier(countryName.toLowerCase(), "array", requireContext().packageName)
-        if (resourceId != 0) {
-            val states = resources.getStringArray(resourceId)
-            val stateAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, states)
-            binding.stateAutoComplete.setAdapter(stateAdapter)
+    private fun initSpinners() {
+        viewModel.fetchServerDivisions()
+        viewModel.fetchMaritalStatusOptions()
+        viewModel.fetchBloodGroupOptions()
+        viewModel.fetchReligionOptions()
+
+        updateGenderSpinner()
+        updateIdentifierSpinner()
+        updateIdentifierTypeSpinner()
+    }
+
+    private fun updateGenderSpinner() = with(binding.spinnerGender) {
+        val dList = arrayListOf("select gender")
+        viewModel.genderList.forEach { dList.add(it) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerGender.selectedItem.equals("select gender")){
+                    viewModel.selectedGender = ""
+                } else {
+                    viewModel.selectedGender = viewModel.genderList[i - 1]
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateIdentifierSpinner() = with(binding.spinnerIdentifier) {
+        val dList = arrayListOf("select ID")
+        viewModel.mIdentifierList.forEach { dList.add(it) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        setSelection(0)
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerIdentifier.selectedItem.equals("select ID")){
+                    viewModel.selectedIdentifier = ""
+                } else {
+                    viewModel.selectedIdentifier = viewModel.mIdentifierList[i - 1]
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateIdentifierTypeSpinner() = with(binding.spinnerIdentifierType) {
+        val dList = arrayListOf("select identifier type")
+        viewModel.mIdentifierTypeList.forEach { dList.add(it) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        setSelection(0)
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerIdentifierType.selectedItem.equals("select identifier type")){
+                    viewModel.selectedIdentifierType = ""
+                } else {
+                    viewModel.selectedIdentifierType = viewModel.mIdentifierTypeList[i - 1]
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateMaritalStatusSpinner() = with(binding.spinnerMaritalStatus) {
+        val dList = arrayListOf("select marital status")
+        viewModel.mStatusOptionList.value?.forEach { dList.add(it.display!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerMaritalStatus.selectedItem.equals("select marital status")){
+                    viewModel.selectedMaritalStatusOption = ConceptOption()
+                } else {
+                    viewModel.selectedMaritalStatusOption = viewModel.mStatusOptionList.value?.get(i - 1)!!
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateBloodGroupSpinner() = with(binding.spinnerBloodGroup) {
+        val dList = arrayListOf("select blood group")
+        viewModel.bloodGroupOptionList.value?.forEach { dList.add(it.display!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerBloodGroup.selectedItem.equals("select blood group")){
+                    viewModel.selectedBloodGroupOption = ConceptOption()
+                } else {
+                    viewModel.selectedBloodGroupOption = viewModel.bloodGroupOptionList.value?.get(i - 1)!!
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateReligionSpinner() = with(binding.spinnerReligion) {
+        val dList = arrayListOf("select religion")
+        viewModel.religionOptionList.value?.forEach { dList.add(it.display!!) }
+        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, dList).also { adapter = it }
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+                if(binding.spinnerReligion.selectedItem.equals("select religion")){
+                    viewModel.selectedReligionOption = ConceptOption()
+                } else {
+                    viewModel.selectedReligionOption = viewModel.religionOptionList.value?.get(i - 1)!!
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
     }
 
@@ -831,8 +875,8 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
         }
         2 -> {
             // Remove photo
-            binding.patientPhoto.setImageResource(R.drawable.ic_person_grey_500_48dp)
-            binding.patientPhoto.invalidate()
+//            binding.patientPhoto.setImageResource(R.drawable.ic_person_grey_500_48dp)
+//            binding.patientPhoto.invalidate()
             viewModel.patient.photo = null
         }
         else -> {
@@ -907,17 +951,12 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
     private fun resetAction() = with(binding) {
         firstName.setText("")
         middlename.setText("")
-        surname.setText("")
+        etFamilyName.setText("")
         dobEditText.setText("")
         estimatedYear.setText("")
         estimatedMonth.setText("")
         addressOne.setText("")
-        addressTwo.setText("")
-        countryCodeSpinner.resetToDefaultCountry()
-        cityAutoComplete.setText("")
-        stateAutoComplete.setText("")
-        postalCode.setText("")
-        gender.clearCheck()
+//        gender.clearCheck()
         dobError.text = ""
         gendererror.makeGone()
         addressError.text = ""
@@ -925,8 +964,7 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
         textInputLayoutMiddlename.error = ""
         textInputLayoutSurname.error = ""
         textInputLayoutAddress.error = ""
-        textInputLayoutAddress2.error = ""
-        patientPhoto.setImageResource(R.drawable.ic_person_grey_500_48dp)
+//        patientPhoto.setImageResource(R.drawable.ic_person_grey_500_48dp)
         viewModel.resetPatient()
     }
 
@@ -941,10 +979,9 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
     }
 
     fun isAnyFieldNotEmpty(): Boolean = with(binding) {
-        return !isEmpty(firstName) || !isEmpty(middlename) || !isEmpty(surname) ||
+        return !isEmpty(firstName) || !isEmpty(middlename) || !isEmpty(etFamilyName) ||
                 !isEmpty(dobEditText) || !isEmpty(estimatedYear) || !isEmpty(estimatedMonth) ||
-                !isEmpty(addressOne) || !isEmpty(addressTwo) || !isEmpty(cityAutoComplete) ||
-                !isEmpty(stateAutoComplete) || !isEmpty(postalCode)
+                !isEmpty(addressOne)
     }
 
 
@@ -968,11 +1005,11 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
             if (resultCode == RESULT_OK) {
                 data?.let { UCrop.getOutput(it) }?.path?.let {
                     viewModel.patient.photo = ImageUtils.getResizedPortraitImage(it)
-                    with(binding.patientPhoto) {
+                    /*with(binding.patientPhoto) {
                         val bitmap = ThumbnailUtils.extractThumbnail(viewModel.patient.photo, width, height)
                         setImageBitmap(bitmap)
                         invalidate()
-                    }
+                    }*/
                 }
             } else {
                 viewModel.capturedPhotoFile = null

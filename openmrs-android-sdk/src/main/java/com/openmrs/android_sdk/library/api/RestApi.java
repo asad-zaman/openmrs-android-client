@@ -19,6 +19,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -35,6 +36,7 @@ import com.openmrs.android_sdk.library.models.Appointment;
 import com.openmrs.android_sdk.library.models.AppointmentBlock;
 import com.openmrs.android_sdk.library.models.AppointmentType;
 import com.openmrs.android_sdk.library.models.ConceptAnswers;
+import com.openmrs.android_sdk.library.models.ConceptApiResponse;
 import com.openmrs.android_sdk.library.models.ConceptMembers;
 import com.openmrs.android_sdk.library.models.Drug;
 import com.openmrs.android_sdk.library.models.DrugCreate;
@@ -51,6 +53,7 @@ import com.openmrs.android_sdk.library.models.Observation;
 import com.openmrs.android_sdk.library.models.OrderCreate;
 import com.openmrs.android_sdk.library.models.OrderGet;
 import com.openmrs.android_sdk.library.models.Patient;
+import com.openmrs.android_sdk.library.models.PatientCreate;
 import com.openmrs.android_sdk.library.models.PatientDto;
 import com.openmrs.android_sdk.library.models.PatientDtoUpdate;
 import com.openmrs.android_sdk.library.models.PatientPhoto;
@@ -59,6 +62,8 @@ import com.openmrs.android_sdk.library.models.ProgramGet;
 import com.openmrs.android_sdk.library.models.Provider;
 import com.openmrs.android_sdk.library.models.Resource;
 import com.openmrs.android_sdk.library.models.Results;
+import com.openmrs.android_sdk.library.models.SearchRequest;
+import com.openmrs.android_sdk.library.models.SearchUserResponse;
 import com.openmrs.android_sdk.library.models.Session;
 import com.openmrs.android_sdk.library.models.SystemProperty;
 import com.openmrs.android_sdk.library.models.SystemSetting;
@@ -105,6 +110,9 @@ public interface RestApi {
     Call<AllLocation> getDivisionList(@Url String url,
                                                @Query("parentLocationIds") Integer plID);
 
+    @GET("concept/{uuid}")
+    Call<ConceptApiResponse> getConceptAnswers(@Path("uuid") String obsUuid);
+
     /**
      * Gets system property.
      *
@@ -145,6 +153,14 @@ public interface RestApi {
     @GET("patient/{uuid}")
     Call<PatientDto> getPatientByUUID(@Path("uuid") String uuid,
                                       @Query("v") String representation);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("external-api")
+    Call<SearchUserResponse> getUserBySearch(@Body SearchRequest searchBody);
+
+
+    @POST("")
+    Call<SearchUserResponse> createPatient(@Body PatientCreate patientCreate);
 
     /**
      * Gets last viewed patients.

@@ -40,8 +40,7 @@ class PersonName : Serializable {
     var familyName: String? = null
 
 
-    val nameString: String
-        get() {
+    val nameString: String get() {
             var finalName = ""
             if(givenName != null){
                 finalName = givenName.toString()

@@ -73,6 +73,7 @@
     <string name="age_out_of_bounds_message">रोगी की आयु 5 से %d के बीच होनी चाहिए।</string>
     <string name="register_patient_error">सर्वर त्रुटि के कारण रोगी पंजीकृत नहीं किया जा सकता</string>
     <string name="update_patient_success">रोगी %s अपडेट किया गया</string>
+    <string name="search_user_successful">তথ্য সফলভাবে হালনাগাদ করা হয়েছে</string>
     <string name="update_patient_error">सर्वर त्रुटि के कारण रोगी %s को अपडेट नहीं किया जा सकता</string>
 
     <!-- Offline Mode -->
