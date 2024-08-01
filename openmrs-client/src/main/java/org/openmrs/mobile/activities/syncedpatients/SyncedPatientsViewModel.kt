@@ -3,6 +3,7 @@ package org.openmrs.mobile.activities.syncedpatients
 import android.content.Context
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.openmrs.android_sdk.library.api.repository.PatientRepository
 import com.openmrs.android_sdk.library.dao.PatientDAO
 import com.openmrs.android_sdk.library.dao.VisitDAO

@@ -52,6 +52,13 @@ public class PatientEntity extends Resource {
     private String encounters;
 
     /**
+     * Added to store whole person information
+     */
+
+    @ColumnInfo(name = "person")
+    private String person = "";
+
+    /**
      * Instantiates a new Patient entity.
      */
     public PatientEntity() {
@@ -229,6 +236,15 @@ public class PatientEntity extends Resource {
     }
 
     /**
+     * Sets person json.
+     *
+     * @param person json
+     */
+    public void setPerson(String person) {
+        this.person = person;
+    }
+
+    /**
      * Is synced boolean.
      *
      * @return the boolean
@@ -397,5 +413,14 @@ public class PatientEntity extends Resource {
      */
     public String getEncounters() {
         return encounters;
+    }
+
+    /**
+     * Gets person json.
+     *
+     * @return the person json
+     */
+    public String getPerson() {
+        return person;
     }
 }

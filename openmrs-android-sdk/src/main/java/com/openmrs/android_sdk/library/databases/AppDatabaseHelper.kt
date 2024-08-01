@@ -15,6 +15,7 @@ package com.openmrs.android_sdk.library.databases
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.google.gson.Gson
 import com.openmrs.android_sdk.library.OpenmrsAndroid
 import com.openmrs.android_sdk.library.api.repository.FormRepository
 import com.openmrs.android_sdk.library.dao.EncounterDAO
@@ -266,6 +267,9 @@ object AppDatabaseHelper {
         patient.uuid = patientEntity.uuid
         val patientIdentifier = PatientIdentifier()
         patientIdentifier.identifier = patientEntity.identifier
+        if (!patientEntity.person.equals("")) {
+            patient.person = Gson().fromJson(patientEntity.person, Person::class.java)
+        }
         if (patient.identifiers == null) {
             patient.identifiers = ArrayList()
         }
@@ -302,6 +306,9 @@ object AppDatabaseHelper {
         patientEntity.display = patient.display
         patientEntity.uuid = patient.uuid
         patientEntity.isSynced = patient.isSynced
+        if(patient.person != null){
+            patientEntity.person = Gson().toJson(patient.person)
+        }
         if (patient.identifier != null) {
             patientEntity.identifier = patient.identifier.identifier
         } else {

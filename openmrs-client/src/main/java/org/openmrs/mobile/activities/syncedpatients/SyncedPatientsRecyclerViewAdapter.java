@@ -19,6 +19,7 @@ import java.util.List;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,12 +33,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.openmrs.android_sdk.library.models.Patient;
 import com.openmrs.android_sdk.utilities.ApplicationConstants;
 import com.openmrs.android_sdk.utilities.DateUtils;
 
 import org.openmrs.mobile.R;
 import org.openmrs.mobile.activities.ACBaseActivity;
+import org.openmrs.mobile.activities.memberList.MemberListActivity;
 import org.openmrs.mobile.activities.memberProfile.MemberProfileActivity;
 import org.openmrs.mobile.activities.patientdashboard.PatientDashboardActivity;
 
@@ -178,9 +182,13 @@ public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<Sync
             });
             itemView.setOnClickListener(view -> {
                 if (!multiSelect) {
-//                    Intent intent = new Intent(mContext.getActivity(), PatientDashboardActivity.class);
                     Intent intent = new Intent(mContext.getActivity(), MemberProfileActivity.class);
-                    intent.putExtra(ApplicationConstants.BundleKeys.PATIENT_ID_BUNDLE, value.getId());
+                    try{
+                        String personObj = new Gson().toJson(value);
+                        intent.putExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY, personObj);
+                    } catch (Exception e) {
+                        Log.d("", e.toString());
+                    }
                     mContext.startActivity(intent);
                 } else {
                     selectItem(value);

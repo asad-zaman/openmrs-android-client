@@ -18,6 +18,7 @@ enum class OperationType {
     MemberSearching,
     PatientFetching,
     PatientSearching,
+    ConceptSearching,
     PatientSynchronizing,
     PatientVisitsFetching,
     PatientVisitStarting,

@@ -348,8 +348,9 @@ public class PatientRepository extends BaseRepository {
      */
     public Observable<List<Patient>> findPatients(String query) {
         return AppDatabaseHelper.createObservableIO(() -> {
-            Call<Results<Patient>> call = restApi.getPatients(query, ApplicationConstants.API.FULL);
-            Response<Results<Patient>> response = call.execute();
+//            Call<Results<Patient>> call = restApi.getPatients(query, ApplicationConstants.API.FULL);
+            Response<Results<Patient>> response = restApi.getPatients(query, ApplicationConstants.API.FULL).execute();
+            List<Patient> pList = response.body().getResults();
             if (response.isSuccessful()) {
                 return response.body().getResults();
             } else {

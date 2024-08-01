@@ -43,6 +43,9 @@ public class Person extends Resource implements Serializable {
     @SerializedName("gender")
     @Expose
     private String gender;
+    @SerializedName("age")
+    @Expose
+    private int age;
     @SerializedName("birthdate")
     @Expose
     private String birthdate;
@@ -119,6 +122,15 @@ public class Person extends Resource implements Serializable {
     public void setNames(List<PersonName> names) {
         this.names = names;
     }
+
+
+
+    public int getAge() {return age;}
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
 
     /**
      * Gets name.

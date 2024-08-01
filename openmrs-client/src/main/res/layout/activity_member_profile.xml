@@ -150,11 +150,12 @@
                                     android:textStyle="bold"
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
-                                <TextView
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/tvMemberFirstName"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
                                     android:textSize="14sp"
+                                    android:text="@={viewModel.firstName}"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
 
@@ -184,9 +185,10 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberLastName"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
+                                    android:text="@={viewModel.lastName}"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
@@ -203,7 +205,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text="জন্ম দিন"
+                                    android:text="জন্ম তারিখ"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.4"/>
@@ -217,9 +219,10 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberBirthDate"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
+                                    android:text="@={viewModel.dob}"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
@@ -250,9 +253,10 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberAge"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
+                                    android:text="@={viewModel.age}"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
@@ -283,9 +287,10 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberGender"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
+                                    android:text="@={viewModel.patient.person.gender}"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
@@ -302,7 +307,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text="সম্পর্ক"
+                                    android:text="ধর্ম"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.4"/>
@@ -316,9 +321,9 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberReligion"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
@@ -349,9 +354,9 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberMaritalStatus"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
@@ -382,9 +387,10 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberMobile"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
+                                    android:text="@={viewModel.mobile}"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
@@ -415,9 +421,9 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberBloodGroup"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>
@@ -434,7 +440,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text="গর্ভাবস্থার সম্পর্কিত তথ্য"
+                                    android:text="জাতীয় পরিচয়পত্র নম্বর"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.4"/>
@@ -448,9 +454,10 @@
                                     android:layout_marginHorizontal="@dimen/ten_dp"/>
 
                                 <TextView
+                                    android:id="@+id/tvMemberNID"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text=""
+                                    android:text="@={viewModel.nid}"
                                     android:textSize="14sp"
                                     android:textStyle="normal"
                                     android:layout_weight="0.6"/>

@@ -29,7 +29,7 @@ import com.openmrs.android_sdk.utilities.StringUtils;
  *
  */
 public class Patient extends Person implements Serializable {
-    private Long id;
+//    private Long id;   /* commented this id to remove redundant id declaration through inheriting resource class */
     private String encounters = "";
     @SerializedName("identifiers")
     @Expose
@@ -49,7 +49,7 @@ public class Patient extends Person implements Serializable {
      * @param identifiers the identifiers
      */
     public Patient(Long id, String encounters, List<PatientIdentifier> identifiers) {
-        this.id = id;
+//        this.id = id;
         this.encounters = encounters;
         this.identifiers = identifiers;
     }
@@ -75,18 +75,18 @@ public class Patient extends Person implements Serializable {
                    List<PersonName> names, String gender, String birthdate, boolean birthdateEstimated, List<PersonAddress> addresses, List<PersonAttribute> attributes,
                    Bitmap photo, Resource causeOfDeath, boolean dead) {
         super(names, gender, birthdate, birthdateEstimated, addresses, attributes, photo, causeOfDeath, dead);
-        this.id = id;
+//        this.id = id;
         this.encounters = encounters;
         this.identifiers = identifiers;
     }
 
-    public Long getId() {
+    /*public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
+    }*/
 
     /**
      * Gets person.
@@ -94,9 +94,18 @@ public class Patient extends Person implements Serializable {
      * @return the person
      */
     @SerializedName("person")
+    @Expose
+    private Person person = new Person();
+
     public Person getPerson() {
-        return new Person(getNames(), getGender(), getBirthdate(), getBirthdateEstimated(), getAddresses(), getAttributes(), getPhoto(), getCauseOfDeath(), isDeceased());
+        return person;
     }
+
+    public void setPerson(Person mPerson) {
+        this.person = mPerson;
+    }
+
+    /* added these lines on top to store the person value and commented below lines */
 
     /**
      * Gets updated person.

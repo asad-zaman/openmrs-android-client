@@ -1,20 +1,23 @@
 package org.openmrs.mobile.activities.memberProfile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
+import com.google.gson.Gson
+import com.openmrs.android_sdk.library.models.Patient
+import com.openmrs.android_sdk.utilities.ApplicationConstants
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_member_profile.*
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.ACBaseActivity
-import org.openmrs.mobile.activities.patientdashboard.PatientDashboardPagerAdapter
+import org.openmrs.mobile.activities.addeditpatient.AddEditPatientActivity
+import org.openmrs.mobile.activities.memberList.MemberListActivity
 import org.openmrs.mobile.databinding.ActivityMemberProfileBinding
 
 
@@ -36,15 +39,16 @@ class MemberProfileActivity : ACBaseActivity(), View.OnClickListener {
             it.setTitle(R.string.action_member_profile)
         }
 
-//        patientId = mViewModel.patientId
-        patientId = "1"
+        val patientString = this.intent.getStringExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY)
+        mViewModel.patient = Gson().fromJson(patientString, Patient::class.java)
 
+        mViewModel.populateProfileData()
         observeData()
         initViewPager()
     }
 
     private fun initViewPager() {
-        val adapter = ServicePagerAdapter(supportFragmentManager, this, patientId)
+        val adapter = ServicePagerAdapter(supportFragmentManager, this, "1")
         with(mBinding) {
             if (org.openmrs.mobile.utilities.ThemeUtils.isDarkModeActivated()) tabProfile.setBackgroundColor(resources.getColor(
                 org.openmrs.mobile.R.color.black_dark_mode))
@@ -59,7 +63,22 @@ class MemberProfileActivity : ACBaseActivity(), View.OnClickListener {
         }
     }
 
-    private fun observeData() {}
+    private fun observeData() {
+        mViewModel.rxReligion.observe(this, Observer {
+            mBinding.tvMemberReligion.text = it
+        })
+        mViewModel.rxMaritalStatus.observe(this, Observer {
+            mBinding.tvMemberMaritalStatus.text = it
+        })
+        mViewModel.rxBloodGroup.observe(this, Observer {
+            mBinding.tvMemberBloodGroup.text = it
+        })
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onOptionsItemSelected(item)

@@ -39,10 +39,9 @@ class ServiceFormFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val linearLayoutManager = LinearLayoutManager(this.activity)
-        with(binding) {
-            setupObserver()
-            fetchMembers()
-        }
+        setupObserver()
+        fetchMembers()
+        populateServiceForm()
     }
 
     private fun setupObserver() {
@@ -56,7 +55,11 @@ class ServiceFormFragment : BaseFragment() {
     }
 
 
-    fun fetchMembers() {
+    private fun populateServiceForm() {
+        viewModel.fetchMembers()
+    }
+
+    private fun fetchMembers() {
         viewModel.fetchMembers()
     }
 

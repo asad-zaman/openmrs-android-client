@@ -119,6 +119,25 @@ object ApplicationConstants {
         const val TAG_ADMISSION_LOCATION = "Admission Location"
     }
 
+    object MemberProfileKeys {
+        const val MEMBER_PROFILE_NID = "nid"
+        const val MEMBER_PROFILE_RELIGION = "relegion"
+        const val MEMBER_PROFILE_MARITAL_STATUS = "matritalStatus"
+        const val MEMBER_PROFILE_MOBILE = "mobile"
+        const val MEMBER_PROFILE_BLOOD_GROUP = "bloodGroup"
+        const val MEMBER_PROFILE_BIRTH_PLACE = "birthPlace"
+        const val MEMBER_PROFILE_NATIONALITY = "nationality"
+        const val MEMBER_PROFILE_OCCUPATION = "occupation"
+        const val MEMBER_PROFILE_DIVISION = "division"
+        const val MEMBER_PROFILE_DISTRICT = "district"
+        const val MEMBER_PROFILE_UPAZILA = "upazila"
+        const val MEMBER_PROFILE_PAURASAVA = "paurasava"
+        const val MEMBER_PROFILE_UNION = "unionName"
+        const val MEMBER_PROFILE_WARD = "ward"
+        const val MEMBER_PROFILE_ADDRESS = "patientAddress"
+        const val MEMBER_PROFILE_BLOCK = "block"
+    }
+
     object UserKeys {
         const val USER_NAME = "username"
         const val PASSWORD = "password"
@@ -166,6 +185,7 @@ object ApplicationConstants {
         const val PROVIDER_BUNDLE = "providerID"
         const val ALLERGY_UUID = "allergy_uuid"
         const val PATIENT_UUID = "patient_uuid"
+        const val PATIENT_ENTITY = "patient_entity"
     }
 
     object ServiceActions {

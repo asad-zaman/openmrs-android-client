@@ -18,22 +18,17 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.openmrs.android_sdk.library.OpenmrsAndroid
 import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.utilities.NetworkUtils
 import com.openmrs.android_sdk.utilities.StringUtils.notEmpty
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_new_dashboard.view.*
-import kotlinx.android.synthetic.main.fragment_synced_patients.view.*
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.ACBaseActivity
 import org.openmrs.mobile.activities.activevisits.ActiveVisitsActivity
@@ -52,13 +47,13 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
     private var addPatientMenuItem: MenuItem? = null
     private lateinit var mBinding: ActivityNewDashboardBinding
     private val mViewModel: SyncedPatientsViewModel by viewModels()
+    private var someData: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_dashboard)
         mBinding.viewModel = mViewModel
         mBinding.lifecycleOwner = this
-        mBinding.executePendingBindings()
 
         supportActionBar?.let {
             it.elevation = 0f
@@ -231,6 +226,12 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
         openCloseDrawer()
         val intent = Intent(this, MemberProfileActivity::class.java)
         startActivity(intent)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        /*finish()
+        startActivity(intent)*/
     }
 
     override fun onClick(v: View?) {
