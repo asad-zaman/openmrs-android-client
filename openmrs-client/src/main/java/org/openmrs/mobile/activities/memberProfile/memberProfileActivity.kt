@@ -16,39 +16,36 @@ import com.openmrs.android_sdk.utilities.ApplicationConstants
 import dagger.hilt.android.AndroidEntryPoint
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.ACBaseActivity
-import org.openmrs.mobile.activities.addeditpatient.AddEditPatientActivity
-import org.openmrs.mobile.activities.memberList.MemberListActivity
 import org.openmrs.mobile.databinding.ActivityMemberProfileBinding
 
 
 @AndroidEntryPoint
 class MemberProfileActivity : ACBaseActivity(), View.OnClickListener {
-    private var query: String? = null
     private lateinit var mBinding: ActivityMemberProfileBinding
     private val mViewModel: MemberProfileViewModel by viewModels()
-    private lateinit var patientId: String
+    private lateinit var mPatient: Patient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_member_profile)
         mBinding.viewModel = mViewModel
 
-        supportActionBar?.let {
-            it.elevation = 0f
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setTitle(R.string.action_member_profile)
-        }
-
         val patientString = this.intent.getStringExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY)
         mViewModel.patient = Gson().fromJson(patientString, Patient::class.java)
 
-        mViewModel.populateProfileData()
         observeData()
         initViewPager()
+        mViewModel.populateProfileData()
+
+        supportActionBar?.let {
+            it.elevation = 0f
+            it.setDisplayHomeAsUpEnabled(true)
+            it.title = mViewModel.patient.person.display
+        }
     }
 
     private fun initViewPager() {
-        val adapter = ServicePagerAdapter(supportFragmentManager, this, "1")
+        val adapter = ServicePagerAdapter(supportFragmentManager, this, mViewModel.patient)
         with(mBinding) {
             if (org.openmrs.mobile.utilities.ThemeUtils.isDarkModeActivated()) tabProfile.setBackgroundColor(resources.getColor(
                 org.openmrs.mobile.R.color.black_dark_mode))

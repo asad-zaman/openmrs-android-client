@@ -3,18 +3,24 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.memberProfile.ServiceFormFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:id="@+id/linear_layout_form_chips"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/sixteen_dp"
+        android:paddingStart="@dimen/sixteen_dp"
+        android:paddingEnd="@dimen/sixteen_dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
 
-        <TextView
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/form_chip_group"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Form"
-            android:textSize="40sp"/>
+            android:layout_height="wrap_content" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </layout>

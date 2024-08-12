@@ -19,10 +19,15 @@ import kotlin.math.abs
 data class InputField(var concept: String) : Serializable {
 
     val id: Int = abs(concept.hashCode())
-    var value: Double = DEFAULT_VALUE
-    val hasValue: Boolean get() = value != DEFAULT_VALUE
+
+    var numberValue: Double = DEFAULT_NUMBER_VALUE
+    val hasNumberValue: Boolean get() = numberValue != DEFAULT_NUMBER_VALUE
+
+    var textValue: String = DEFAULT_TEXT_VALUE
+    val hasTextValue: Boolean get() = textValue != DEFAULT_TEXT_VALUE
 
     companion object {
-        const val DEFAULT_VALUE = -1.0
+        const val DEFAULT_NUMBER_VALUE = -1.0
+        const val DEFAULT_TEXT_VALUE = ""
     }
 }

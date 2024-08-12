@@ -99,6 +99,7 @@
     <string name="update_patient_success">Patient %s updated</string>
     <string name="search_user_successful">Information retrieved successfully</string>
     <string name="update_patient_error">Patient %s cannot be updated due to server error</string>
+    <string name="choose_one">বেছে নিন</string>
 
     <!-- Offline Mode -->
     <string name="offline_mode_unsupported_in_first_login">Offline mode is not supported during first login.Enable online mode and then try again.</string>
@@ -443,6 +444,7 @@
     <string name="form_data_submit_error">Form submission error</string>
     <string name="invalid_inputs">Some inputs are invalid</string>
     <string name="all_fields_empty_error_message">All fields cannot be empty</string>
+    <string name="empty_field_error_message">Cannot let any field empty</string>
     <string name="no_such_form_name_error_message">There is no encounter type called %1$s</string>
 
     <!--LastViewPatients Fragment-->

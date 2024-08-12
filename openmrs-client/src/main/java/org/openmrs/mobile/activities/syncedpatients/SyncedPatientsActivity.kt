@@ -47,7 +47,6 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
     private var addPatientMenuItem: MenuItem? = null
     private lateinit var mBinding: ActivityNewDashboardBinding
     private val mViewModel: SyncedPatientsViewModel by viewModels()
-    private var someData: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

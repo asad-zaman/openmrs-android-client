@@ -40,19 +40,18 @@ class FormDisplayMainViewModel @Inject constructor(
         private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<Unit>() {
 
-    private val patientId: Long = savedStateHandle.get(PATIENT_ID_BUNDLE)!!
+//    private val patientId: Long = savedStateHandle.get(PATIENT_ID_BUNDLE)!!
     private val encounterType: String = savedStateHandle.get(ENCOUNTERTYPE)!!
     private val formName: String = savedStateHandle.get(FORM_NAME)!!
     private val encounterUuid: String? = savedStateHandle.get(ENCOUNTER_UUID)
     private val isUpdateEncounter = !encounterUuid.isNullOrEmpty()
 
-    val patient: Patient = patientDAO.findPatientByID(patientId.toString())
+    var patient: Patient = Patient()
 
     fun submitForm(inputFields: List<InputField>, radioGroupFields: List<SelectOneField>): LiveData<ResultType> {
         val enc = Encountercreate()
-        enc.patientId = patientId
+        enc.patientId = patient.id
         enc.observations = createObservationsFromInputFields(inputFields) + createObservationsFromRadioGroupFields(radioGroupFields)
-
         return if (isUpdateEncounter) updateRecords(encounterUuid!!, enc) else createRecords(enc)
     }
 
@@ -94,10 +93,17 @@ class FormDisplayMainViewModel @Inject constructor(
         val observations = mutableListOf<Obscreate>()
 
         for (input in inputFields) {
-            if (input.value != InputField.DEFAULT_VALUE) {
+            if (input.numberValue != InputField.DEFAULT_NUMBER_VALUE) {
                 observations += Obscreate().apply {
                     concept = input.concept
-                    value = input.value.toString()
+                    value = input.numberValue.toString()
+                    obsDatetime = LocalDateTime().toString()
+                    person = patient.uuid
+                }
+            } else if (input.textValue != InputField.DEFAULT_TEXT_VALUE){
+                observations += Obscreate().apply {
+                    concept = input.concept
+                    value = input.textValue
                     obsDatetime = LocalDateTime().toString()
                     person = patient.uuid
                 }

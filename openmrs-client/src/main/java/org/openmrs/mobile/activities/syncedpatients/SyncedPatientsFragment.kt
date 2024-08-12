@@ -19,20 +19,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.library.models.Result
+import com.openmrs.android_sdk.utilities.ApplicationConstants
 import dagger.hilt.android.AndroidEntryPoint
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.BaseFragment
-import org.openmrs.mobile.activities.addeditpatient.AddEditPatientActivity
+import org.openmrs.mobile.activities.formlist.FormListActivity
 import org.openmrs.mobile.databinding.FragmentSyncedPatientsBinding
 import org.openmrs.mobile.utilities.makeGone
 import org.openmrs.mobile.utilities.makeInvisible
 import org.openmrs.mobile.utilities.makeVisible
-import java.util.ArrayList
 
 @AndroidEntryPoint
 class SyncedPatientsFragment : BaseFragment(), View.OnClickListener{
@@ -144,7 +143,10 @@ class SyncedPatientsFragment : BaseFragment(), View.OnClickListener{
     }
 
     private fun gotoRegisterPatient() {
-        val intent = Intent(activity, AddEditPatientActivity::class.java)
+//        val intent = Intent(activity, AddEditPatientActivity::class.java)
+//        val intent = Intent(activity, DynamicFormActivity::class.java)
+        val intent = Intent(activity, FormListActivity::class.java)
+        intent.putExtra(ApplicationConstants.BundleKeys.PATIENT_ID_BUNDLE, "1e9a8f47-e50e-4cd1-a4f6-68d412629671")
         startActivity(intent)
     }
 

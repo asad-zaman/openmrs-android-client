@@ -1,0 +1,428 @@
+{
+  "encounterType": "e22e39fd-7db2-45e7-80f1-60fa0d5a4378",
+  "name": "সাধারন রোগীর সেবা",
+  "processor": "EncounterFormProcessor",
+  "referencedForms": [],
+  "uuid": "01796b13-ac03-4911-a403-c599f83e6844",
+  "version": "1.0",
+  "pages": [
+    {
+      "label": "সাধারন রোগীর সেবা",
+      "sections": [
+        {
+          "label": "সার্ভিস ফর্ম",
+          "isExpanded": "true",
+          "questions": [
+            {
+              "label": "স্বাস্থ্য সেবা দেওয়া হয়েছে?",
+              "type": "obs",
+              "required": true,
+              "id": "hasGivenHealthService",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "8160faf2-2675-406f-9930-c6b558eb3504",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              }
+            },
+            {
+              "label": "রোগের লক্ষণ",
+              "type": "obs",
+              "required": true,
+              "id": "symptomsOfDisease",
+              "questionOptions": {
+                "rendering": "multiCheckbox",
+                "concept": "b5c436c9-9a93-4442-9c99-215b247f7648",
+                "answers": [
+                  {
+                    "concept": "4d9d10cd-e30e-4750-bffb-d71c714c49b1",
+                    "label": "জ্বর"
+                  },
+                  {
+                    "concept": "e57eb051-bba3-42e8-87b7-205f8add7d91",
+                    "label": "কাশি/সর্দি"
+                  },
+                  {
+                    "concept": "6b030f00-2ff3-475f-9f93-83ef470884ae",
+                    "label": "মাথা ব্যথা"
+                  },
+                  {
+                    "concept": "8191cfc2-58ed-4fee-9383-4245a3f8f96e",
+                    "label": "শরীর ব্যথা"
+                  },
+                  {
+                    "concept": "88b0d49c-487d-4f9c-a806-6b54e9b6a415",
+                    "label": "বমি/বমি ভাব"
+                  },
+                  {
+                    "concept": "753de7be-3896-4edb-8a40-ce598485dc03",
+                    "label": "পেটে ব্যথা"
+                  },
+                  {
+                    "concept": "7e62d237-df8f-4349-86a9-a9dbc5f2c292",
+                    "label": "শ্বাস কষ্ট"
+                  },
+                  {
+                    "concept": "d4a1bf83-2360-41d3-a43e-e4d37efd35f6",
+                    "label": "মাথা ঘুরানো"
+                  },
+                  {
+                    "concept": "d72750f3-8664-49cd-8b33-f1c86279da80",
+                    "label": "ক্ষুধা মন্দা"
+                  },
+                  {
+                    "concept": "7288b3ba-e3dc-41fc-968d-a8d89758fdb4",
+                    "label": "মানসিক সমস্যা"
+                  },
+                  {
+                    "concept": "97712e2c-4099-43bc-957a-79aa563996e9",
+                    "label": "রক্ত স্বল্পতা"
+                  },
+                  {
+                    "concept": "9038defd-be75-49bf-87d5-549e2a4bd95c",
+                    "label": "ইডেমা"
+                  },
+                  {
+                    "concept": "1ee4f7cf-ca1f-4840-aac7-d9df8c7ad0e9",
+                    "label": "চর্ম রোগ"
+                  },
+                  {
+                    "concept": "c0a31520-e30b-4fd6-9ed5-08b252e6bcc5",
+                    "label": "প্রস্রাবে জ্বালা পোড়া"
+                  },
+                  {
+                    "concept": "4fc249a0-8fd9-4f6c-a53a-1a061cd5ca0f",
+                    "label": "সাদাস্রাব"
+                  },
+                  {
+                    "concept": "66129bb2-7d66-4c62-96ef-749052b803cb",
+                    "label": "অনিয়মিত মাসিক/ মাসিকের সমস্যা"
+                  },
+                  {
+                    "concept": "6f7e2886-9ef4-4b51-a3e2-ff01a74d7536",
+                    "label": "ঘন ঘন প্রস্রাব"
+                  },
+                  {
+                    "concept": "f1b62334-c611-4952-9439-144e2e5cf7e5",
+                    "label": "বুকে ব্যাথা"
+                  },
+                  {
+                    "concept": "c81d136f-1210-41fb-8562-df70fa947a56",
+                    "label": "কোষ্ঠ কাঠিন্য"
+                  },
+                  {
+                    "concept": "36f46cc4-bce3-4d12-a625-bad57c82cddc",
+                    "label": "কুকুর/প্রাণীর কামড়"
+                  },
+                  {
+                    "concept": "1982cd71-2386-49d5-aa33-a276df31c6da",
+                    "label": "পোড়া"
+                  },
+                  {
+                    "concept": "c6aa89f2-c6e6-4c30-bb7d-a210148028ac",
+                    "label": "কাটা"
+                  },
+                  {
+                    "concept": "1ff1e199-1694-4506-8c0f-24ea23ae0dd1",
+                    "label": "পানিতে ডুবা"
+                  },
+                  {
+                    "concept": "c5d8c002-57e7-44e6-957c-851d43153aa5",
+                    "label": "আঘাত"
+                  },
+                  {
+                    "concept": "c5294112-6c07-41a6-9c39-20724d30966d",
+                    "label": "বিষ খাওয়া"
+                  },
+                  {
+                    "concept": "1ddfab65-e143-47ef-8cac-34e758fc744e",
+                    "label": "সাপে কাটা"
+                  },
+                  {
+                    "concept": "8972db7c-d19c-4c2d-aef5-24c9aaba1dab",
+                    "label": "খিঁচুনি"
+                  },
+                  {
+                    "concept": "67419a10-6ebf-4026-8d61-4c69c91ca91f",
+                    "label": "বিকলাঙ্গ/ প্রতিবন্ধি"
+                  },
+                  {
+                    "concept": "15608b5e-0400-4064-8a44-586a89a7d909",
+                    "label": "অন্যান্য লক্ষন"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "সম্ভাব্য রোগ",
+              "type": "obs",
+              "required": true,
+              "id": "possibleDiseases",
+              "questionOptions": {
+                "rendering": "multiCheckbox",
+                "concept": "687cda81-f148-42ae-9d8a-a07b1fa57cec",
+                "answers": [
+                  {
+                    "concept": "0da88464-3ffc-4a6e-bd97-3b7d7271fab9",
+                    "label": "ডায়ারিয়া"
+                  },
+                  {
+                    "concept": "24103d77-5101-4b18-a121-7fab01ff3536",
+                    "label": "এআরআই"
+                  },
+                  {
+                    "concept": "c7385ada-e665-4cc8-aab3-97c16edff1ee",
+                    "label": "যক্ষ্মা"
+                  },
+                  {
+                    "concept": "898332b0-32d3-4cb7-9664-1cd240120cb7",
+                    "label": "হাঁপানি বা এ্যাজমা"
+                  },
+                  {
+                    "concept": "1e607680-c8d8-40b2-80fd-0ab4e1de34c9",
+                    "label": "ডায়াবেটিস"
+                  },
+                  {
+                    "concept": "559aef08-6900-4b82-b309-a5ba7a16233a",
+                    "label": "উচ্চ রক্তচাপ"
+                  },
+                  {
+                    "concept": "d7352266-b0fe-4ba2-973e-cdb5cec3be8e",
+                    "label": "টাইফয়েড"
+                  },
+                  {
+                    "concept": "eca2aba7-3f24-4f81-b7f2-bcc930a5ef24",
+                    "label": "জ্বর (ম্যালারিয়া)"
+                  },
+                  {
+                    "concept": "9259dab3-ed86-4127-89d3-489ece71084d",
+                    "label": "ডেঙ্গু"
+                  },
+                  {
+                    "concept": "68e8984e-12fc-450a-8f1b-3bb42d89a00e",
+                    "label": "জলাতঙ্ক"
+                  },
+                  {
+                    "concept": "d7fd5dd7-25d5-42ba-abd8-6fadb6249820",
+                    "label": "অন্যান্য সম্ভাব্য রোগ"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "স্বাস্থ্যশিক্ষা দেওয়া হয়েছে?",
+              "type": "obs",
+              "required": true,
+              "id": "healthEducationProvided",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "55fa60c7-a1a3-4c41-8c8f-a73e551ca638",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": []
+            },
+            {
+              "label": "স্বাস্থ্য শিক্ষা",
+              "type": "obs",
+              "required": true,
+              "id": "healthEducation",
+              "questionOptions": {
+                "rendering": "multiCheckbox",
+                "concept": "f92f50cc-390c-4a9d-9d54-c030288d0ea0",
+                "answers": [
+                  {
+                    "concept": "0da88464-3ffc-4a6e-bd97-3b7d7271fab9",
+                    "label": "ডায়ারিয়া"
+                  },
+                  {
+                    "concept": "898332b0-32d3-4cb7-9664-1cd240120cb7",
+                    "label": "হাঁপানি বা এ্যাজমা"
+                  },
+                  {
+                    "concept": "1e607680-c8d8-40b2-80fd-0ab4e1de34c9",
+                    "label": "ডায়াবেটিস"
+                  },
+                  {
+                    "concept": "f00aa915-9e2e-4609-8b4b-dae3b6fcc394",
+                    "label": "সুস্থ জীবনযাপন"
+                  },
+                  {
+                    "concept": "b0a73a58-b30c-43d2-9add-e0ab9b4dca43",
+                    "label": "অন্যান্য স্বাস্থ্য শিক্ষা"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "healthEducationProvided !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "রেফার করা হয়েছে",
+              "type": "obs",
+              "required": true,
+              "id": "referredTo",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "779973b9-5cee-463f-84e7-814c625f98de",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": []
+            },
+            {
+              "label": "রেফারকৃত প্রতিষ্ঠানের নাম?",
+              "type": "obs",
+              "required": true,
+              "id": "nameOfReferredInstitution",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "70c3f527-0267-45d6-babe-55b5508d6297",
+                "answers": [
+                  {
+                    "concept": "7cae3447-467e-4aef-917c-421d81129995",
+                    "label": "ইউনিয়ন উপস্বাস্থ্য কেন্দ্র"
+                  },
+                  {
+                    "concept": "a8e040e3-cf82-47ec-bd3b-f2ba4f45cff0",
+                    "label": "ইউনিয়ন পরিবার কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "1ee3f7a5-52c3-4847-b8ea-3d3c9cbf558b",
+                    "label": "ইউনিয়ন স্বাস্থ্য ও পরিবার কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "89b3fbdb-ed04-4807-b1e8-6a845a8bbe35",
+                    "label": "মা ও শিশু কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "6ad32262-e10b-4e8d-a62b-86db833f53c5",
+                    "label": "১০ শয্যা বিশিষ্ট হাসপাতাল"
+                  },
+                  {
+                    "concept": "2956e1a7-f328-49e0-84f8-08824bfd853d",
+                    "label": "২০ শয্যা বিশিষ্ট হাসপাতাল"
+                  },
+                  {
+                    "concept": "0d9c9d6b-a401-4ea4-bc80-0982255aefee",
+                    "label": "উপজেলা স্বাস্থ্য কমপ্লেক্স"
+                  },
+                  {
+                    "concept": "52616b9e-08cd-40e5-8c54-13a9a96c16ca",
+                    "label": "সদর হাসপাতাল"
+                  },
+                  {
+                    "concept": "210791f2-c72d-4d3d-aeed-b10bda80f89c",
+                    "label": "মেডিকেল কলেজ হাসপাতাল"
+                  },
+                  {
+                    "concept": "76cce493-eccf-45dd-83c3-2fb25515b7e7",
+                    "label": "অন্যান্য স্বাস্থ্য সেবা কেন্দ্র"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "referredTo !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "সাধারণ রোগী রেফারের কারণ?",
+              "type": "obs",
+              "required": true,
+              "id": "reasonsForCommonPatientReferrals",
+              "questionOptions": {
+                "rendering": "multiCheckbox",
+                "concept": "56f44fbe-a3bf-4161-9547-280d451b41c8",
+                "answers": [
+                  {
+                    "concept": "0da88464-3ffc-4a6e-bd97-3b7d7271fab9",
+                    "label": "ডায়ারিয়া"
+                  },
+                  {
+                    "concept": "24103d77-5101-4b18-a121-7fab01ff3536",
+                    "label": "এআরআই"
+                  },
+                  {
+                    "concept": "c7385ada-e665-4cc8-aab3-97c16edff1ee",
+                    "label": "যক্ষ্মা"
+                  },
+                  {
+                    "concept": "898332b0-32d3-4cb7-9664-1cd240120cb7",
+                    "label": "হাঁপানি বা এ্যাজমা"
+                  },
+                  {
+                    "concept": "1e607680-c8d8-40b2-80fd-0ab4e1de34c9",
+                    "label": "ডায়াবেটিস"
+                  },
+                  {
+                    "concept": "559aef08-6900-4b82-b309-a5ba7a16233a",
+                    "label": "উচ্চ রক্তচাপ"
+                  },
+                  {
+                    "concept": "d7352266-b0fe-4ba2-973e-cdb5cec3be8e",
+                    "label": "টাইফয়েড"
+                  },
+                  {
+                    "concept": "eca2aba7-3f24-4f81-b7f2-bcc930a5ef24",
+                    "label": "জ্বর (ম্যালারিয়া)"
+                  },
+                  {
+                    "concept": "9259dab3-ed86-4127-89d3-489ece71084d",
+                    "label": "ডেঙ্গু"
+                  },
+                  {
+                    "concept": "68e8984e-12fc-450a-8f1b-3bb42d89a00e",
+                    "label": "জলাতঙ্ক"
+                  },
+                  {
+                    "concept": "d7fd5dd7-25d5-42ba-abd8-6fadb6249820",
+                    "label": "অন্যান্য সম্ভাব্য রোগ"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "referredTo !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "description": "সাধারন রোগীর সেবা"
+}

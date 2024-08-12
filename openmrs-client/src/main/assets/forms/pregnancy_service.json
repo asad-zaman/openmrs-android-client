@@ -1,0 +1,494 @@
+{
+  "encounterType": "e22e39fd-7db2-45e7-80f1-60fa0d5a4378",
+  "name": "গর্ভাবস্থার তথ্য",
+  "processor": "EncounterFormProcessor",
+  "referencedForms": [],
+  "uuid": "a83330c1-835b-48a5-9ddb-b603ffc3b4fc",
+  "version": "1.0",
+  "pages": [
+    {
+      "label": "গর্ভাবস্থার তথ্য",
+      "sections": [
+        {
+          "label": "সার্ভিস ফর্ম",
+          "isExpanded": "true",
+          "questions": [
+            {
+              "label": "গর্ভাবস্থা সম্পর্কিত তথ্য",
+              "type": "obs",
+              "required": true,
+              "id": "pregnancyInformation",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "9b6d25fb-c1d2-4635-ad2e-2af5277dd205",
+                "answers": [
+                  {
+                    "concept": "85a9e937-bb18-473c-9d5e-2e7d6b6a6e4d",
+                    "label": "প্রসব পূর্ব"
+                  },
+                  {
+                    "concept": "8f0c2fdf-efa8-4341-8afb-02f3e69601c8",
+                    "label": "প্রসবোত্তর"
+                  },
+                  {
+                    "concept": "c634c9ee-1edc-4a0d-83f5-12467d38ed17",
+                    "label": "গর্ভ নষ্ট হয়েছে"
+                  },
+                  {
+                    "concept": "122c3767-d053-4922-9cfc-28966bd603a1",
+                    "label": "MR করেছে"
+                  },
+                  {
+                    "concept": "5be0fa04-94c3-48d1-85f0-01934c62b08b",
+                    "label": "কোনোটিই নয়"
+                  }
+                ]
+              }
+            },
+            {
+              "label": "শেষ মাসিকের তারিখ",
+              "type": "obs",
+              "required": true,
+              "id": "dateOfLastMenstrualPeriod",
+              "questionOptions": {
+                "rendering": "date",
+                "concept": "1f85d110-dda4-4de6-a5b7-38f7e80ad6bf"
+              },
+              "validators": [
+                {
+                  "type": "date",
+                  "allowFutureDates": false
+                }
+              ],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '85a9e937-bb18-473c-9d5e-2e7d6b6a6e4d'"
+              }
+            },
+            {
+              "label": "মোট গর্ভ সংখ্যা",
+              "type": "obs",
+              "required": true,
+              "id": "totalNumberOfPregnancies",
+              "questionOptions": {
+                "rendering": "number",
+                "concept": "27676e4f-e440-45cb-8e66-2a277272a86d",
+                "disallowDecimals": true
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '85a9e937-bb18-473c-9d5e-2e7d6b6a6e4d'"
+              }
+            },
+            {
+              "label": "মোট জীবিত প্রসবকৃত সন্তান সংখ্যা",
+              "type": "obs",
+              "required": true,
+              "id": "totalNumberOfLiveBirths",
+              "questionOptions": {
+                "rendering": "number",
+                "concept": "a626cb9d-8c4a-4e12-905c-15e8974190c9",
+                "disallowDecimals": true
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '85a9e937-bb18-473c-9d5e-2e7d6b6a6e4d'"
+              }
+            },
+            {
+              "label": "প্রসবের তারিখ",
+              "type": "obs",
+              "required": true,
+              "id": "dateOfDelivery",
+              "questionOptions": {
+                "rendering": "date",
+                "concept": "8e8dd6f5-4ff7-4d2b-b881-7b30c6a76237"
+              },
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "সময়",
+              "type": "obs",
+              "required": true,
+              "id": "time",
+              "questionOptions": {
+                "rendering": "text",
+                "concept": "f1ea8eb1-5cca-45c7-a30f-9f6d1773debf"
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "প্রসবের ধরণ",
+              "type": "obs",
+              "required": true,
+              "id": "modeOfDelivery",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "4999bdf8-c2de-49b4-9c26-624ae2458e94",
+                "answers": [
+                  {
+                    "concept": "b697ed70-789e-4331-9063-f54687cd766d",
+                    "label": "স্বাভাবিক প্রসব"
+                  },
+                  {
+                    "concept": "f1280416-93d2-40a5-b8d8-16690e58bf2a",
+                    "label": "অস্ত্রোপচার"
+                  },
+                  {
+                    "concept": "9551c809-cc40-412e-bf99-9c27bbaa7f48",
+                    "label": "অন্যান্য উপায়ে"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "প্রসবের স্থান",
+              "type": "obs",
+              "required": true,
+              "id": "placeOfDelivery",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "1b95f716-4444-4a6e-8c1d-3a1434018e7c",
+                "answers": [
+                  {
+                    "concept": "00d47e56-aa79-4c35-b3d6-e7b07e8d6bc5",
+                    "label": "বাড়িতে"
+                  },
+                  {
+                    "concept": "df2a578f-4671-436e-8dcd-5fd1ffaaf722",
+                    "label": "কমিউনিটি ক্লিনিক"
+                  },
+                  {
+                    "concept": "7cae3447-467e-4aef-917c-421d81129995",
+                    "label": "ইউনিয়ন উপস্বাস্থ্য কেন্দ্র"
+                  },
+                  {
+                    "concept": "a8e040e3-cf82-47ec-bd3b-f2ba4f45cff0",
+                    "label": "ইউনিয়ন পরিবার কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "1ee3f7a5-52c3-4847-b8ea-3d3c9cbf558b",
+                    "label": "ইউনিয়ন স্বাস্থ্য ও পরিবার কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "89b3fbdb-ed04-4807-b1e8-6a845a8bbe35",
+                    "label": "মা ও শিশু কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "6ad32262-e10b-4e8d-a62b-86db833f53c5",
+                    "label": "১০ শয্যা বিশিষ্ট হাসপাতাল"
+                  },
+                  {
+                    "concept": "2956e1a7-f328-49e0-84f8-08824bfd853d",
+                    "label": "২০ শয্যা বিশিষ্ট হাসপাতাল"
+                  },
+                  {
+                    "concept": "0d9c9d6b-a401-4ea4-bc80-0982255aefee",
+                    "label": "উপজেলা স্বাস্থ্য কমপ্লেক্স"
+                  },
+                  {
+                    "concept": "52616b9e-08cd-40e5-8c54-13a9a96c16ca",
+                    "label": "সদর হাসপাতাল"
+                  },
+                  {
+                    "concept": "210791f2-c72d-4d3d-aeed-b10bda80f89c",
+                    "label": "মেডিকেল কলেজ হাসপাতাল"
+                  },
+                  {
+                    "concept": "886fa3ed-9794-44d9-b83a-99d93b332f7f",
+                    "label": "বেসরকারী ক্লিনিক/হাসপাতাল"
+                  },
+                  {
+                    "concept": "0ec9bc9e-6737-46d6-a939-bdcbf14bc488",
+                    "label": "এনজিও"
+                  },
+                  {
+                    "concept": "868d1727-ba35-443e-8426-e15f9ce3063d",
+                    "label": "বিশেষায়িত হাসপাতাল"
+                  },
+                  {
+                    "concept": "76cce493-eccf-45dd-83c3-2fb25515b7e7",
+                    "label": "অন্যান্য স্বাস্থ্য সেবা কেন্দ্র"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "প্রসবে সহায়তাকারী সিএসবিএ প্রশিক্ষণপ্রাপ্ত কিনা?",
+              "type": "obs",
+              "required": true,
+              "id": "WhetherTheBirthAttendantIsCsbaTrained",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "1eb80b96-eeb0-440e-949e-dd7c49c40552",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "প্রসবে মিসোপ্রোস্টলের ব্যবহার হয়েছে?",
+              "type": "obs",
+              "required": true,
+              "id": "MisoprostolHasBeenUsedInLabor",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "3bcf73fe-c435-4408-823b-49e9e6b41d2a",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "প্রসবে অক্সিটোসিনের ব্যবহার হয়েছে?",
+              "type": "obs",
+              "required": true,
+              "id": "OxytocinHasBeenUsedDuringLabor",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "2d2e6764-4d31-40be-be4f-38a569e02d44",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "প্রসবকালীন জটিলতা?",
+              "type": "obs",
+              "required": false,
+              "id": "ComplicationsDuringChildbirth",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "4e104213-dfd6-43c5-a080-c953dc049daa",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "প্রসবের ফলাফল",
+              "type": "obs",
+              "required": true,
+              "id": "BirthOutcomes",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "a0054ccf-7fa4-4477-92d9-4bbfe7bb4974",
+                "answers": [
+                  {
+                    "concept": "d4050f89-639f-4863-b76f-14a25966946e",
+                    "label": "জীবিত জন্ম"
+                  },
+                  {
+                    "concept": "7902308d-d977-456b-8d0e-c3d9bd2fc5ad",
+                    "label": "মৃত জন্ম"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8'"
+              }
+            },
+            {
+              "label": "জীবিত জন্মের সংখ্যা",
+              "type": "obs",
+              "required": true,
+              "id": "NumberOfLiveBirths",
+              "questionOptions": {
+                "rendering": "number",
+                "concept": "62054c48-40b0-4313-87c9-735f281b6d45"
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "BirthOutcomes !== 'd4050f89-639f-4863-b76f-14a25966946e'"
+              }
+            },
+            {
+              "label": "মৃত জন্মের সংখ্যা",
+              "type": "obs",
+              "required": true,
+              "id": "NumberOfStillbirths",
+              "questionOptions": {
+                "rendering": "number",
+                "concept": "2a9c17f1-fb84-48ca-b92d-6a074cca1ade"
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "BirthOutcomes !== '7902308d-d977-456b-8d0e-c3d9bd2fc5ad'"
+              }
+            },
+            {
+              "type": "obsGroup",
+              "id": "InformationOnLiveBirths",
+              "label": "প্রসবকৃত জীবিত সন্তানের তথ্য",
+              "questionOptions": {
+                "concept": "90d88647-f758-42a6-8271-ffdee0bfa12c",
+                "rendering": "repeating"
+              },
+              "questions": [
+                {
+                  "label": "লিঙ্গ",
+                  "type": "obs",
+                  "id": "gender",
+                  "questionOptions": {
+                    "concept": "ad004b48-a014-4d05-8eef-41123b82c6e4",
+                    "rendering": "radio",
+                    "answers": [
+                      {
+                        "concept": "11b40733-42a0-436f-814f-df3cfc6cf704",
+                        "label": "পুরুষ"
+                      },
+                      {
+                        "concept": "29c9411a-24bc-494c-a148-2f221f6687cd",
+                        "label": "মহিলা"
+                      },
+                      {
+                        "concept": "5693478e-c774-42a8-92b6-06c99d2d9262",
+                        "label": "তৃতীয় লিঙ্গ"
+                      }
+                    ]
+                  },
+                  "validators": []
+                },
+                {
+                  "label": "জন্মকালীন ওজন (Kg)",
+                  "type": "obs",
+                  "required": true,
+                  "id": "BirthWeightKg",
+                  "questionOptions": {
+                    "rendering": "number",
+                    "concept": "90a97981-89c6-4bc8-8e96-f7de7a9d28cf"
+                  },
+                  "validators": []
+                },
+                {
+                  "label": "শিশুর নাম",
+                  "type": "obs",
+                  "required": true,
+                  "id": "BabyName",
+                  "questionOptions": {
+                    "rendering": "text",
+                    "concept": "3cfa594c-90a8-4fe5-9be6-8bb0990a4ce0"
+                  },
+                  "validators": []
+                }
+              ],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '8f0c2fdf-efa8-4341-8afb-02f3e69601c8' || BirthOutcomes !== 'd4050f89-639f-4863-b76f-14a25966946e'"
+              }
+            },
+            {
+              "label": "গর্ভপাতের তারিখ",
+              "type": "obs",
+              "required": true,
+              "id": "DateOfAbortion",
+              "questionOptions": {
+                "rendering": "date",
+                "concept": "9dd26f91-3d67-402b-b549-396427f02e13"
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== 'c634c9ee-1edc-4a0d-83f5-12467d38ed17'"
+              }
+            },
+            {
+              "label": "গর্ভপাতের ধরণ",
+              "type": "obs",
+              "required": true,
+              "id": "TypeOfAbortion",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "94b1a736-2473-4c30-afc2-5bae3a50675e",
+                "answers": [
+                  {
+                    "concept": "517667e8-4891-4dcc-a9ad-6251cd5a3e83",
+                    "label": "অনাকাঙ্খিত গর্ভপাত"
+                  },
+                  {
+                    "concept": "837ab94a-bdb5-4248-bbdb-6ac28da3eb48",
+                    "label": "ঐচ্ছিক গর্ভপাত"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== 'c634c9ee-1edc-4a0d-83f5-12467d38ed17'"
+              }
+            },
+            {
+              "label": "MR এর তারিখ",
+              "type": "obs",
+              "required": true,
+              "id": "DateOfMr",
+              "questionOptions": {
+                "rendering": "date",
+                "concept": "2c42d532-1927-443d-a032-1c7fcd1f9733"
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "pregnancyInformation !== '122c3767-d053-4922-9cfc-28966bd603a1'"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "description": "গর্ভাবস্থার তথ্য"
+}

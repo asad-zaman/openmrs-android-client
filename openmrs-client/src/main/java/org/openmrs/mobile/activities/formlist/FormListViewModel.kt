@@ -34,7 +34,8 @@ class FormListViewModel @Inject constructor(
                     for (formResource in it) {
                         var valueRefString: String? = null
                         for (resource in formResource.resources) {
-                            if (resource.name == "json") valueRefString = resource.valueReference
+//                            if (resource.name == "json") valueRefString = resource.valueReference
+                            if (resource.name == "JSON schema") valueRefString = resource.valueReference
                         }
                         if (!valueRefString.isNullOrBlank()) {
                             formResourceList.add(formResource)
@@ -63,6 +64,11 @@ class FormListViewModel @Inject constructor(
             formData = parseFormDataFromAsset("vitals1.json")
                     ?: parseFormDataFromAsset("vitals2.json")
         } else if (formName.contains("visit note")) {
+            formData = parseFormDataFromAsset("visit_note.json")
+        }
+
+        // these lines added
+        else if (formName.contains("testform")) {
             formData = parseFormDataFromAsset("visit_note.json")
         }
         return formData
@@ -109,11 +115,12 @@ class FormListViewModel @Inject constructor(
         }
 
         private fun click() {
+            val mForm = formResourceList[position]
             formName = formResourceList[position].name
             encounterName = formName!!.split("\\(".toRegex()).toTypedArray()[0].trim { it <= ' ' }
             encounterType = encounterDAO.getEncounterTypeByFormName(encounterName!!)?.uuid
             formResourceList[position].resources.forEach {
-                if (it.name == "json") formFieldsJson = it.valueReference
+                if (it.name == "json" || it.name == "JSON schema") formFieldsJson = it.valueReference
             }
         }
     }

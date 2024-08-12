@@ -75,6 +75,8 @@
     <string name="update_patient_success">रोगी %s अपडेट किया गया</string>
     <string name="search_user_successful">তথ্য সফলভাবে হালনাগাদ করা হয়েছে</string>
     <string name="update_patient_error">सर्वर त्रुटि के कारण रोगी %s को अपडेट नहीं किया जा सकता</string>
+    <string name="choose_one">বেছে নিন</string>
+
 
     <!-- Offline Mode -->
     <string name="offline_mode_unsupported_in_first_login">ऑफ़लाइन मोड पहले लॉगिन के दौरान समर्थित नहीं है। ऑनलाइन मोड अक्षम करें और फिर पुन: प्रयास करें।</string>

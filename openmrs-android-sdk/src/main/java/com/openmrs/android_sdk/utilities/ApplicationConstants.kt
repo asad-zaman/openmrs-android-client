@@ -25,6 +25,8 @@ object ApplicationConstants {
     const val SECRET_KEY = "secretKey"
     const val LOCATION = "location"
     const val FIRST = true
+//    const val CHOOSE_ONE = "choose one"
+    const val CHOOSE_ONE = "choose one"
     const val VISIT_TYPE_UUID = "visit_type_uuid"
     const val LAST_SESSION_TOKEN = "last_session_id"
     const val LAST_LOGIN_SERVER_URL = "last_login_server_url"
@@ -138,6 +140,32 @@ object ApplicationConstants {
         const val MEMBER_PROFILE_BLOCK = "block"
     }
 
+    object WidgetTypes {
+        const val TEXTVIEW = "textview"
+        const val EDITTEXT = "edittext"
+        const val DROPDOWN = "dropdown"
+        const val RADIOBUTTON = "radiobutton"
+    }
+
+    object AttributeValues {
+        const val MARRIED = "Married"
+    }
+
+    object FormListKeys {
+        const val PRE_PREGNANCY = "প্রসব পূর্ব"
+        const val POST_PREGNANCY = "প্রসবোত্তর"
+        const val ABORTED = "গর্ভ নষ্ট হয়েছে"
+        const val MRDONE = "MR করেছে"
+        const val NO_PREGNANCY = "কোনোটিই নয়"
+        const val PREGNANCY_SERVICE = "গর্ভাবস্থার তথ্য"
+        const val FAMILY_PLANNING_SERVICE = "পরিবার পরিকল্পনা সেবা"
+        const val PRE_PREGNANCY_SERVICE= "প্রসব পূর্ব সেবা"
+        const val POST_PREGNANCY_SERVICE = "প্রসব পরবর্তী সেবা"
+        const val GENERAL_PATIENT_SERVICE = "সাধারন রোগীর সেবা"
+        const val PREGNANCY_INFORMATION = "গর্ভাবস্থা সম্পর্কিত তথ্য"
+        const val PREGNANCY_RESULT = "প্রসবের ফলাফল"
+    }
+
     object UserKeys {
         const val USER_NAME = "username"
         const val PASSWORD = "password"
@@ -186,6 +214,7 @@ object ApplicationConstants {
         const val ALLERGY_UUID = "allergy_uuid"
         const val PATIENT_UUID = "patient_uuid"
         const val PATIENT_ENTITY = "patient_entity"
+        const val FORM_TYPE = "form_type"
     }
 
     object ServiceActions {

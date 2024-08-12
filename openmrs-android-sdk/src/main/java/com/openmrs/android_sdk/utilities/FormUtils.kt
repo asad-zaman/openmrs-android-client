@@ -12,6 +12,7 @@ package com.openmrs.android_sdk.utilities
 import com.google.gson.GsonBuilder
 import com.openmrs.android_sdk.library.models.Form
 import com.openmrs.android_sdk.utilities.StringUtils.unescapeJavaString
+import org.json.JSONObject
 import java.lang.reflect.Modifier
 
 object FormUtils {
@@ -23,6 +24,8 @@ object FormUtils {
         builder.excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
         builder.excludeFieldsWithoutExposeAnnotation()
         val gson = builder.create()
-        return gson.fromJson(unescapedValueReference, Form::class.java)
+        return gson.fromJson(unescapedValueReference, Form::class.java)       // below two lines added
+        /*val jsonStr = "{\"valueReference\":\"$unescapedValueReference\"}"
+        return gson.fromJson(jsonStr, Form::class.java)*/
     }
 }

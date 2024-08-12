@@ -1,0 +1,117 @@
+[
+  {
+    "type": "textview",
+    "hint": "প্রসবের তারিখ",
+    "id": "tv_delivery_date",
+    "value": "প্রসবের তারিখ"
+  },
+  {
+    "type": "edittext",
+    "hint": "dd/mm/yyyy",
+    "id": "et_delivery_date",
+    "value": ""
+  },
+  {
+    "type": "textview",
+    "hint": "সময়",
+    "id": "tv_time",
+    "value": "সময়"
+  },
+  {
+    "type": "edittext",
+    "hint": "",
+    "id": "et_time",
+    "value": ""
+  },
+  {
+    "type": "textview",
+    "hint": "প্রসবের ধরণ",
+    "id": "tv_delivery_type",
+    "value": "প্রসবের ধরণ"
+  },
+  {
+    "type": "dropdown",
+    "hint": "",
+    "id": "dd_delivery_type",
+    "value": "",
+    "options": ["Choose an option", "স্বাভাবিক প্রসব", "অস্ত্রোপচার", "অন্যান্য উপায়ে"]
+  },
+  {
+    "type": "textview",
+    "hint": "প্রসবের স্থান",
+    "id": "tv_delivery_place",
+    "value": "প্রসবের স্থান"
+  },
+  {
+    "type": "dropdown",
+    "hint": "",
+    "id": "dd_delivery_place",
+    "value": "",
+    "options": ["Choose an option", "বাড়িতে", "কমিউনিটি ক্লিনিক", "ইউনিয়ন উপস্বাস্থ্য কেন্দ্র", "ইউনিয়ন পরিবার কল্যাণ কেন্দ্র", "ইউনিয়ন স্বাস্থ্য ও পরিবার কল্যাণ কেন্দ্র", "মা ও শিশু কল্যাণ কেন্দ্র", "১০ শয্যা বিশিষ্ট হাসপাতাল", "২০ শয্যা বিশিষ্ট হাসপাতাল", "উপজেলা স্বাস্থ্য কমপ্লেক্স", "সদর হাসপাতাল", "মেডিকেল কলেজ হাসপাতাল", "বেসরকারী ক্লিনিক/হাসপাতাল", "এনজিও", "অন্যান্য স্বাস্থ্য সেবা কেন্দ্র"]
+  },
+  {
+    "type": "textview",
+    "hint": "প্রসবে সহায়তাকারী সিএসবিএ প্রশিক্ষণপ্রাপ্ত কিনা?",
+    "id": "tv_csba",
+    "value": "প্রসবে সহায়তাকারী সিএসবিএ প্রশিক্ষণপ্রাপ্ত কিনা?"
+  },
+  {
+    "type": "radiobutton",
+    "hint": "",
+    "id": "rb_csba",
+    "value": "",
+    "options": ["হ্যাঁ", "না"]
+  },
+  {
+    "type": "textview",
+    "hint": "প্রসবে মিসোপ্রোস্টলের ব্যবহার হয়েছে?",
+    "id": "tv_misoprostol",
+    "value": "প্রসবে মিসোপ্রোস্টলের ব্যবহার হয়েছে?"
+  },
+  {
+    "type": "radiobutton",
+    "hint": "",
+    "id": "rb_misoprostol",
+    "value": "",
+    "options": ["হ্যাঁ", "না"]
+  },
+  {
+    "type": "textview",
+    "hint": "প্রসবে অক্সিটোসিনের ব্যবহার হয়েছে?",
+    "id": "tv_oxytosin",
+    "value": "প্রসবে অক্সিটোসিনের ব্যবহার হয়েছে?"
+  },
+  {
+    "type": "radiobutton",
+    "hint": "",
+    "id": "rb_oxytosin",
+    "value": "",
+    "options": ["হ্যাঁ", "না"]
+  },
+  {
+    "type": "textview",
+    "hint": "প্রসবকালীন জটিলতা?",
+    "id": "tv_delivery_complexity",
+    "value": "প্রসবকালীন জটিলতা?"
+  },
+  {
+    "type": "radiobutton",
+    "hint": "",
+    "id": "rb_delivery_complexity",
+    "value": "",
+    "options": ["হ্যাঁ", "না"]
+  },
+  {
+    "type": "textview",
+    "hint": "প্রসবের ফলাফল",
+    "id": "tv_delivery_result",
+    "value": "প্রসবের ফলাফল"
+  },
+  {
+    "type": "dropdown",
+    "hint": "",
+    "id": "dd_delivery_result",
+    "value": "",
+    "options": ["Choose an option", "জীবিত জন্ম", "মৃত জন্ম"]
+  }
+]

@@ -62,15 +62,16 @@ class FormListFragment : BaseFragment() {
     private fun setupFormClickListener() {
         binding.formlist.setOnItemClickListener { _, _, position: Int, _ ->
             viewModel.SelectedForm(position).run {
-                if (encounterType == null) {
+                /*if (encounterType == null) {
                     ToastUtil.error(getString(R.string.no_such_form_name_error_message, formName))
                     return@setOnItemClickListener
-                }
+                }*/
                 val patientId: Long = requireArguments().get(PATIENT_ID_BUNDLE) as Long
                 if (encounterName == EncounterType.ADMISSION) {
                     startAdmissionFormActivity(formName!!, patientId, encounterType!!)
                 } else {
-                    startFormDisplayActivity(formName!!, patientId, formFieldsJson!!, encounterType!!)
+//                    startFormDisplayActivity(formName!!, patientId, formFieldsJson!!, encounterType!!)
+                    startFormDisplayActivity(formName!!, patientId, formFieldsJson!!, "")
                 }
             }
         }

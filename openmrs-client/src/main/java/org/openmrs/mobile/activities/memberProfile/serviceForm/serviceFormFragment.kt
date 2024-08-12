@@ -1,19 +1,20 @@
 package org.openmrs.mobile.activities.memberProfile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.hilt.android.AndroidEntryPoint
-import org.openmrs.mobile.activities.BaseFragment
+import com.google.android.material.chip.Chip
+import com.google.gson.Gson
+import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.library.models.Result
 import com.openmrs.android_sdk.utilities.ApplicationConstants
-import org.openmrs.mobile.R
-import org.openmrs.mobile.activities.patientdashboard.details.PatientDetailsFragment
+import dagger.hilt.android.AndroidEntryPoint
+import org.openmrs.mobile.activities.BaseFragment
+import org.openmrs.mobile.activities.formdisplay.FormDisplayActivity
 import org.openmrs.mobile.databinding.FragmentServiceFormBinding
 
 @AndroidEntryPoint
@@ -21,13 +22,23 @@ class ServiceFormFragment : BaseFragment() {
     private var _binding: FragmentServiceFormBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MemberProfileViewModel by viewModels()
+    private val mViewModel: MemberProfileViewModel by activityViewModels()
+    private var patient: Patient = Patient()
 
     companion object {
-        fun newInstance(patientId: String): ServiceFormFragment {
+        fun newInstance(mPatient: Patient): ServiceFormFragment {
             val fragment = ServiceFormFragment()
-            fragment.arguments = bundleOf(Pair(ApplicationConstants.BundleKeys.PATIENT_ID_BUNDLE, patientId))
+            fragment.arguments = Bundle().also {
+                it.putString(ApplicationConstants.BundleKeys.PATIENT_ENTITY, Gson().toJson(mPatient))
+            }
             return fragment
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            patient = Gson().fromJson(it.getString(ApplicationConstants.BundleKeys.PATIENT_ENTITY), Patient::class.java)
         }
     }
 
@@ -38,37 +49,54 @@ class ServiceFormFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val linearLayoutManager = LinearLayoutManager(this.activity)
         setupObserver()
         fetchMembers()
-        populateServiceForm()
     }
 
     private fun setupObserver() {
-        viewModel.result.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
+        mViewModel.result.observe(viewLifecycleOwner, Observer {
+            when (it) {
                 is Result.Loading -> showLoading()
                 is Result.Success -> {}
                 else -> showError()
             }
         })
+        mViewModel.rxMaritalStatus.observe(viewLifecycleOwner, Observer {
+            mViewModel.populateServiceForm()
+        })
+        mViewModel.rxFormList.observe(viewLifecycleOwner, Observer {
+            if(mViewModel.rxFormList.value!!.isNotEmpty()) generateFormChips()
+        })
     }
 
+    private fun generateFormChips() {
+        for (formName in mViewModel.rxFormList.value!!) {
+            val chip = Chip(context).apply {
+                text = formName
+                isCloseIconVisible = false
+                setOnCloseIconClickListener { selectedChip: View? ->
+                    binding.formChipGroup.removeView(selectedChip)
+                }
+                setOnClickListener {
+                    /*val intent = Intent(activity, DynamicFormActivity::class.java)
+                    intent.putExtra(ApplicationConstants.BundleKeys.FORM_TYPE, mForm)
+                    startActivity(intent)*/
 
-    private fun populateServiceForm() {
-        viewModel.fetchMembers()
+                    Intent(context, FormDisplayActivity::class.java).apply {
+                        putExtra(ApplicationConstants.BundleKeys.FORM_NAME, formName)
+                        putExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY, Gson().toJson(patient))
+                        putExtra(ApplicationConstants.BundleKeys.VALUEREFERENCE, "")
+                        putExtra(ApplicationConstants.BundleKeys.ENCOUNTERTYPE, "")
+                        startActivity(this)
+                    }
+                }
+            }
+            binding.formChipGroup.addView(chip)
+        }
     }
 
     private fun fetchMembers() {
-        viewModel.fetchMembers()
-    }
-
-    fun fetchMembersOnRefresh(query: String) {
-        viewModel.fetchMembers(query)
-    }
-
-    fun fetchMembers(query: String) {
-        viewModel.fetchMembers(query)
+        mViewModel.fetchMembers()
     }
 
     private fun showLoading() {

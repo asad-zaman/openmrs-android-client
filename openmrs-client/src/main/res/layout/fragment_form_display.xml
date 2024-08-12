@@ -13,14 +13,44 @@
   ~ copyright (c) openmrs, llc.  all rights reserved.
   -->
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+
+
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:isScrollContainer="false">
+
     <LinearLayout
-        android:id="@+id/sections_parent_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/sections_primary_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <LinearLayout
+            android:id="@+id/sections_child_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <LinearLayout
+            android:id="@+id/sections_result_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+
 </ScrollView>
+
+

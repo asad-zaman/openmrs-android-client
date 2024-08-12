@@ -78,20 +78,11 @@ class AddEditPatientViewModel @Inject constructor(
     val genderList: List<String> = arrayListOf("Male", "Female", "Other", "Unknown")
     var selectedGender = ""
 
-    val mStatusList: List<String> = arrayListOf("Divorced", "Married", "Single")
-    var selectedMaritalStatus = ""
-
     val mIdentifierList: List<String> = arrayListOf("NID", "HID", "BRID")
     var selectedIdentifier = ""
 
     val mIdentifierTypeList: List<String> = arrayListOf("NID", "BRN", "কোনটা না")
     var selectedIdentifierType = ""
-
-    val bGroupList: List<String> = arrayListOf("A-", "A+", "AB-", "AB+", "B-", "B+", "O-", "O+")
-    var selectedBloodGroup = ""
-
-    val religionList: List<String> = arrayListOf("Buddhism", "Christianity", "Hinduism", "Islam", "Other")
-    var selectedReligion = ""
 
     var rxSelectedDivision: MutableLiveData<LocationData> = MutableLiveData()
     var rxSelectedDistrict: MutableLiveData<LocationData> = MutableLiveData()

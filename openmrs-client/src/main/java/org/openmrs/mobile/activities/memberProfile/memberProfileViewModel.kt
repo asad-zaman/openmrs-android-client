@@ -47,6 +47,9 @@ class MemberProfileViewModel @Inject constructor(
     var nid: String = ""
     var age: String = ""
 
+    private val _rxFormList = MutableLiveData<List<String>>()
+    val rxFormList: LiveData<List<String>> get() = _rxFormList
+
     fun populateProfileData() {
         firstName = patient.person.names[0].givenName ?: ""
         lastName = patient.person.names[0].familyName ?: ""
@@ -70,6 +73,18 @@ class MemberProfileViewModel @Inject constructor(
                     fetchBloodGroup(it.value!!)
                 }
             }
+        }
+    }
+
+    fun populateServiceForm() {
+        if (rxMaritalStatus.value!! == ApplicationConstants.AttributeValues.MARRIED && age.toInt() > 15 && patient.person.gender == "F"){
+            _rxFormList.value = mutableListOf(
+                ApplicationConstants.FormListKeys.PREGNANCY_SERVICE,
+                ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE,
+//                ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE,
+//                ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE,
+                ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE
+            )
         }
     }
 

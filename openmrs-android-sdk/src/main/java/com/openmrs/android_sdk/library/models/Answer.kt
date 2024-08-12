@@ -51,6 +51,11 @@ class Answer : Serializable, Parcelable {
 
     constructor()
 
+    constructor(concept: String, label: String){
+        this.concept = concept
+        this.label = label
+    }
+
     constructor(`in`: Parcel) {
         this.concept = `in`.readString()
         this.label = `in`.readString()

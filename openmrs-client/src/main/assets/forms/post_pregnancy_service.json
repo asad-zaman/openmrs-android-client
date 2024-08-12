@@ -1,0 +1,546 @@
+{
+  "encounterType": "e22e39fd-7db2-45e7-80f1-60fa0d5a4378",
+  "name": "প্রসব পরবর্তী সেবা",
+  "processor": "EncounterFormProcessor",
+  "referencedForms": [],
+  "uuid": "271f8071-d85f-4add-a248-3fde89caf3c6",
+  "version": "1.0",
+  "pages": [
+    {
+      "label": "প্রসব পরবর্তী সেবা",
+      "sections": [
+        {
+          "label": "সার্ভিস ফর্ম",
+          "isExpanded": "true",
+          "questions": [
+            {
+              "label": "স্বাস্থ্য সেবা দেওয়া হয়েছে?",
+              "type": "obs",
+              "required": true,
+              "id": "hasGivenHealthService",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "8160faf2-2675-406f-9930-c6b558eb3504",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              }
+            },
+            {
+              "label": "প্রসবের ৪৮ ঘন্টার মধ্যে সেবা প্রাপ্তি",
+              "type": "obs",
+              "required": true,
+              "id": "AccessToServicesWithin48HoursOfDelivery",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "151d2e32-e260-474c-b053-58035f270689",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "জন্মের ৭২ ঘন্টা পর গোসল করানো হয়েছে",
+              "type": "obs",
+              "required": true,
+              "id": "After72HoursOfBirthTheBathIsDone",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "f09d64ec-0ca3-446d-8647-036e07f520ea",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "ওজন (Kg)",
+              "type": "obs",
+              "required": false,
+              "id": "WeightKg",
+              "questionOptions": {
+                "rendering": "number",
+                "concept": "16d23c04-b8c7-4428-b9e0-de836688c27e"
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39' || UnableToMeasure === '236967c9-4222-42ff-860e-f6349cfdc4e1' || UnableToMeasure === '97594042-327c-4d9f-bfe9-d46c31863227'"
+              }
+            },
+            {
+              "label": "পরিমাপ করা সম্ভব হচ্ছেনা",
+              "type": "obs",
+              "required": false,
+              "id": "UnableToMeasure",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "7309ab29-6f22-4d33-81e1-6505e839e96b",
+                "answers": [
+                  {
+                    "concept": "236967c9-4222-42ff-860e-f6349cfdc4e1",
+                    "label": "যন্ত্রপাতি নষ্ট"
+                  },
+                  {
+                    "concept": "97594042-327c-4d9f-bfe9-d46c31863227",
+                    "label": "যন্ত্রপাতির সরবরাহ নেই"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "রক্তস্বল্পতা অবস্থা",
+              "type": "obs",
+              "required": true,
+              "id": "AnemicCondition",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "03b0976a-52d7-4424-aba4-5361e1008717",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "রক্তচাপ সিস্টোলিক (mmHg)",
+              "type": "obs",
+              "required": false,
+              "id": "BloodPressureSystolicMmhg",
+              "questionOptions": {
+                "rendering": "number",
+                "concept": "b6db54a2-ed6e-473b-8a40-99540ba0d708"
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39' || CannotMeasureBloodPressure === '236967c9-4222-42ff-860e-f6349cfdc4e1' || CannotMeasureBloodPressure === '97594042-327c-4d9f-bfe9-d46c31863227'"
+              }
+            },
+            {
+              "label": "রক্তচাপ ডায়াস্টোলিক (mmHg)",
+              "type": "obs",
+              "required": false,
+              "id": "BloodPressureDiastolicMmhg",
+              "questionOptions": {
+                "rendering": "number",
+                "concept": "92684349-17bf-4e68-a29c-c6caad701c9b"
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39' || CannotMeasureBloodPressure === '236967c9-4222-42ff-860e-f6349cfdc4e1' || CannotMeasureBloodPressure === '97594042-327c-4d9f-bfe9-d46c31863227'"
+              }
+            },
+            {
+              "label": "রক্তচাপ পরিমাপ করা সম্ভব হচ্ছেনা",
+              "type": "obs",
+              "required": false,
+              "id": "CannotMeasureBloodPressure",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "eb9238dc-7dcf-49be-a38d-d8f0d275f59b",
+                "answers": [
+                  {
+                    "concept": "236967c9-4222-42ff-860e-f6349cfdc4e1",
+                    "label": "যন্ত্রপাতি নষ্ট"
+                  },
+                  {
+                    "concept": "97594042-327c-4d9f-bfe9-d46c31863227",
+                    "label": "যন্ত্রপাতির সরবরাহ নেই"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "প্রস্রাবে সুগার উপস্থিতি",
+              "type": "obs",
+              "required": false,
+              "id": "PresenceOfSugarInUrine",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "6298a0b8-45b8-4589-85e2-9188838e5cc5",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  },
+                  {
+                    "concept": "80898be5-005a-4e19-8dec-9fbece45c5d1",
+                    "label": "পরিমাপ করা হয় নি"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "প্রস্রাবে সুগার পরিমাপ করা সম্ভব হচ্ছেনা",
+              "type": "obs",
+              "required": false,
+              "id": "ItIsNotPossibleToMeasureSugarInUrine",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "f139a327-2223-4672-a968-74df69447d9f",
+                "answers": [
+                  {
+                    "concept": "236967c9-4222-42ff-860e-f6349cfdc4e1",
+                    "label": "যন্ত্রপাতি নষ্ট"
+                  },
+                  {
+                    "concept": "97594042-327c-4d9f-bfe9-d46c31863227",
+                    "label": "যন্ত্রপাতির সরবরাহ নেই"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "প্রস্রাবে এলবুমিন উপস্থিতি",
+              "type": "obs",
+              "required": false,
+              "id": "PresenceOfAlbuminInUrine",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "7c65e9af-49b7-4084-b00d-edcf5ac56c8e",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  },
+                  {
+                    "concept": "80898be5-005a-4e19-8dec-9fbece45c5d1",
+                    "label": "পরিমাপ করা হয় নি"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "প্রসব পরবর্তী বিপদ চিহ্ন আছে",
+              "type": "obs",
+              "required": true,
+              "id": "ThereAreWarningSignsOfPostpartum",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "cee3876c-6f79-4740-b7eb-00ae9ec14db7",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "পরবর্তী বিপদের চিহ্ন",
+              "type": "obs",
+              "required": true,
+              "id": "TheNextDangerSign",
+              "questionOptions": {
+                "rendering": "multiCheckbox",
+                "concept": "b2699019-0697-4ee2-a16f-085b576f22fe",
+                "answers": [
+                  {
+                    "concept": "2bd3ac7d-372a-442e-bbe2-7ce58a3a9b48",
+                    "label": "যোনিপথে রক্তক্ষরণ"
+                  },
+                  {
+                    "concept": "edacec44-9044-4f79-881c-c792b99e4d7c",
+                    "label": "উচ্চ তাপমাত্রা ১০২ ডিগ্রি বা তদুর্ধ"
+                  },
+                  {
+                    "concept": "ceae5813-d58d-4063-9245-69fe2a1b2a9e",
+                    "label": "প্রস্রাবে জালা পোড়া"
+                  },
+                  {
+                    "concept": "84661be1-fb87-4d37-a267-ce361425d1e3",
+                    "label": "স্তনে ব্যাথা/ গোটা/ ফাটা/ প্রদাহ"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39' || ThereAreWarningSignsOfPostpartum !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "ইডেমা আছে",
+              "type": "obs",
+              "required": true,
+              "id": "ThereIsEdema",
+              "questionOptions": {
+                "rendering": "radio",
+                "concept": "e6486f04-58f8-44a1-9496-d0f8360fb67f",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "hasGivenHealthService !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "স্বাস্থ্য শিক্ষা দেওয়া হয়েছে?",
+              "type": "obs",
+              "required": true,
+              "id": "healthEducationProvided",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "4c815772-3110-4fea-8f79-8c93602569ca",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": []
+            },
+            {
+              "label": "প্রসব পরবর্তী স্বাস্থ্য শিক্ষা",
+              "type": "obs",
+              "required": true,
+              "id": "PostnatalHealthEducation",
+              "questionOptions": {
+                "rendering": "multiCheckbox",
+                "concept": "b65409f3-bffc-4ae2-88be-138afdcdbd2c",
+                "answers": [
+                  {
+                    "concept": "9a83e044-23cf-411c-b312-c17085657171",
+                    "label": "প্রসব পরবর্তী পুষ্টি"
+                  },
+                  {
+                    "concept": "bd5b9f88-d190-44fc-ac08-875215ed1266",
+                    "label": "নবজাতকের অত্যাবশ্যক সেবা"
+                  },
+                  {
+                    "concept": "b0a73a58-b30c-43d2-9add-e0ab9b4dca43",
+                    "label": "অন্যান্য স্বাস্থ্য শিক্ষা"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "healthEducationProvided !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "রেফার করা হয়েছে",
+              "type": "obs",
+              "required": true,
+              "id": "referredTo",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "779973b9-5cee-463f-84e7-814c625f98de",
+                "answers": [
+                  {
+                    "concept": "a2b8ffaf-84af-4baf-833e-d2209fae3d39",
+                    "label": "হ্যাঁ"
+                  },
+                  {
+                    "concept": "bfcd8921-d17f-40ae-8c8a-8ac480ad180f",
+                    "label": "না"
+                  }
+                ]
+              },
+              "validators": []
+            },
+            {
+              "label": "রেফারকৃত প্রতিষ্ঠানের নাম?",
+              "type": "obs",
+              "required": true,
+              "id": "nameOfReferredInstitution",
+              "questionOptions": {
+                "rendering": "select",
+                "concept": "70c3f527-0267-45d6-babe-55b5508d6297",
+                "answers": [
+                  {
+                    "concept": "7cae3447-467e-4aef-917c-421d81129995",
+                    "label": "ইউনিয়ন উপস্বাস্থ্য কেন্দ্র"
+                  },
+                  {
+                    "concept": "a8e040e3-cf82-47ec-bd3b-f2ba4f45cff0",
+                    "label": "ইউনিয়ন পরিবার কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "1ee3f7a5-52c3-4847-b8ea-3d3c9cbf558b",
+                    "label": "ইউনিয়ন স্বাস্থ্য ও পরিবার কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "89b3fbdb-ed04-4807-b1e8-6a845a8bbe35",
+                    "label": "মা ও শিশু কল্যাণ কেন্দ্র"
+                  },
+                  {
+                    "concept": "6ad32262-e10b-4e8d-a62b-86db833f53c5",
+                    "label": "১০ শয্যা বিশিষ্ট হাসপাতাল"
+                  },
+                  {
+                    "concept": "2956e1a7-f328-49e0-84f8-08824bfd853d",
+                    "label": "২০ শয্যা বিশিষ্ট হাসপাতাল"
+                  },
+                  {
+                    "concept": "0d9c9d6b-a401-4ea4-bc80-0982255aefee",
+                    "label": "উপজেলা স্বাস্থ্য কমপ্লেক্স"
+                  },
+                  {
+                    "concept": "52616b9e-08cd-40e5-8c54-13a9a96c16ca",
+                    "label": "সদর হাসপাতাল"
+                  },
+                  {
+                    "concept": "210791f2-c72d-4d3d-aeed-b10bda80f89c",
+                    "label": "মেডিকেল কলেজ হাসপাতাল"
+                  },
+                  {
+                    "concept": "76cce493-eccf-45dd-83c3-2fb25515b7e7",
+                    "label": "অন্যান্য স্বাস্থ্য সেবা কেন্দ্র"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "referredTo !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            },
+            {
+              "label": "প্রসব পরবর্তী রেফারের কারন",
+              "type": "obs",
+              "required": true,
+              "id": "ReasonsForPostpartumReferral",
+              "questionOptions": {
+                "rendering": "multiCheckbox",
+                "concept": "cf347795-6987-4225-a1f1-23e2226354ed",
+                "answers": [
+                  {
+                    "concept": "2bd3ac7d-372a-442e-bbe2-7ce58a3a9b48",
+                    "label": "যোনিপথে রক্তক্ষরণ"
+                  },
+                  {
+                    "concept": "8972db7c-d19c-4c2d-aef5-24c9aaba1dab",
+                    "label": "খিঁচুনি"
+                  },
+                  {
+                    "concept": "edacec44-9044-4f79-881c-c792b99e4d7c",
+                    "label": "উচ্চ তাপমাত্রা ১০২ ডিগ্রি বা তদুর্ধ"
+                  },
+                  {
+                    "concept": "ceae5813-d58d-4063-9245-69fe2a1b2a9e",
+                    "label": "প্রস্রাবে জালা পোড়া"
+                  },
+                  {
+                    "concept": "84661be1-fb87-4d37-a267-ce361425d1e3",
+                    "label": "স্তনে ব্যাথা/ গোটা/ ফাটা/ প্রদাহ"
+                  },
+                  {
+                    "concept": "5f3fcc53-1d7e-4c87-a6cc-199479f9d8b9",
+                    "label": "ওজনের জন্য"
+                  },
+                  {
+                    "concept": "bc1a18bc-968d-4d49-ae6e-d86192c95a48",
+                    "label": "রক্তচাপের জন্য"
+                  },
+                  {
+                    "concept": "f232eab9-f8d7-4d3d-9ca4-22cd17f644ba",
+                    "label": "রক্তস্বল্পতা"
+                  },
+                  {
+                    "concept": "ecfd3015-bcf7-4bfa-96e3-7388962c489d",
+                    "label": "প্রসাবে সুগার"
+                  },
+                  {
+                    "concept": "e4ba0e1d-407d-44d1-9e90-71108664d926",
+                    "label": "অন্যান্য রেফার"
+                  }
+                ]
+              },
+              "validators": [],
+              "hide": {
+                "hideWhenExpression": "referredTo !== 'a2b8ffaf-84af-4baf-833e-d2209fae3d39'"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "description": "প্রসব পরবর্তী সেবা"
+}

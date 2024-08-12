@@ -8,6 +8,9 @@
  */
 package org.openmrs.mobile.activities.formdisplay
 
+import android.app.DatePickerDialog
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -18,26 +21,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import com.openmrs.android_sdk.library.models.Answer
 import com.openmrs.android_sdk.library.models.Page
 import com.openmrs.android_sdk.library.models.Question
 import com.openmrs.android_sdk.library.models.Section
+import com.openmrs.android_sdk.utilities.*
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_FIELDS_BUNDLE
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_PAGE_BUNDLE
-import com.openmrs.android_sdk.utilities.InputField
-import com.openmrs.android_sdk.utilities.RangeEditText
-import com.openmrs.android_sdk.utilities.SelectOneField
-import com.openmrs.android_sdk.utilities.ToastUtil
 import dagger.hilt.android.AndroidEntryPoint
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
 import org.openmrs.mobile.R
@@ -45,8 +39,7 @@ import org.openmrs.mobile.activities.BaseFragment
 import org.openmrs.mobile.bundle.FormFieldsWrapper
 import org.openmrs.mobile.databinding.FragmentFormDisplayBinding
 import org.openmrs.mobile.utilities.ViewUtils.isEmpty
-import java.util.ArrayList
-import kotlin.math.roundToInt
+import java.util.*
 
 @AndroidEntryPoint
 class FormDisplayPageFragment : BaseFragment() {
@@ -55,22 +48,56 @@ class FormDisplayPageFragment : BaseFragment() {
 
     private val viewModel: FormDisplayPageViewModel by viewModels()
 
+    private var formLabel: String = ""
+    private var mSections: List<Section> = listOf()
+    private lateinit var sectionContainer: LinearLayout
+    private lateinit var sectionPrimaryContainer: LinearLayout
+    private lateinit var sectionResultContainer: LinearLayout
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFormDisplayBinding.inflate(inflater, container, false)
-
+        formLabel = viewModel.page.label ?: ""
+        mSections = viewModel.page.sections
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-
         createFormViews()
-
         return binding.root
     }
 
-    private fun createFormViews() = viewModel.page.sections.forEach { addSection(it) }
+    private fun createFormViews() = mSections.forEach { addSection(it) }
 
     private fun addSection(section: Section) {
-        val sectionContainer: LinearLayout = createSectionLayout(section.label!!)
-        binding.sectionsParentContainer.addView(sectionContainer)
-        section.questions.forEach { addQuestion(it, sectionContainer) }
+        sectionPrimaryContainer = createSectionLayout(section.label!!)
+        binding.sectionsPrimaryContainer.addView(sectionPrimaryContainer)
+        initContainers().apply {
+            if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PREGNANCY_SERVICE){
+                addQuestion(section.questions[0], sectionContainer)
+            } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+                addQuestion(section.questions[0], sectionContainer)
+                addQuestion(section.questions[3], sectionContainer)
+                addQuestion(section.questions[5], sectionContainer)
+            }
+            //        section.questions.forEach { addQuestion(it, sectionContainer) }
+        }
+    }
+
+    private fun initContainers() {
+        sectionContainer = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        }
+        binding.sectionsChildContainer.addView(sectionContainer)
+
+        sectionResultContainer = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        }
+        binding.sectionsResultContainer.addView(sectionResultContainer)
     }
 
     private fun createSectionLayout(sectionLabel: String): LinearLayout {
@@ -94,8 +121,11 @@ class FormDisplayPageFragment : BaseFragment() {
                 question.questions.forEach { subQuestion -> addQuestion(subQuestion, questionGroupContainer) }
             }
             "number" -> createAndAttachNumericQuestionEditText(question, sectionContainer)
+            "text" -> createAndAttachNumericQuestionEditText(question, sectionContainer)
             "select" -> createAndAttachSelectQuestionDropdown(question, sectionContainer)
             "radio" -> createAndAttachSelectQuestionRadioButton(question, sectionContainer)
+            "date" -> createDateView(question, sectionContainer)
+            "repeating" -> createRepeatingView(question, sectionContainer)
         }
     }
 
@@ -115,7 +145,11 @@ class FormDisplayPageFragment : BaseFragment() {
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        ).apply {
+            val marginInPxTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.toFloat(), resources.displayMetrics).toInt()
+            val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+            setMargins(marginInPxLeft, marginInPxTop, 0, 0)
+        }
         sectionContainer.addView(generateTextView(question.label))
 
         val inputField = viewModel.getOrCreateInputField(question.questionOptions!!.concept!!)
@@ -127,7 +161,7 @@ class FormDisplayPageFragment : BaseFragment() {
                 max = options.max!!.toInt()
                 id = inputField.id
             }
-            dsb.progress = inputField.value.toInt()
+            dsb.progress = inputField.numberValue.toInt()
             sectionContainer.addView(dsb, layoutParams)
             setOnProgressChangeListener(dsb, inputField)
         } else {
@@ -136,75 +170,173 @@ class FormDisplayPageFragment : BaseFragment() {
                 hint = question.label
                 isSingleLine = true
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-                inputType = if (options.isAllowDecimal) {
-                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-                } else {
-                    InputType.TYPE_CLASS_NUMBER
+                inputType = when (options.rendering) {
+                    "number" -> { InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL }
+                    "text" -> { InputType.TYPE_CLASS_TEXT }
+                    else -> InputType.TYPE_CLASS_NUMBER
                 }
                 id = inputField.id
             }
-            if (inputField.hasValue) {
-                ed.setText(inputField.value.toString())
-                ed.setSelection(ed.length())
+            when {
+                inputField.hasNumberValue -> {
+                    ed.setText(inputField.numberValue.toString())
+                    ed.setSelection(ed.length())
+                }
+                inputField.hasTextValue -> {
+                    ed.setText(inputField.textValue)
+                    ed.setSelection(ed.length())
+                }
             }
             sectionContainer.addView(ed, layoutParams)
-            setOnTextChangedListener(ed, inputField)
+            setOnTextChangedListener(options.rendering!!, ed, inputField)
         }
     }
 
-    private fun createAndAttachSelectQuestionDropdown(question: Question, sectionContainer: LinearLayout) {
-        val textView = TextView(activity).apply {
-            setPadding(20, 0, 0, 0)
-            text = question.label
+    private fun createAndAttachSelectQuestionDropdown(question: Question, mSectionContainer: LinearLayout) {
+        val questionLinearLayout = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                val marginInPxTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.toFloat(), resources.displayMetrics).toInt()
+                val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.toFloat(), resources.displayMetrics).toInt()
+                setMargins(marginInPxLeft, marginInPxTop, 0, 0)
+            }
         }
 
-        val questionLinearLayoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.START
+        // new added
+        val mAnswers = mutableListOf(Answer("", getString(R.string.choose_one))).apply { addAll(question.questionOptions!!.answers!!) }
+
+        val answerLabels = mAnswers.map { it.label }
+
+        val spinner = layoutInflater.inflate(R.layout.form_dropdown, null) as Spinner
+
+        spinner.adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, answerLabels).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
+
+        val spinnerField = SelectOneField(mAnswers, question.questionOptions!!.concept!!)
+
+        questionLinearLayout.addView(generateTextView(question.label))
+        questionLinearLayout.addView(spinner)
+
+        when (question.label) {
+            ApplicationConstants.FormListKeys.PREGNANCY_INFORMATION -> { sectionPrimaryContainer.addView(questionLinearLayout) }
+            else -> { sectionContainer.addView(questionLinearLayout) }
+        }
+
+        val selectOneField = viewModel.findSelectOneFieldById(spinnerField.concept)
+        if (selectOneField != null) {
+            spinner.setSelection(selectOneField.chosenAnswerPosition)
+            setOnItemSelectedListener(question.label ?: "", spinner, selectOneField)
+        } else {
+            viewModel.selectOneFields.add(spinnerField)
+            setOnItemSelectedListener(question.label ?: "", spinner, spinnerField)
+        }
+    }
+
+    private fun createRepeatingView(question: Question, sectionContainer: LinearLayout) {
+        sectionResultContainer.addView(generateTextView(question.label))
+        question.questions.forEach { addQuestion(it, sectionResultContainer) }
+    }
+
+    private fun createDateView(question: Question, sectionContainer: LinearLayout) {
+        val dateText = TextView(activity).apply {
+            setPadding(20, 0, 0, 0)
+            text = "dd/mm/yyyy"
+            val marginInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                setMargins(10, 0, marginInPx, 0)
+            }
         }
 
         val questionLinearLayout = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
-            layoutParams = questionLinearLayoutParams
-        }
-
-        val answerLabels = ArrayList<String?>()
-        question.questionOptions!!.answers!!.forEach {
-            answerLabels.add(it.label)
-        }
-
-        val spinner = layoutInflater.inflate(R.layout.form_dropdown, null) as Spinner
-        spinner.adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, answerLabels as List<Any?>)
-
-        val spinnerField = SelectOneField(question.questionOptions!!.answers!!, question.questionOptions!!.concept!!)
-        val linearLayoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-
-        questionLinearLayout.addView(textView)
-        questionLinearLayout.addView(spinner)
-        sectionContainer.layoutParams = linearLayoutParams
-        sectionContainer.addView(questionLinearLayout)
-
-        val selectOneField = viewModel.findSelectOneFieldById(spinnerField.concept!!)
-        if (selectOneField != null) {
-            spinner.setSelection(selectOneField.chosenAnswerPosition)
-            setOnItemSelectedListener(spinner, selectOneField)
-        } else {
-            setOnItemSelectedListener(spinner, spinnerField)
-            viewModel.selectOneFields.add(spinnerField)
+            ).apply {
+                val marginInPxTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.toFloat(), resources.displayMetrics).toInt()
+                val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0.toFloat(), resources.displayMetrics).toInt()
+                setMargins(marginInPxLeft, marginInPxTop, 0, 0)
+            }
         }
+
+        val dateTextLinearLayout = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        val inputField = viewModel.getOrCreateInputField(question.questionOptions!!.concept!!)
+
+        val dateButton = Button(activity).apply {
+            background = ContextCompat.getDrawable(context, R.drawable.ic_calender)
+            val widthInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.toFloat(), resources.displayMetrics).toInt()
+            val heightInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.toFloat(), resources.displayMetrics).toInt()
+            val marginInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+            layoutParams = LinearLayout.LayoutParams(widthInPx, heightInPx).apply {
+                setMargins(0, marginInPx, 0, 0)
+            }
+            setOnClickListener {
+                val calendar = Calendar.getInstance()
+                val year = calendar.get(Calendar.YEAR)
+                val month = calendar.get(Calendar.MONTH)
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+                val datePickerDialog = activity?.let { fa ->
+                    DatePickerDialog(
+                        fa,
+                        { _, selectedYear, selectedMonth, selectedDay ->
+                            val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                            dateText.text = selectedDate
+                            inputField.textValue = selectedDate
+                        },
+                        year, month, day
+                    )
+                }
+                datePickerDialog!!.show()
+            }
+        }
+
+        dateTextLinearLayout.addView(dateText)
+        dateTextLinearLayout.addView(dateButton)
+
+        questionLinearLayout.addView(generateTextView(question.label))
+        questionLinearLayout.addView(dateTextLinearLayout)
+
+        sectionContainer.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        sectionContainer.addView(questionLinearLayout)
     }
 
     private fun createAndAttachSelectQuestionRadioButton(question: Question, sectionContainer: LinearLayout) {
         val textView = TextView(activity).apply {
             setPadding(20, 0, 0, 0)
             text = question.label
+            textSize = 17f
+            setTypeface(null, Typeface.BOLD)
+            setTextColor(Color.DKGRAY)
+        }
+        textView.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            val marginInPxTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.toFloat(), resources.displayMetrics).toInt()
+            val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+            setMargins(marginInPxLeft, marginInPxTop, 0, 0)
         }
         val radioGroup = RadioGroup(activity)
+        radioGroup.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+            setMargins(marginInPxLeft, 0, 0, 0)
+        }
         question.questionOptions!!.answers!!.forEach {
             val radioButton = RadioButton(activity)
             radioButton.text = it.label
@@ -215,6 +347,7 @@ class FormDisplayPageFragment : BaseFragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         )
+
         sectionContainer.addView(textView)
         sectionContainer.addView(radioGroup)
         sectionContainer.layoutParams = linearLayoutParams
@@ -235,7 +368,7 @@ class FormDisplayPageFragment : BaseFragment() {
     private fun setOnProgressChangeListener(dsb: DiscreteSeekBar, inputField: InputField) {
         dsb.setOnProgressChangeListener(object : DiscreteSeekBar.OnProgressChangeListener {
             override fun onProgressChanged(seekBar: DiscreteSeekBar?, value: Int, fromUser: Boolean) {
-                inputField.value = value.toDouble()
+                inputField.numberValue = value.toDouble()
             }
 
             override fun onStartTrackingTouch(seekBar: DiscreteSeekBar?) {
@@ -249,7 +382,7 @@ class FormDisplayPageFragment : BaseFragment() {
         })
     }
 
-    private fun setOnTextChangedListener(et: EditText, inputField: InputField) {
+    private fun setOnTextChangedListener(renderType: String, et: EditText, inputField: InputField) {
         et.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // No override uses
@@ -260,16 +393,65 @@ class FormDisplayPageFragment : BaseFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                inputField.value = if (!s.isNullOrEmpty()) s.toString().toDouble() else InputField.DEFAULT_VALUE
+                when(renderType){
+                    "number" -> { inputField.numberValue = if (!s.isNullOrEmpty()) s.toString().toDouble() else InputField.DEFAULT_NUMBER_VALUE }
+                    "text" -> { inputField.textValue = if (!s.isNullOrEmpty()) s.toString() else InputField.DEFAULT_TEXT_VALUE }
+                }
             }
 
         })
     }
 
-    private fun setOnItemSelectedListener(spinner: Spinner, spinnerField: SelectOneField) {
+    private fun setOnItemSelectedListener(spinnerLabel: String, spinner: Spinner, spinnerField: SelectOneField) {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 spinnerField.setAnswer(i)
+                if(spinnerLabel == ApplicationConstants.FormListKeys.PREGNANCY_INFORMATION){
+                    when (i) {
+                        0 -> { sectionContainer.removeAllViews() }
+                        1 -> {
+                            sectionContainer.removeAllViews()
+                            addQuestion(mSections[0].questions[1], sectionContainer)
+                            addQuestion(mSections[0].questions[2], sectionContainer)
+                            addQuestion(mSections[0].questions[3], sectionContainer)
+                        }
+                        2 -> {
+                            sectionContainer.removeAllViews()
+                            addQuestion(mSections[0].questions[4], sectionContainer)
+                            addQuestion(mSections[0].questions[5], sectionContainer)
+                            addQuestion(mSections[0].questions[6], sectionContainer)
+                            addQuestion(mSections[0].questions[7], sectionContainer)
+                            addQuestion(mSections[0].questions[8], sectionContainer)
+                            addQuestion(mSections[0].questions[9], sectionContainer)
+                            addQuestion(mSections[0].questions[10], sectionContainer)
+                            addQuestion(mSections[0].questions[11], sectionContainer)
+                            addQuestion(mSections[0].questions[12], sectionContainer)
+                        }
+                        3 -> {
+                            sectionContainer.removeAllViews()
+                            addQuestion(mSections[0].questions[16], sectionContainer)
+                            addQuestion(mSections[0].questions[17], sectionContainer)
+                        }
+                        4 -> {
+                            sectionContainer.removeAllViews()
+                            addQuestion(mSections[0].questions[18], sectionContainer)
+                        }
+                        5 -> { sectionContainer.removeAllViews() }
+                    }
+                } else if (spinnerLabel == ApplicationConstants.FormListKeys.PREGNANCY_RESULT){
+                    when (i) {
+                        0 -> { sectionResultContainer.removeAllViews() }
+                        1 -> {
+                            sectionResultContainer.removeAllViews()
+                            addQuestion(mSections[0].questions[13], sectionResultContainer)
+                            addQuestion(mSections[0].questions[15], sectionResultContainer)
+                        }
+                        2 -> {
+                            sectionResultContainer.removeAllViews()
+                            addQuestion(mSections[0].questions[14], sectionResultContainer)
+                        }
+                    }
+                }
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
@@ -292,19 +474,25 @@ class FormDisplayPageFragment : BaseFragment() {
                 LinearLayout.LayoutParams.MATCH_PARENT
         )
         linearLayout.orientation = LinearLayout.VERTICAL
-        val margin = TypedValue
-                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5f, resources.displayMetrics)
-                .roundToInt()
-        layoutParams.setMargins(margin, margin, margin, margin)
+        val marginInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+        layoutParams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx)
         return layoutParams
     }
 
     private fun generateTextView(text: String?): View {
         val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(10, 0, 0, 0)
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+                val marginInPxTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.toFloat(), resources.displayMetrics).toInt()
+                val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+                setMargins(marginInPxLeft, marginInPxTop, 0, 0)
+            }
         val textView = TextView(activity)
         textView.text = text
+        textView.textSize = 17f
+        textView.setTypeface(null, Typeface.BOLD)
+        textView.setTextColor(Color.DKGRAY)
         textView.layoutParams = layoutParams
         return textView
     }
@@ -335,6 +523,26 @@ class FormDisplayPageFragment : BaseFragment() {
         else if (!valid) ToastUtil.error(getString(R.string.invalid_inputs))
 
         return !allEmpty && valid
+    }
+
+    fun validateInputFields(): Boolean {
+        var isValid = true
+        for (field in viewModel.inputFields) {
+            if(field.numberValue == InputField.DEFAULT_NUMBER_VALUE && field.textValue == InputField.DEFAULT_TEXT_VALUE){
+                isValid = false
+                ToastUtil.error(getString(R.string.empty_field_error_message))
+                break
+            }
+        }
+        for (radioGroupField in viewModel.selectOneFields) {
+            if (radioGroupField.chosenAnswer == null || radioGroupField.chosenAnswer!!.concept!!.isEmpty()){
+                isValid = false
+                ToastUtil.error(getString(R.string.empty_field_error_message))
+                break
+            }
+        }
+
+        return isValid
     }
 
     fun getInputFields() = viewModel.inputFields

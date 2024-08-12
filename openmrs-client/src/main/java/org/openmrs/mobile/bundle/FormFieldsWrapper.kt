@@ -40,12 +40,17 @@ class FormFieldsWrapper : Serializable {
                     val questions = section.questions
                     for (questionGroup in questions) {
                         for (question in questionGroup.questions) {
-                            if (question.questionOptions!!.rendering == "number") {
+                            val renderType = question.questionOptions!!.rendering
+                            if (renderType == "number" || renderType == "text") {
                                 val conceptUuid = question.questionOptions!!.concept
                                 val inputField = InputField(conceptUuid!!)
-                                inputField.value = getValue(encounter.observations, conceptUuid)
+                                if(renderType == "number"){
+                                    inputField.numberValue = getValue(encounter.observations, conceptUuid)
+                                } else if(renderType == "text"){
+                                    inputField.textValue = getText(encounter.observations, conceptUuid)
+                                }
                                 inputFieldList.add(inputField)
-                            } else if (question.questionOptions!!.rendering == "select" || question.questionOptions!!.rendering == "radio") {
+                            } else if (renderType == "select" || renderType == "radio") {
                                 val conceptUuid = question.questionOptions!!.concept
                                 val selectOneField = SelectOneField(question.questionOptions!!.answers!!, conceptUuid!!)
                                 val chosenAnswer = Answer()
@@ -70,7 +75,16 @@ class FormFieldsWrapper : Serializable {
                     return observation.displayValue!!.toDouble()
                 }
             }
-            return InputField.DEFAULT_VALUE
+            return InputField.DEFAULT_NUMBER_VALUE
+        }
+
+        private fun getText(observations: List<Observation>, conceptUuid: String?): String {
+            for (observation in observations) {
+                if (observation.concept!!.uuid == conceptUuid) {
+                    return observation.displayValue!!
+                }
+            }
+            return InputField.DEFAULT_TEXT_VALUE
         }
     }
 }

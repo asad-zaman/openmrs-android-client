@@ -20,8 +20,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.forEach
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.google.gson.Gson
 import com.openmrs.android_sdk.library.models.Page
+import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.library.models.ResultType
+import com.openmrs.android_sdk.utilities.ApplicationConstants
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_FIELDS_LIST_BUNDLE
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_NAME
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.VALUEREFERENCE
@@ -45,6 +48,7 @@ class FormDisplayActivity : ACBaseActivity() {
     private val viewModel: FormDisplayMainViewModel by viewModels()
 
     private lateinit var mDots: Array<ImageView>
+    private lateinit var formName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +58,10 @@ class FormDisplayActivity : ACBaseActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         intent.extras?.let {
-            val formName = it.getString(FORM_NAME)
-            supportActionBar!!.title = "$formName Form"
+            formName = it.getString(FORM_NAME)!!
+            supportActionBar!!.title = formName
+            val patientString = it.getString(ApplicationConstants.BundleKeys.PATIENT_ENTITY)
+            viewModel.patient = Gson().fromJson(patientString, Patient::class.java)
         }
 
         initViewComponents()
@@ -64,8 +70,18 @@ class FormDisplayActivity : ACBaseActivity() {
     private fun initViewComponents() {
         var pages: List<Page>? = null
         var formFieldsWrappers: List<FormFieldsWrapper>? = null
+//        val valueRef = it.getString(VALUEREFERENCE)!!
+        val jsonFile = when (formName) {
+            ApplicationConstants.FormListKeys.PREGNANCY_SERVICE -> { "pregnancy_service" }
+            ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE -> { "pre_pregnancy_service" }
+            ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE -> { "post_pregnancy_service" }
+            ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE -> { "family_planning_service" }
+            ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE -> { "general_patient_service" }
+            else -> { "pregnancy_service" }
+        }
+        val valueRef: String =
+            applicationContext.assets.open("forms/$jsonFile.json").bufferedReader().use { it.readText() }
         intent.extras?.let {
-            val valueRef = it.getString(VALUEREFERENCE)!!
             val form = getForm(valueRef)
             pages = form.pages
             formFieldsWrappers = it.getSerializable(FORM_FIELDS_LIST_BUNDLE) as? List<FormFieldsWrapper>
@@ -111,7 +127,9 @@ class FormDisplayActivity : ACBaseActivity() {
                 binding.viewPagerCountDots.addView(this, params)
             }
         }
-        mDots[0].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.selecteditem_dot))
+        if(mDots.isNotEmpty()){
+            mDots[0].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.selecteditem_dot))
+        }
         if (mDots.size == 1) {
             binding.btnNext.makeGone()
             binding.btnSubmit.makeVisible()
@@ -125,7 +143,8 @@ class FormDisplayActivity : ACBaseActivity() {
         (binding.viewPager.adapter as FormPageAdapter).registeredFragments.forEach { pos, frag ->
             val formPageFragment = frag as FormDisplayPageFragment
 
-            if (!formPageFragment.checkInputFields()) return
+//            if (!formPageFragment.checkInputFields()) return
+            if (!formPageFragment.validateInputFields()) return
 
             inputFields += formPageFragment.getInputFields()
             radioGroupFields += formPageFragment.getSelectOneFields()
