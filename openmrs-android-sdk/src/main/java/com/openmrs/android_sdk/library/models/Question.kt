@@ -31,6 +31,10 @@ class Question : Serializable {
     @Expose
     var label: String? = null
 
+    @SerializedName("required")
+    @Expose
+    var required: Boolean? = null
+
     @SerializedName("questionOptions")
     @Expose
     var questionOptions: QuestionOptions? = null

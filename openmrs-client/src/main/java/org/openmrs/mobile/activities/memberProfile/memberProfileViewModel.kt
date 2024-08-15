@@ -81,8 +81,8 @@ class MemberProfileViewModel @Inject constructor(
             _rxFormList.value = mutableListOf(
                 ApplicationConstants.FormListKeys.PREGNANCY_SERVICE,
                 ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE,
-//                ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE,
-//                ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE,
+                ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE,
+                ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE,
                 ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE
             )
         }

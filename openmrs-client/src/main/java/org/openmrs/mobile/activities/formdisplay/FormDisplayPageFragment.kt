@@ -9,21 +9,20 @@
 package org.openmrs.mobile.activities.formdisplay
 
 import android.app.DatePickerDialog
-import android.graphics.Color
-import android.graphics.Typeface
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.children
+import androidx.core.view.get
 import androidx.fragment.app.viewModels
 import com.openmrs.android_sdk.library.models.Answer
 import com.openmrs.android_sdk.library.models.Page
@@ -33,6 +32,7 @@ import com.openmrs.android_sdk.utilities.*
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_FIELDS_BUNDLE
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_PAGE_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.list_gallery_or_camera_item.view.*
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.BaseFragment
@@ -50,9 +50,7 @@ class FormDisplayPageFragment : BaseFragment() {
 
     private var formLabel: String = ""
     private var mSections: List<Section> = listOf()
-    private lateinit var sectionContainer: LinearLayout
-    private lateinit var sectionPrimaryContainer: LinearLayout
-    private lateinit var sectionResultContainer: LinearLayout
+    private val containerList: MutableList<LinearLayout> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFormDisplayBinding.inflate(inflater, container, false)
@@ -66,66 +64,96 @@ class FormDisplayPageFragment : BaseFragment() {
     private fun createFormViews() = mSections.forEach { addSection(it) }
 
     private fun addSection(section: Section) {
-        sectionPrimaryContainer = createSectionLayout(section.label!!)
-        binding.sectionsPrimaryContainer.addView(sectionPrimaryContainer)
-        initContainers().apply {
-            if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PREGNANCY_SERVICE){
-                addQuestion(section.questions[0], sectionContainer)
-            } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
-                addQuestion(section.questions[0], sectionContainer)
-                addQuestion(section.questions[3], sectionContainer)
-                addQuestion(section.questions[5], sectionContainer)
+        containerList.add(LinearLayout(activity))
+        val lastIndex = containerList.size - 1
+        containerList[lastIndex] = createSectionLayout(containerList[lastIndex], section.label!!)
+        binding.sectionsPrimaryContainer.addView(containerList[lastIndex])
+        if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PREGNANCY_SERVICE) {
+            addQuestion(section.questions[0], containerList[lastIndex])
+        } else if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE) {
+            addQuestion(section.questions[0], containerList[0])
+            addQuestion(section.questions[3], containerList[0])
+            addQuestion(section.questions[5], containerList[0])
+        }  else if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE) {
+            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
+                addQuestion(section.questions[0], this)
             }
-            //        section.questions.forEach { addQuestion(it, sectionContainer) }
+            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
+                addQuestion(section.questions[3], this)
+            }
+            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
+                addQuestion(section.questions[5], this)
+            }
+        } else if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE) {
+            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
+                addQuestion(section.questions[0], this)
+            }
+            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
+                addQuestion(section.questions[21], this)
+            }
+        } else if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE) {
+            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
+                addQuestion(section.questions[0], this)
+            }
+            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
+                addQuestion(section.questions[15], this)
+            }
+            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
+                addQuestion(section.questions[17], this)
+            }
         }
     }
 
-    private fun initContainers() {
-        sectionContainer = LinearLayout(activity).apply {
+    private fun createNewContainer() : Int {
+        val mContainer = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        binding.sectionsChildContainer.addView(sectionContainer)
-
-        sectionResultContainer = LinearLayout(activity).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-        }
-        binding.sectionsResultContainer.addView(sectionResultContainer)
+        containerList.add(mContainer)
+        val lastIndex = containerList.size - 1
+        binding.sectionsPrimaryContainer.addView(containerList[lastIndex])
+        return lastIndex
     }
 
-    private fun createSectionLayout(sectionLabel: String): LinearLayout {
-        val sectionContainer = LinearLayout(activity)
-        val layoutParams = getAndAdjustLinearLayoutParams(sectionContainer)
+    private fun createContainer(dOrientation: Int = LinearLayout.VERTICAL, dHeight: Int = LinearLayout.LayoutParams.WRAP_CONTENT, dWidth: Int = LinearLayout.LayoutParams.MATCH_PARENT, prevContainer: LinearLayout) : LinearLayout {
+        val mContainer = LinearLayout(activity).apply {
+            orientation = dOrientation
+            layoutParams = LinearLayout.LayoutParams(dWidth, dHeight)
+//            setBackgroundColor(Color.parseColor("#FF5722"))
+        }
+        prevContainer.addView(mContainer)
+        return mContainer
+    }
+
+    private fun createSectionLayout(mContainer: LinearLayout, sectionLabel: String): LinearLayout {
+        val layoutParams = getAndAdjustLinearLayoutParams(mContainer)
         val labelTextView = TextView(activity).apply {
             text = sectionLabel
             gravity = Gravity.CENTER_HORIZONTAL
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
             setTextColor(ContextCompat.getColor(requireActivity(), R.color.primary))
         }
-        sectionContainer.addView(labelTextView, layoutParams)
-        return sectionContainer
+        mContainer.addView(labelTextView, layoutParams)
+        return mContainer
     }
 
-    private fun addQuestion(question: Question, sectionContainer: LinearLayout) {
+    private fun addQuestion(question: Question, mContainer: LinearLayout, createAsNew: Boolean = false) {
         when (question.questionOptions!!.rendering) {
             "group" -> {
                 val questionGroupContainer: LinearLayout = createQuestionGroupLayout(question.label!!)
-                sectionContainer.addView(questionGroupContainer)
+                mContainer.addView(questionGroupContainer)
                 question.questions.forEach { subQuestion -> addQuestion(subQuestion, questionGroupContainer) }
             }
-            "number" -> createAndAttachNumericQuestionEditText(question, sectionContainer)
-            "text" -> createAndAttachNumericQuestionEditText(question, sectionContainer)
-            "select" -> createAndAttachSelectQuestionDropdown(question, sectionContainer)
-            "radio" -> createAndAttachSelectQuestionRadioButton(question, sectionContainer)
-            "date" -> createDateView(question, sectionContainer)
-            "repeating" -> createRepeatingView(question, sectionContainer)
+            "number" -> createAndAttachNumericQuestionEditText(question, mContainer)
+            "text" -> createAndAttachNumericQuestionEditText(question, mContainer)
+            "select" -> createAndAttachSelectQuestionDropdown(question, mContainer)
+            "radio" -> createAndAttachSelectQuestionRadioButton(question, mContainer, createAsNew)
+            "date" -> createDateView(question, mContainer)
+            "repeating" -> createRepeatingView(question, mContainer)
+            "multiCheckbox" -> createMultipleCheckboxView(question, mContainer)
         }
     }
 
@@ -192,7 +220,7 @@ class FormDisplayPageFragment : BaseFragment() {
         }
     }
 
-    private fun createAndAttachSelectQuestionDropdown(question: Question, mSectionContainer: LinearLayout) {
+    private fun createAndAttachSelectQuestionDropdown(question: Question, mContainer: LinearLayout) {
         val questionLinearLayout = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
@@ -205,6 +233,8 @@ class FormDisplayPageFragment : BaseFragment() {
             }
         }
 
+        val mTextview = generateTextView(question.label)
+
         // new added
         val mAnswers = mutableListOf(Answer("", getString(R.string.choose_one))).apply { addAll(question.questionOptions!!.answers!!) }
 
@@ -216,12 +246,38 @@ class FormDisplayPageFragment : BaseFragment() {
 
         val spinnerField = SelectOneField(mAnswers, question.questionOptions!!.concept!!)
 
-        questionLinearLayout.addView(generateTextView(question.label))
+        questionLinearLayout.addView(mTextview)
         questionLinearLayout.addView(spinner)
 
-        when (question.label) {
-            ApplicationConstants.FormListKeys.PREGNANCY_INFORMATION -> { sectionPrimaryContainer.addView(questionLinearLayout) }
-            else -> { sectionContainer.addView(questionLinearLayout) }
+        if (question.label == ApplicationConstants.FormQuestionKeys.PREGNANCY_INFORMATION) {
+            containerList[0].addView(questionLinearLayout)
+        } else if (question.label == ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE) {
+            if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+                containerList[0].addView(questionLinearLayout)
+            } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
+                mContainer.addView(questionLinearLayout)
+            }
+        } else if (question.label == ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE_WITH_SPACE){
+            mContainer.addView(questionLinearLayout)
+        }  else if (question.label == ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION) {
+            if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE){
+                mContainer.addView(questionLinearLayout)
+            } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
+                mContainer.addView(questionLinearLayout)
+            } else {
+                containerList[0].addView(questionLinearLayout)
+            }
+        } else if (question.label == ApplicationConstants.FormQuestionKeys.DONE_REFER) {
+            if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+                containerList[0].addView(questionLinearLayout)
+            } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
+                mContainer.addView(questionLinearLayout)
+            }
+        } else if (question.label == ApplicationConstants.FormQuestionKeys.FAMILY_PLANNING_METHOD || question.label == ApplicationConstants.FormQuestionKeys.REFERRED_INSTITUTION_NAME) {
+            mContainer.addView(questionLinearLayout)
+        }
+        else {
+            containerList[1].addView(questionLinearLayout)
         }
 
         val selectOneField = viewModel.findSelectOneFieldById(spinnerField.concept)
@@ -234,9 +290,139 @@ class FormDisplayPageFragment : BaseFragment() {
         }
     }
 
-    private fun createRepeatingView(question: Question, sectionContainer: LinearLayout) {
-        sectionResultContainer.addView(generateTextView(question.label))
-        question.questions.forEach { addQuestion(it, sectionResultContainer) }
+    private fun createRepeatingView(question: Question, mContainer: LinearLayout) {
+        mContainer.addView(generateTextView(question.label))
+        question.questions.forEach { addQuestion(it, mContainer) }
+    }
+
+    private fun createMultipleCheckboxView(question: Question, mContainer: LinearLayout) {
+        mContainer.addView(generateTextView(question.label))
+
+        val topLayout = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                val marginInPxTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+                val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
+                setMargins(marginInPxLeft, marginInPxTop, 0, 0)
+            }
+        }
+
+        val selectedCountTextView = TextView(activity).apply {
+            text = "0"
+            textSize = 18f
+            setTypeface(null, Typeface.BOLD)
+            setTextColor(Color.BLACK)
+            layoutParams = LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                0.1f
+            )
+        }
+
+        topLayout.addView(selectedCountTextView)
+
+        val checkboxLayout = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        val clearButton = Button(activity).apply {
+            val iconDrawable = ContextCompat.getDrawable(context,R.drawable.ic_close)
+            iconDrawable?.let {
+                it.colorFilter = PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
+                setCompoundDrawablesWithIntrinsicBounds(resizeDrawable(it, dpToPx(25)), null, null, null)
+            }
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            setOnClickListener { clearSelectedItems(checkboxLayout, selectedCountTextView) }
+        }
+
+//        topLayout.addView(clearButton)
+
+        val searchEditText = EditText(activity).apply {
+            hint = "খুঁজুন..."
+            layoutParams = LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                0.9f
+            )
+        }
+
+        topLayout.addView(searchEditText)
+
+        mContainer.addView(topLayout)
+
+        mContainer.addView(checkboxLayout)
+
+        val selectedOptions = mutableSetOf<String>()
+        question.questionOptions?.answers?.forEach { answer ->
+            val checkBox = CheckBox(activity).apply {
+                text = answer.label
+                setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        selectedOptions.add(answer.concept!!)
+                    } else {
+                        selectedOptions.remove(answer.concept!!)
+                    }
+                    selectedCountTextView.text = "${selectedOptions.size}"
+                }
+            }
+            checkboxLayout.addView(checkBox)
+        }
+
+        /*container.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                if (checkboxLayout.visibility == View.VISIBLE) {
+                    checkboxLayout.visibility = View.GONE
+                }
+            }
+            false
+        }
+
+        searchEditText.setOnClickListener {
+            checkboxLayout.visibility = View.VISIBLE
+        }*/
+
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString().toLowerCase()
+                checkboxLayout.children.forEach { view ->
+                    if (view is CheckBox) {
+                        view.visibility = if (view.text.toString().toLowerCase().contains(query)) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
+                    }
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun resizeDrawable(drawable: Drawable, sizePx: Int): Drawable {
+        val bitmap = (drawable as BitmapDrawable).bitmap
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, sizePx, sizePx, false)
+        return BitmapDrawable(resources, resizedBitmap)
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), resources.displayMetrics).toInt()
+    }
+
+    private fun clearSelectedItems(checkboxLayout: LinearLayout, selectedCountTextView: TextView) {
+        selectedCountTextView.text = "0"
+        checkboxLayout.children.forEach { view ->
+            if (view is CheckBox) {
+                view.isChecked = false
+            }
+        }
     }
 
     private fun createDateView(question: Question, sectionContainer: LinearLayout) {
@@ -313,7 +499,7 @@ class FormDisplayPageFragment : BaseFragment() {
         sectionContainer.addView(questionLinearLayout)
     }
 
-    private fun createAndAttachSelectQuestionRadioButton(question: Question, sectionContainer: LinearLayout) {
+    private fun createAndAttachSelectQuestionRadioButton(question: Question, sectionContainer: LinearLayout, createAsNew: Boolean = false) {
         val textView = TextView(activity).apply {
             setPadding(20, 0, 0, 0)
             text = question.label
@@ -321,6 +507,7 @@ class FormDisplayPageFragment : BaseFragment() {
             setTypeface(null, Typeface.BOLD)
             setTextColor(Color.DKGRAY)
         }
+
         textView.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -329,6 +516,7 @@ class FormDisplayPageFragment : BaseFragment() {
             val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
             setMargins(marginInPxLeft, marginInPxTop, 0, 0)
         }
+
         val radioGroup = RadioGroup(activity)
         radioGroup.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -343,24 +531,29 @@ class FormDisplayPageFragment : BaseFragment() {
             radioGroup.addView(radioButton)
         }
         val radioGroupField = SelectOneField(question.questionOptions!!.answers!!, question.questionOptions!!.concept!!)
-        val linearLayoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        )
 
         sectionContainer.addView(textView)
         sectionContainer.addView(radioGroup)
-        sectionContainer.layoutParams = linearLayoutParams
 
-        val selectOneField = viewModel.findSelectOneFieldById(radioGroupField.concept!!)
+        if(createAsNew){
+            sectionContainer.addView(LinearLayout(activity).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                    val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.toFloat(), resources.displayMetrics).toInt()
+                    setMargins(marginInPxLeft, 0, 0, 0)
+                }
+            })
+        }
+
+        val selectOneField = viewModel.findSelectOneFieldById(radioGroupField.concept)
         if (selectOneField != null) {
             if (selectOneField.chosenAnswerPosition != -1) {
                 val radioButton = radioGroup.getChildAt(selectOneField.chosenAnswerPosition) as RadioButton
                 radioButton.isChecked = true
             }
-            setOnCheckedChangeListener(radioGroup, selectOneField)
+            setOnCheckedChangeListener(question.label ?: "", radioGroup, selectOneField)
         } else {
-            setOnCheckedChangeListener(radioGroup, radioGroupField)
+            setOnCheckedChangeListener(question.label ?: "", radioGroup, radioGroupField)
             viewModel.selectOneFields.add(radioGroupField)
         }
     }
@@ -402,53 +595,224 @@ class FormDisplayPageFragment : BaseFragment() {
         })
     }
 
-    private fun setOnItemSelectedListener(spinnerLabel: String, spinner: Spinner, spinnerField: SelectOneField) {
+    private fun setOnItemSelectedListener(mLabel: String, spinner: Spinner, spinnerField: SelectOneField) {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 spinnerField.setAnswer(i)
-                if(spinnerLabel == ApplicationConstants.FormListKeys.PREGNANCY_INFORMATION){
-                    when (i) {
-                        0 -> { sectionContainer.removeAllViews() }
-                        1 -> {
-                            sectionContainer.removeAllViews()
-                            addQuestion(mSections[0].questions[1], sectionContainer)
-                            addQuestion(mSections[0].questions[2], sectionContainer)
-                            addQuestion(mSections[0].questions[3], sectionContainer)
+                when (mLabel) {
+                    ApplicationConstants.FormQuestionKeys.PREGNANCY_INFORMATION -> {
+                        var lastIndex = 0
+                        val count = containerList.size - 1
+                        if (count == lastIndex) {
+                            lastIndex = createNewContainer()
+                        } else if (count > lastIndex) {
+                            for (ind in lastIndex until count) {
+                                containerList[ind + 1].removeAllViews()
+                            }
+                            lastIndex++
                         }
-                        2 -> {
-                            sectionContainer.removeAllViews()
-                            addQuestion(mSections[0].questions[4], sectionContainer)
-                            addQuestion(mSections[0].questions[5], sectionContainer)
-                            addQuestion(mSections[0].questions[6], sectionContainer)
-                            addQuestion(mSections[0].questions[7], sectionContainer)
-                            addQuestion(mSections[0].questions[8], sectionContainer)
-                            addQuestion(mSections[0].questions[9], sectionContainer)
-                            addQuestion(mSections[0].questions[10], sectionContainer)
-                            addQuestion(mSections[0].questions[11], sectionContainer)
-                            addQuestion(mSections[0].questions[12], sectionContainer)
+                        when (i) {
+                            0, 5 -> {}
+                            1 -> {
+                                addQuestion(mSections[0].questions[1], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[2], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[3], containerList[lastIndex])
+                            }
+                            2 -> {
+                                addQuestion(mSections[0].questions[4], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[5], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[6], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[7], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[8], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[9], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[10], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[11], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[12], containerList[lastIndex])
+                            }
+                            3 -> {
+                                addQuestion(mSections[0].questions[16], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[17], containerList[lastIndex])
+                            }
+                            4 -> {
+                                addQuestion(mSections[0].questions[18], containerList[lastIndex])
+                            }
                         }
-                        3 -> {
-                            sectionContainer.removeAllViews()
-                            addQuestion(mSections[0].questions[16], sectionContainer)
-                            addQuestion(mSections[0].questions[17], sectionContainer)
-                        }
-                        4 -> {
-                            sectionContainer.removeAllViews()
-                            addQuestion(mSections[0].questions[18], sectionContainer)
-                        }
-                        5 -> { sectionContainer.removeAllViews() }
                     }
-                } else if (spinnerLabel == ApplicationConstants.FormListKeys.PREGNANCY_RESULT){
-                    when (i) {
-                        0 -> { sectionResultContainer.removeAllViews() }
-                        1 -> {
-                            sectionResultContainer.removeAllViews()
-                            addQuestion(mSections[0].questions[13], sectionResultContainer)
-                            addQuestion(mSections[0].questions[15], sectionResultContainer)
+                    ApplicationConstants.FormQuestionKeys.PREGNANCY_RESULT -> {
+                        var lastIndex = 1
+                        val count = containerList.size - 1
+                        if (count == lastIndex) {
+                            lastIndex = createNewContainer()
+                        } else if (count > lastIndex) {
+                            for (ind in lastIndex until count) {
+                                containerList[ind + 1].removeAllViews()
+                            }
+                            lastIndex++
                         }
-                        2 -> {
-                            sectionResultContainer.removeAllViews()
-                            addQuestion(mSections[0].questions[14], sectionResultContainer)
+                        when (i) {
+                            0 -> {}
+                            1 -> {
+                                addQuestion(mSections[0].questions[13], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[15], containerList[lastIndex])
+                            }
+                            2 -> {
+                                addQuestion(mSections[0].questions[14], containerList[lastIndex])
+                            }
+                        }
+                    }
+                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE -> {
+                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+                            val lastIndex = 1
+                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    addQuestion(mSections[0].questions[1], childLayout)
+                                    addQuestion(mSections[0].questions[2], childLayout)
+                                }
+                            }
+                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE) {
+                            val lastIndex = 1
+                            val mParent = containerList[0][lastIndex] as LinearLayout
+                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    addQuestion(mSections[0].questions[1], childLayout)
+                                    addQuestion(mSections[0].questions[2], childLayout)
+                                    createContainer(prevContainer = childLayout).apply {
+                                        addQuestion(mSections[0].questions[3], this)
+                                    }
+                                    addQuestion(mSections[0].questions[4], childLayout)
+                                    addQuestion(mSections[0].questions[5], childLayout)
+                                    createContainer(prevContainer = childLayout).apply {
+                                        addQuestion(mSections[0].questions[6], this)
+                                        addQuestion(mSections[0].questions[7], this)
+                                    }
+                                    addQuestion(mSections[0].questions[8], childLayout)
+                                    addQuestion(mSections[0].questions[9], childLayout)
+                                    addQuestion(mSections[0].questions[10], childLayout)
+                                    addQuestion(mSections[0].questions[11], childLayout)
+                                    addQuestion(mSections[0].questions[12], childLayout, true)
+                                    addQuestion(mSections[0].questions[14], childLayout)
+                                }
+                            }
+                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE){
+                            val lastIndex = 1
+                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    addQuestion(mSections[0].questions[1], childLayout)
+                                    addQuestion(mSections[0].questions[2], childLayout)
+                                }
+                            }
+                        }
+                    }
+                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE_WITH_SPACE -> {
+                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE) {
+                            val lastIndex = 1
+                            val mParent = containerList[0][lastIndex] as LinearLayout
+                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    createContainer(prevContainer = childLayout).apply {
+                                        addQuestion(mSections[0].questions[1], this)
+                                    }
+                                    addQuestion(mSections[0].questions[2], childLayout)
+                                    createContainer(prevContainer = childLayout).apply {
+                                        addQuestion(mSections[0].questions[3], this)
+                                    }
+                                    addQuestion(mSections[0].questions[4], childLayout)
+                                    addQuestion(mSections[0].questions[5], childLayout)
+                                    createContainer(prevContainer = childLayout).apply {
+                                        addQuestion(mSections[0].questions[6], this)
+                                        addQuestion(mSections[0].questions[7], this)
+                                    }
+                                    addQuestion(mSections[0].questions[8], childLayout)
+                                    addQuestion(mSections[0].questions[9], childLayout)
+                                    addQuestion(mSections[0].questions[10], childLayout)
+                                    addQuestion(mSections[0].questions[11], childLayout)
+                                    addQuestion(mSections[0].questions[12], childLayout)
+                                    addQuestion(mSections[0].questions[13], childLayout)
+                                    addQuestion(mSections[0].questions[14], childLayout)
+                                    addQuestion(mSections[0].questions[15], childLayout, true)
+                                    addQuestion(mSections[0].questions[17], childLayout)
+                                    addQuestion(mSections[0].questions[18], childLayout)
+                                    addQuestion(mSections[0].questions[19], childLayout)
+                                    addQuestion(mSections[0].questions[20], childLayout)
+                                }
+                            }
+                        }
+                    }
+                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION -> {
+                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+                            val lastIndex = 2
+                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    addQuestion(mSections[0].questions[4], childLayout)
+                                }
+                            }
+                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE){
+                            val lastIndex = 2
+                            val mParent = containerList[0][lastIndex] as LinearLayout
+                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> { addQuestion(mSections[0].questions[22], childLayout) }
+                            }
+                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
+                            val lastIndex = 2
+                            val mParent = containerList[0][lastIndex] as LinearLayout
+                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    addQuestion(mSections[0].questions[16], childLayout)
+                                }
+                            }
+                        }
+                    }
+                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION_NO_SPACE -> {
+                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE){
+                            val lastIndex = 2
+                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    addQuestion(mSections[0].questions[22], childLayout)
+                                    addQuestion(mSections[0].questions[23], childLayout)
+                                    addQuestion(mSections[0].questions[24], childLayout)
+                                    addQuestion(mSections[0].questions[25], childLayout)
+                                }
+                            }
+                        }
+                    }
+                    ApplicationConstants.FormQuestionKeys.DONE_REFER -> {
+                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+                            val lastIndex = 3
+                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    addQuestion(mSections[0].questions[6], childLayout)
+                                    addQuestion(mSections[0].questions[7], childLayout)
+                                }
+                            }
+                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
+                            val lastIndex = 3
+                            val mParent = containerList[0][lastIndex] as LinearLayout
+                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+                            when (i) {
+                                0, 2 -> {}
+                                1 -> {
+                                    addQuestion(mSections[0].questions[18], childLayout)
+                                    addQuestion(mSections[0].questions[19], childLayout)
+                                }
+                            }
                         }
                     }
                 }
@@ -460,11 +824,125 @@ class FormDisplayPageFragment : BaseFragment() {
         }
     }
 
-    private fun setOnCheckedChangeListener(radioGroup: RadioGroup, radioGroupField: SelectOneField) {
+    private fun getChildLayout(parentLayout: LinearLayout, keepChildViews: Boolean = false): LinearLayout {
+        val childLayout: LinearLayout
+        val lastChild = parentLayout.getChildAt(parentLayout.childCount - 1)
+        if (lastChild.javaClass.simpleName == "LinearLayout") {
+            childLayout = lastChild as LinearLayout
+            if(!keepChildViews) childLayout.removeAllViews()
+        } else {
+            childLayout = createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, parentLayout)
+        }
+        return childLayout
+    }
+
+    private fun setOnCheckedChangeListener(mLabel: String, radioGroup: RadioGroup, radioGroupField: SelectOneField) {
         radioGroup.setOnCheckedChangeListener { radioGroup1: RadioGroup, i: Int ->
             val radioButton = radioGroup1.findViewById<View>(i)
             val idx = radioGroup1.indexOfChild(radioButton)
             radioGroupField.setAnswer(idx)
+            when (mLabel) {
+                ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE -> {
+                    val lastIndex = 1
+                    val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout, false)
+                    when (idx) {
+                        0 -> {
+                            addQuestion(mSections[0].questions[1], childLayout)
+                            addQuestion(mSections[0].questions[2], childLayout)
+                        }
+                        1 -> {}
+                    }
+                }
+                ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION_NO_SPACE -> {
+                    val lastIndex = 2
+                    val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                    when (idx) {
+                        0 -> {addQuestion(mSections[0].questions[4], childLayout)}
+                        1 -> {}
+                    }
+                }
+                ApplicationConstants.FormQuestionKeys.DONE_REFER -> {
+                    val lastIndex = 3
+                    val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout, true)
+                    when (idx) {
+                        0 -> {
+                            addQuestion(mSections[0].questions[6], childLayout)
+                            addQuestion(mSections[0].questions[7], childLayout)
+                        }
+                        1 -> {}
+                    }
+                }
+                ApplicationConstants.FormQuestionKeys.PREGNANCY_DANGER -> {
+                    val lastIndex = 1
+                    val mParent = containerList[0][lastIndex] as LinearLayout
+                    val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
+                    childLayout.children.forEachIndexed { mIndex, mView ->
+                        if(mView.javaClass.simpleName == "TextView"){
+                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.PREGNANCY_DANGER){
+                                val finalLayout = childLayout.getChildAt(mIndex + 2) as LinearLayout
+                                if(idx == 0) addQuestion(mSections[0].questions[16], finalLayout) else finalLayout.removeAllViews()
+                                return@forEachIndexed
+                            }
+                        }
+                    }
+                }
+                ApplicationConstants.FormQuestionKeys.HEIGHT_NOT_MEASURABLE -> {
+                    val lastIndex = 1
+                    val mParent = containerList[0][lastIndex] as LinearLayout
+                    val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
+                    childLayout.children.forEachIndexed { mIndex, mView ->
+                        if(mView.javaClass.simpleName == "TextView"){
+                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.HEIGHT_NOT_MEASURABLE){
+                                (childLayout.getChildAt(mIndex - 1) as LinearLayout).removeAllViews()
+                                return@forEachIndexed
+                            }
+                        }
+                    }
+                }
+                ApplicationConstants.FormQuestionKeys.WEIGHT_NOT_MEASURABLE,
+                ApplicationConstants.FormQuestionKeys.NOT_MEASURABLE -> {
+                    val lastIndex = 1
+                    val mParent = containerList[0][lastIndex] as LinearLayout
+                    val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
+                    childLayout.children.forEachIndexed { mIndex, mView ->
+                        if(mView.javaClass.simpleName == "TextView"){
+                            val mm = (mView as TextView).text
+                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.WEIGHT_NOT_MEASURABLE || (mView as TextView).text == ApplicationConstants.FormQuestionKeys.NOT_MEASURABLE){
+                                (childLayout.getChildAt(mIndex - 1) as LinearLayout).removeAllViews()
+                                return@forEachIndexed
+                            }
+                        }
+                    }
+                }
+                ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_SITUATION_NOT_MEASURABLE,
+                ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_NOT_MEASURABLE  -> {
+                    val lastIndex = 1
+                    val mParent = containerList[0][lastIndex] as LinearLayout
+                    val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
+                    childLayout.children.forEachIndexed { mIndex, mView ->
+                        if(mView.javaClass.simpleName == "TextView"){
+                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_SITUATION_NOT_MEASURABLE || (mView as TextView).text == ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_NOT_MEASURABLE){
+                                (childLayout.getChildAt(mIndex - 1) as LinearLayout).removeAllViews()
+                                return@forEachIndexed
+                            }
+                        }
+                    }
+                }
+                ApplicationConstants.FormQuestionKeys.POST_PREGNANCY_DANGER -> {
+                    val lastIndex = 1
+                    val mParent = containerList[0][lastIndex] as LinearLayout
+                    val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
+                    childLayout.children.forEachIndexed { mIndex, mView ->
+                        if(mView.javaClass.simpleName == "TextView"){
+                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.POST_PREGNANCY_DANGER){
+                                val finalLayout = childLayout.getChildAt(mIndex + 2) as LinearLayout
+                                if(idx == 0) addQuestion(mSections[0].questions[13], finalLayout) else finalLayout.removeAllViews()
+                                return@forEachIndexed
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

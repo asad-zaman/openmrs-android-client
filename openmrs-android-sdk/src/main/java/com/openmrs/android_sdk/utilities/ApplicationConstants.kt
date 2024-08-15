@@ -162,8 +162,25 @@ object ApplicationConstants {
         const val PRE_PREGNANCY_SERVICE= "প্রসব পূর্ব সেবা"
         const val POST_PREGNANCY_SERVICE = "প্রসব পরবর্তী সেবা"
         const val GENERAL_PATIENT_SERVICE = "সাধারন রোগীর সেবা"
+    }
+
+    object FormQuestionKeys {
         const val PREGNANCY_INFORMATION = "গর্ভাবস্থা সম্পর্কিত তথ্য"
         const val PREGNANCY_RESULT = "প্রসবের ফলাফল"
+        const val DONE_HEALTH_SERVICE = "স্বাস্থ্য সেবা দেওয়া হয়েছে?"
+        const val DONE_HEALTH_SERVICE_WITH_SPACE = "স্বাস্থ্য সেবা দেওয়া হয়েছে ?"
+        const val DONE_HEALTH_EDUCATION = "স্বাস্থ্য শিক্ষা দেওয়া হয়েছে?"
+        const val DONE_HEALTH_EDUCATION_NO_SPACE = "স্বাস্থ্যশিক্ষা দেওয়া হয়েছে?"
+        const val DONE_REFER = "রেফার করা হয়েছে"
+        const val FAMILY_PLANNING_METHOD = "পরিবার পরিকল্পনা পদ্ধতি"
+        const val REFERRED_INSTITUTION_NAME = "রেফারকৃত প্রতিষ্ঠানের নাম?"
+        const val PREGNANCY_DANGER = "গর্ভকালীন বিপদচিহ্ন আছে"
+        const val POST_PREGNANCY_DANGER = "প্রসব পরবর্তী বিপদ চিহ্ন আছে"
+        const val HEIGHT_NOT_MEASURABLE = "উচ্চতা পরিমাপ করা সম্ভব হচ্ছেনা"
+        const val WEIGHT_NOT_MEASURABLE = "ওজন পরিমাপ করা সম্ভব হচ্ছেনা"
+        const val NOT_MEASURABLE = "পরিমাপ করা সম্ভব হচ্ছেনা"
+        const val BLOOD_PRESSURE_SITUATION_NOT_MEASURABLE = "রক্তচাপের অবস্থা পরিমাপ করা সম্ভব হচ্ছেনা"
+        const val BLOOD_PRESSURE_NOT_MEASURABLE = "রক্তচাপ পরিমাপ করা সম্ভব হচ্ছেনা"
     }
 
     object UserKeys {
