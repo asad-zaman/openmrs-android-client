@@ -69,38 +69,22 @@ class FormDisplayPageFragment : BaseFragment() {
         containerList[lastIndex] = createSectionLayout(containerList[lastIndex], section.label!!)
         binding.sectionsPrimaryContainer.addView(containerList[lastIndex])
         if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PREGNANCY_SERVICE) {
-            addQuestion(section.questions[0], containerList[lastIndex])
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[0], this) }
         } else if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE) {
-            addQuestion(section.questions[0], containerList[0])
-            addQuestion(section.questions[3], containerList[0])
-            addQuestion(section.questions[5], containerList[0])
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[0], this) }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[3], this) }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[5], this) }
         }  else if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE) {
-            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
-                addQuestion(section.questions[0], this)
-            }
-            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
-                addQuestion(section.questions[3], this)
-            }
-            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
-                addQuestion(section.questions[5], this)
-            }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[0], this) }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[3], this) }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[5], this) }
         } else if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE) {
-            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
-                addQuestion(section.questions[0], this)
-            }
-            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
-                addQuestion(section.questions[21], this)
-            }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[0], this) }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[21], this) }
         } else if (formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE) {
-            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
-                addQuestion(section.questions[0], this)
-            }
-            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
-                addQuestion(section.questions[15], this)
-            }
-            createContainer(LinearLayout.VERTICAL, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, containerList[0]).apply {
-                addQuestion(section.questions[17], this)
-            }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[0], this) }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[15], this) }
+            createContainer(prevContainer = containerList[0]).apply { addQuestion(section.questions[17], this) }
         }
     }
 
@@ -249,36 +233,7 @@ class FormDisplayPageFragment : BaseFragment() {
         questionLinearLayout.addView(mTextview)
         questionLinearLayout.addView(spinner)
 
-        if (question.label == ApplicationConstants.FormQuestionKeys.PREGNANCY_INFORMATION) {
-            containerList[0].addView(questionLinearLayout)
-        } else if (question.label == ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE) {
-            if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
-                containerList[0].addView(questionLinearLayout)
-            } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
-                mContainer.addView(questionLinearLayout)
-            }
-        } else if (question.label == ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE_WITH_SPACE){
-            mContainer.addView(questionLinearLayout)
-        }  else if (question.label == ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION) {
-            if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE){
-                mContainer.addView(questionLinearLayout)
-            } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
-                mContainer.addView(questionLinearLayout)
-            } else {
-                containerList[0].addView(questionLinearLayout)
-            }
-        } else if (question.label == ApplicationConstants.FormQuestionKeys.DONE_REFER) {
-            if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
-                containerList[0].addView(questionLinearLayout)
-            } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
-                mContainer.addView(questionLinearLayout)
-            }
-        } else if (question.label == ApplicationConstants.FormQuestionKeys.FAMILY_PLANNING_METHOD || question.label == ApplicationConstants.FormQuestionKeys.REFERRED_INSTITUTION_NAME) {
-            mContainer.addView(questionLinearLayout)
-        }
-        else {
-            containerList[1].addView(questionLinearLayout)
-        }
+        mContainer.addView(questionLinearLayout)
 
         val selectOneField = viewModel.findSelectOneFieldById(spinnerField.concept)
         if (selectOneField != null) {
@@ -601,69 +556,61 @@ class FormDisplayPageFragment : BaseFragment() {
                 spinnerField.setAnswer(i)
                 when (mLabel) {
                     ApplicationConstants.FormQuestionKeys.PREGNANCY_INFORMATION -> {
-                        var lastIndex = 0
-                        val count = containerList.size - 1
-                        if (count == lastIndex) {
-                            lastIndex = createNewContainer()
-                        } else if (count > lastIndex) {
-                            for (ind in lastIndex until count) {
-                                containerList[ind + 1].removeAllViews()
-                            }
-                            lastIndex++
-                        }
+                        val lastIndex = 1
+                        val mParent = containerList[0][lastIndex] as LinearLayout
+                        val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
                         when (i) {
                             0, 5 -> {}
                             1 -> {
-                                addQuestion(mSections[0].questions[1], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[2], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[3], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[1], childLayout)
+                                addQuestion(mSections[0].questions[2], childLayout)
+                                addQuestion(mSections[0].questions[3], childLayout)
                             }
                             2 -> {
-                                addQuestion(mSections[0].questions[4], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[5], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[6], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[7], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[8], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[9], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[10], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[11], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[12], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[4], childLayout)
+                                addQuestion(mSections[0].questions[5], childLayout)
+                                addQuestion(mSections[0].questions[6], childLayout)
+                                addQuestion(mSections[0].questions[7], childLayout)
+                                addQuestion(mSections[0].questions[8], childLayout)
+                                addQuestion(mSections[0].questions[9], childLayout)
+                                addQuestion(mSections[0].questions[10], childLayout)
+                                addQuestion(mSections[0].questions[11], childLayout)
+                                createContainer(prevContainer = childLayout).apply {
+                                    addQuestion(mSections[0].questions[12], this)
+                                }
                             }
                             3 -> {
-                                addQuestion(mSections[0].questions[16], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[17], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[16], childLayout)
+                                addQuestion(mSections[0].questions[17], childLayout)
                             }
                             4 -> {
-                                addQuestion(mSections[0].questions[18], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[18], childLayout)
                             }
                         }
                     }
                     ApplicationConstants.FormQuestionKeys.PREGNANCY_RESULT -> {
-                        var lastIndex = 1
-                        val count = containerList.size - 1
-                        if (count == lastIndex) {
-                            lastIndex = createNewContainer()
-                        } else if (count > lastIndex) {
-                            for (ind in lastIndex until count) {
-                                containerList[ind + 1].removeAllViews()
-                            }
-                            lastIndex++
-                        }
+                        val lastIndex = 1
+                        val mParent = containerList[0][lastIndex] as LinearLayout
+                        val cLayout1 = mParent.getChildAt(mParent.childCount - 1) as LinearLayout
+                        val cLayout2= cLayout1.getChildAt(cLayout1.childCount - 1) as LinearLayout
+                        val childLayout = cLayout2.getChildAt(cLayout2.childCount - 1) as LinearLayout
+                        val finalLayout = getChildLayout(childLayout.getChildAt(childLayout.childCount - 1) as LinearLayout)
                         when (i) {
                             0 -> {}
                             1 -> {
-                                addQuestion(mSections[0].questions[13], containerList[lastIndex])
-                                addQuestion(mSections[0].questions[15], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[13], finalLayout)
+                                addQuestion(mSections[0].questions[15], finalLayout)
                             }
                             2 -> {
-                                addQuestion(mSections[0].questions[14], containerList[lastIndex])
+                                addQuestion(mSections[0].questions[14], finalLayout)
                             }
                         }
                     }
                     ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE -> {
                         if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
                             val lastIndex = 1
-                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                            val mParent = containerList[0][lastIndex] as LinearLayout
+                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
                             when (i) {
                                 0, 2 -> {}
                                 1 -> {
@@ -749,7 +696,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION -> {
                         if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
                             val lastIndex = 2
-                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                            val mParent = containerList[0][lastIndex] as LinearLayout
+                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
                             when (i) {
                                 0, 2 -> {}
                                 1 -> {
@@ -794,7 +742,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     ApplicationConstants.FormQuestionKeys.DONE_REFER -> {
                         if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
                             val lastIndex = 3
-                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                            val mParent = containerList[0][lastIndex] as LinearLayout
+                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
                             when (i) {
                                 0, 2 -> {}
                                 1 -> {
