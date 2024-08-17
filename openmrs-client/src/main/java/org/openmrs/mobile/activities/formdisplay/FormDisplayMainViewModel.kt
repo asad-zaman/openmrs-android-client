@@ -52,7 +52,8 @@ class FormDisplayMainViewModel @Inject constructor(
         val enc = Encountercreate()
         enc.patientId = patient.id
         enc.observations = createObservationsFromInputFields(inputFields) + createObservationsFromRadioGroupFields(radioGroupFields)
-        return if (isUpdateEncounter) updateRecords(encounterUuid!!, enc) else createRecords(enc)
+        return MutableLiveData<ResultType>()
+//        return if (isUpdateEncounter) updateRecords(encounterUuid!!, enc) else createRecords(enc)
     }
 
     private fun createRecords(enc: Encountercreate): LiveData<ResultType> {
@@ -121,6 +122,17 @@ class FormDisplayMainViewModel @Inject constructor(
                 observations += Obscreate().apply {
                     concept = radioGroupField.concept
                     value = radioGroupField.chosenAnswer!!.concept
+                    obsDatetime = LocalDateTime().toString()
+                    person = patient.uuid
+                }
+            } else if (radioGroupField.chosenAnswers.size > 0){
+                val chosenAnswerString = StringBuilder()
+                radioGroupField.chosenAnswers.forEach {
+                    chosenAnswerString.append("${it.concept} " )
+                }
+                observations += Obscreate().apply {
+                    concept = radioGroupField.concept
+                    value = chosenAnswerString.toString()
                     obsDatetime = LocalDateTime().toString()
                     person = patient.uuid
                 }

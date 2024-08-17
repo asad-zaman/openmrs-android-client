@@ -43,7 +43,7 @@ class FormFieldsWrapper : Serializable {
                             val renderType = question.questionOptions!!.rendering
                             if (renderType == "number" || renderType == "text") {
                                 val conceptUuid = question.questionOptions!!.concept
-                                val inputField = InputField(conceptUuid!!)
+                                val inputField = InputField(conceptUuid!!, question.required ?: true)
                                 if(renderType == "number"){
                                     inputField.numberValue = getValue(encounter.observations, conceptUuid)
                                 } else if(renderType == "text"){
@@ -52,7 +52,7 @@ class FormFieldsWrapper : Serializable {
                                 inputFieldList.add(inputField)
                             } else if (renderType == "select" || renderType == "radio") {
                                 val conceptUuid = question.questionOptions!!.concept
-                                val selectOneField = SelectOneField(question.questionOptions!!.answers!!, conceptUuid!!)
+                                val selectOneField = SelectOneField(question.questionOptions!!.answers!!, conceptUuid!!, question.required ?: true)
                                 val chosenAnswer = Answer()
                                 chosenAnswer.concept = conceptUuid
                                 chosenAnswer.label = getValue(encounter.observations, conceptUuid).toString()

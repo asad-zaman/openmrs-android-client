@@ -150,7 +150,7 @@ class FormDisplayActivity : ACBaseActivity() {
             radioGroupFields += formPageFragment.getSelectOneFields()
         }
 
-        enableSubmitButton(false)
+//        enableSubmitButton(false)
         viewModel.submitForm(inputFields, radioGroupFields).observeOnce(this, Observer { result ->
             when (result) {
                 ResultType.EncounterSubmissionSuccess -> {

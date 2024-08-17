@@ -16,8 +16,9 @@ package com.openmrs.android_sdk.utilities
 import com.openmrs.android_sdk.library.models.Answer
 import java.io.Serializable
 
-data class SelectOneField(var answerList: List<Answer>, var concept: String) : Serializable {
+data class SelectOneField(var answerList: List<Answer>, var concept: String, var mRequired: Boolean) : Serializable {
     var chosenAnswer: Answer? = null
+    var chosenAnswers: MutableList<Answer> = mutableListOf()
 
     fun setAnswer(answerPosition: Int) {
         if (answerPosition < answerList.size) chosenAnswer = answerList[answerPosition]

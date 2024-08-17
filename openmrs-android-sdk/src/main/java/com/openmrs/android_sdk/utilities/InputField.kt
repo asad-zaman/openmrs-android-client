@@ -16,7 +16,7 @@ package com.openmrs.android_sdk.utilities
 import java.io.Serializable
 import kotlin.math.abs
 
-data class InputField(var concept: String) : Serializable {
+data class InputField(var concept: String, var mRequired: Boolean) : Serializable {
 
     val id: Int = abs(concept.hashCode())
 

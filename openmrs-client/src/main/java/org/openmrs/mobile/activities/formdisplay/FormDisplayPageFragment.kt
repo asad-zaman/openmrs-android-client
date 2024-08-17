@@ -149,7 +149,7 @@ class FormDisplayPageFragment : BaseFragment() {
         }
         sectionContainer.addView(generateTextView(question.label))
 
-        val inputField = viewModel.getOrCreateInputField(question.questionOptions!!.concept!!)
+        val inputField = viewModel.getOrCreateInputField(question.questionOptions!!.concept!!, question.required ?: true)
 
         val options = question.questionOptions!!
         if (options.min != null && options.max != null && !options.isAllowDecimal) {
@@ -213,7 +213,7 @@ class FormDisplayPageFragment : BaseFragment() {
 
         spinner.adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, answerLabels).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
 
-        val spinnerField = SelectOneField(mAnswers, question.questionOptions!!.concept!!)
+        val spinnerField = SelectOneField(mAnswers, question.questionOptions!!.concept!!, question.required ?: true)
 
         questionLinearLayout.addView(mTextview)
         questionLinearLayout.addView(spinner)
@@ -262,7 +262,7 @@ class FormDisplayPageFragment : BaseFragment() {
             )
         }
 
-        topLayout.addView(selectedCountTextView)
+//        topLayout.addView(selectedCountTextView)
 
         val checkboxLayout = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
@@ -297,22 +297,14 @@ class FormDisplayPageFragment : BaseFragment() {
 
         mContainer.addView(topLayout)
 
-        mContainer.addView(checkboxLayout)
+        val multiCheckField = SelectOneField(question.questionOptions!!.answers!!, question.questionOptions!!.concept!!, question.required ?: true)
+        val selectOneField = viewModel.findSelectOneFieldById(multiCheckField.concept)
 
-        val selectedOptions = mutableSetOf<String>()
-        question.questionOptions?.answers?.forEach { answer ->
-            val checkBox = CheckBox(activity).apply {
-                text = answer.label
-                setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        selectedOptions.add(answer.concept!!)
-                    } else {
-                        selectedOptions.remove(answer.concept!!)
-                    }
-                    selectedCountTextView.text = "${selectedOptions.size}"
-                }
-            }
-            checkboxLayout.addView(checkBox)
+        if (selectOneField != null) {
+            setOnMultiCheckItemSelectListener(question.label ?: "", question, selectOneField, mContainer, checkboxLayout)
+        } else {
+            viewModel.selectOneFields.add(multiCheckField)
+            setOnMultiCheckItemSelectListener(question.label ?: "", question, multiCheckField, mContainer, checkboxLayout)
         }
 
         /*container.setOnTouchListener { v, event ->
@@ -395,7 +387,7 @@ class FormDisplayPageFragment : BaseFragment() {
             )
         }
 
-        val inputField = viewModel.getOrCreateInputField(question.questionOptions!!.concept!!)
+        val inputField = viewModel.getOrCreateInputField(question.questionOptions!!.concept!!, question.required ?: true)
 
         val dateButton = Button(activity).apply {
             background = ContextCompat.getDrawable(context, R.drawable.ic_calender)
@@ -470,7 +462,7 @@ class FormDisplayPageFragment : BaseFragment() {
             radioButton.text = it.label
             radioGroup.addView(radioButton)
         }
-        val radioGroupField = SelectOneField(question.questionOptions!!.answers!!, question.questionOptions!!.concept!!)
+        val radioGroupField = SelectOneField(question.questionOptions!!.answers!!, question.questionOptions!!.concept!!, question.required ?: true)
 
         sectionContainer.addView(textView)
         sectionContainer.addView(radioGroup)
@@ -545,7 +537,6 @@ class FormDisplayPageFragment : BaseFragment() {
                     ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE -> { handleHealthServiceDone(i) }
                     ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE_WITH_SPACE -> { handleHealthServiceWithSpaceDone(i) }
                     ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION -> { handleHealthEducationDone(i) }
-                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION_NO_SPACE -> { handleHealthEducationNoSpaceDone(i) }
                     ApplicationConstants.FormQuestionKeys.DONE_REFER -> { handleReferDone(i) }
                 }
             }
@@ -556,10 +547,33 @@ class FormDisplayPageFragment : BaseFragment() {
         }
     }
 
+    private fun setOnMultiCheckItemSelectListener(mLabel: String, mQuestion: Question, selectOneField: SelectOneField, mContainer: LinearLayout, checkboxLayout: LinearLayout) {
+        val selectedAnswers = mutableListOf<Answer>()
+        mQuestion.questionOptions?.answers?.forEach { answer ->
+            val checkBox = CheckBox(activity).apply {
+                text = answer.label
+                setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        selectedAnswers.add(answer)
+                    } else {
+                        selectedAnswers.remove(answer)
+                    }
+                    selectOneField.chosenAnswers = selectedAnswers
+//                    selectedCountTextView.text = "${selectedOptions.size}"
+                }
+            }
+            checkboxLayout.addView(checkBox)
+        }
+
+        mContainer.addView(checkboxLayout)
+    }
+
     private fun handlePregnancyInformationSpinner(idx: Int) {
         val lastIndex = 1
         val mParent = containerList[0][lastIndex] as LinearLayout
         val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+        viewModel.inputFields = mutableListOf()
+        viewModel.selectOneFields.retainAll { it == viewModel.selectOneFields.first() }
         when (idx) {
             0, 5 -> {}
             1 -> {
@@ -597,6 +611,8 @@ class FormDisplayPageFragment : BaseFragment() {
         val cLayout2= cLayout1.getChildAt(cLayout1.childCount - 1) as LinearLayout
         val childLayout = cLayout2.getChildAt(cLayout2.childCount - 1) as LinearLayout
         val finalLayout = getChildLayout(childLayout.getChildAt(childLayout.childCount - 1) as LinearLayout)
+        viewModel.inputFields.retainAll(viewModel.inputFields.take(2))
+        viewModel.selectOneFields.retainAll(viewModel.selectOneFields.take(8))
         when (idx) {
             0 -> {}
             1 -> {
@@ -614,6 +630,13 @@ class FormDisplayPageFragment : BaseFragment() {
             val lastIndex = 1
             val mParent = containerList[0][lastIndex] as LinearLayout
             val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+
+            viewModel.inputFields = mutableListOf()
+            val iterator = viewModel.selectOneFields.iterator()
+            while (iterator.hasNext()) {
+                val it = iterator.next()
+                if (it.concept == mSections[0].questions[1].questionOptions?.concept) { iterator.remove() }
+            }
             when (idx) {
                 0, 2 -> {}
                 1 -> {
@@ -625,6 +648,34 @@ class FormDisplayPageFragment : BaseFragment() {
             val lastIndex = 1
             val mParent = containerList[0][lastIndex] as LinearLayout
             val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+
+            val mIterator = viewModel.inputFields.iterator()
+            while (mIterator.hasNext()) {
+                val it = mIterator.next()
+                if (it.concept == mSections[0].questions[3].questionOptions?.concept
+                    || it.concept == mSections[0].questions[6].questionOptions?.concept
+                    || it.concept == mSections[0].questions[7].questionOptions?.concept) {
+                    mIterator.remove()
+                }
+            }
+
+            val iterator = viewModel.selectOneFields.iterator()
+            while (iterator.hasNext()) {
+                val it = iterator.next()
+                if (it.concept == mSections[0].questions[1].questionOptions?.concept
+                    || it.concept == mSections[0].questions[2].questionOptions?.concept
+                    || it.concept == mSections[0].questions[4].questionOptions?.concept
+                    || it.concept == mSections[0].questions[5].questionOptions?.concept
+                    || it.concept == mSections[0].questions[8].questionOptions?.concept
+                    || it.concept == mSections[0].questions[9].questionOptions?.concept
+                    || it.concept == mSections[0].questions[10].questionOptions?.concept
+                    || it.concept == mSections[0].questions[11].questionOptions?.concept
+                    || it.concept == mSections[0].questions[12].questionOptions?.concept
+                    || it.concept == mSections[0].questions[13].questionOptions?.concept
+                    || it.concept == mSections[0].questions[14].questionOptions?.concept) {
+                    iterator.remove()
+                }
+            }
             when (idx) {
                 0, 2 -> {}
                 1 -> {
@@ -647,16 +698,6 @@ class FormDisplayPageFragment : BaseFragment() {
                     addQuestion(mSections[0].questions[14], childLayout)
                 }
             }
-        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE){
-            val lastIndex = 1
-            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
-            when (idx) {
-                0, 2 -> {}
-                1 -> {
-                    addQuestion(mSections[0].questions[1], childLayout)
-                    addQuestion(mSections[0].questions[2], childLayout)
-                }
-            }
         }
     }
 
@@ -665,6 +706,40 @@ class FormDisplayPageFragment : BaseFragment() {
             val lastIndex = 1
             val mParent = containerList[0][lastIndex] as LinearLayout
             val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+
+            val mIterator = viewModel.inputFields.iterator()
+            while (mIterator.hasNext()) {
+                val it = mIterator.next()
+                if (it.concept == mSections[0].questions[1].questionOptions?.concept
+                    || it.concept == mSections[0].questions[3].questionOptions?.concept
+                    || it.concept == mSections[0].questions[6].questionOptions?.concept
+                    || it.concept == mSections[0].questions[7].questionOptions?.concept) {
+                    mIterator.remove()
+                }
+            }
+
+            val iterator = viewModel.selectOneFields.iterator()
+            while (iterator.hasNext()) {
+                val it = iterator.next()
+                if (it.concept == mSections[0].questions[2].questionOptions?.concept
+                    || it.concept == mSections[0].questions[4].questionOptions?.concept
+                    || it.concept == mSections[0].questions[5].questionOptions?.concept
+                    || it.concept == mSections[0].questions[8].questionOptions?.concept
+                    || it.concept == mSections[0].questions[9].questionOptions?.concept
+                    || it.concept == mSections[0].questions[10].questionOptions?.concept
+                    || it.concept == mSections[0].questions[11].questionOptions?.concept
+                    || it.concept == mSections[0].questions[12].questionOptions?.concept
+                    || it.concept == mSections[0].questions[13].questionOptions?.concept
+                    || it.concept == mSections[0].questions[14].questionOptions?.concept
+                    || it.concept == mSections[0].questions[15].questionOptions?.concept
+                    || it.concept == mSections[0].questions[16].questionOptions?.concept
+                    || it.concept == mSections[0].questions[17].questionOptions?.concept
+                    || it.concept == mSections[0].questions[18].questionOptions?.concept
+                    || it.concept == mSections[0].questions[19].questionOptions?.concept
+                    || it.concept == mSections[0].questions[20].questionOptions?.concept) {
+                    iterator.remove()
+                }
+            }
             when (idx) {
                 0, 2 -> {}
                 1 -> {
@@ -703,6 +778,12 @@ class FormDisplayPageFragment : BaseFragment() {
             val lastIndex = 2
             val mParent = containerList[0][lastIndex] as LinearLayout
             val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+
+            val iterator = viewModel.selectOneFields.iterator()
+            while (iterator.hasNext()) {
+                val it = iterator.next()
+                if (it.concept == mSections[0].questions[4].questionOptions?.concept) { iterator.remove() }
+            }
             when (idx) {
                 0, 2 -> {}
                 1 -> {
@@ -713,6 +794,12 @@ class FormDisplayPageFragment : BaseFragment() {
             val lastIndex = 2
             val mParent = containerList[0][lastIndex] as LinearLayout
             val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+
+            val iterator = viewModel.selectOneFields.iterator()
+            while (iterator.hasNext()) {
+                val it = iterator.next()
+                if (it.concept == mSections[0].questions[22].questionOptions?.concept) { iterator.remove() }
+            }
             when (idx) {
                 0, 2 -> {}
                 1 -> { addQuestion(mSections[0].questions[22], childLayout) }
@@ -721,26 +808,18 @@ class FormDisplayPageFragment : BaseFragment() {
             val lastIndex = 2
             val mParent = containerList[0][lastIndex] as LinearLayout
             val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+
+            val iterator = viewModel.selectOneFields.iterator()
+            while (iterator.hasNext()) {
+                val it = iterator.next()
+                if (it.concept == mSections[0].questions[16].questionOptions?.concept) {
+                    iterator.remove()
+                }
+            }
             when (idx) {
                 0, 2 -> {}
                 1 -> {
                     addQuestion(mSections[0].questions[16], childLayout)
-                }
-            }
-        }
-    }
-
-    private fun handleHealthEducationNoSpaceDone(idx: Int) {
-        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE){
-            val lastIndex = 2
-            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
-            when (idx) {
-                0, 2 -> {}
-                1 -> {
-                    addQuestion(mSections[0].questions[22], childLayout)
-                    addQuestion(mSections[0].questions[23], childLayout)
-                    addQuestion(mSections[0].questions[24], childLayout)
-                    addQuestion(mSections[0].questions[25], childLayout)
                 }
             }
         }
@@ -751,6 +830,14 @@ class FormDisplayPageFragment : BaseFragment() {
             val lastIndex = 3
             val mParent = containerList[0][lastIndex] as LinearLayout
             val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+
+            val iterator = viewModel.selectOneFields.iterator()
+            while (iterator.hasNext()) {
+                val it = iterator.next()
+                if (it.concept == mSections[0].questions[6].questionOptions?.concept || it.concept == mSections[0].questions[7].questionOptions?.concept) {
+                    iterator.remove()
+                }
+            }
             when (idx) {
                 0, 2 -> {}
                 1 -> {
@@ -762,6 +849,14 @@ class FormDisplayPageFragment : BaseFragment() {
             val lastIndex = 3
             val mParent = containerList[0][lastIndex] as LinearLayout
             val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+
+            val iterator = viewModel.selectOneFields.iterator()
+            while (iterator.hasNext()) {
+                val it = iterator.next()
+                if (it.concept == mSections[0].questions[18].questionOptions?.concept || it.concept == mSections[0].questions[19].questionOptions?.concept) {
+                    iterator.remove()
+                }
+            }
             when (idx) {
                 0, 2 -> {}
                 1 -> {
@@ -793,6 +888,14 @@ class FormDisplayPageFragment : BaseFragment() {
                 ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE -> {
                     val lastIndex = 1
                     val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout, false)
+
+                    val iterator = viewModel.selectOneFields.iterator()
+                    while (iterator.hasNext()) {
+                        val it = iterator.next()
+                        if (it.concept == mSections[0].questions[1].questionOptions?.concept || it.concept == mSections[0].questions[2].questionOptions?.concept) {
+                            iterator.remove()
+                        }
+                    }
                     when (idx) {
                         0 -> {
                             addQuestion(mSections[0].questions[1], childLayout)
@@ -804,6 +907,11 @@ class FormDisplayPageFragment : BaseFragment() {
                 ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION_NO_SPACE -> {
                     val lastIndex = 2
                     val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+                    val iterator = viewModel.selectOneFields.iterator()
+                    while (iterator.hasNext()) {
+                        val it = iterator.next()
+                        if (it.concept == mSections[0].questions[4].questionOptions?.concept) { iterator.remove() }
+                    }
                     when (idx) {
                         0 -> {addQuestion(mSections[0].questions[4], childLayout)}
                         1 -> {}
@@ -812,6 +920,13 @@ class FormDisplayPageFragment : BaseFragment() {
                 ApplicationConstants.FormQuestionKeys.DONE_REFER -> {
                     val lastIndex = 3
                     val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout, true)
+                    val iterator = viewModel.selectOneFields.iterator()
+                    while (iterator.hasNext()) {
+                        val it = iterator.next()
+                        if (it.concept == mSections[0].questions[6].questionOptions?.concept || it.concept == mSections[0].questions[7].questionOptions?.concept) {
+                            iterator.remove()
+                        }
+                    }
                     when (idx) {
                         0 -> {
                             addQuestion(mSections[0].questions[6], childLayout)
@@ -828,7 +943,12 @@ class FormDisplayPageFragment : BaseFragment() {
                         if(mView.javaClass.simpleName == "TextView"){
                             if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.PREGNANCY_DANGER){
                                 val finalLayout = childLayout.getChildAt(mIndex + 2) as LinearLayout
-                                if(idx == 0) addQuestion(mSections[0].questions[16], finalLayout) else finalLayout.removeAllViews()
+                                val iterator = viewModel.selectOneFields.iterator()
+                                while (iterator.hasNext()) {
+                                    val it = iterator.next()
+                                    if (it.concept == mSections[0].questions[16].questionOptions?.concept) { iterator.remove() }
+                                }
+                                if(idx == 0) { addQuestion(mSections[0].questions[16], finalLayout) } else finalLayout.removeAllViews()
                                 return@forEachIndexed
                             }
                         }
@@ -854,7 +974,6 @@ class FormDisplayPageFragment : BaseFragment() {
                     val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
                     childLayout.children.forEachIndexed { mIndex, mView ->
                         if(mView.javaClass.simpleName == "TextView"){
-                            val mm = (mView as TextView).text
                             if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.WEIGHT_NOT_MEASURABLE || (mView as TextView).text == ApplicationConstants.FormQuestionKeys.NOT_MEASURABLE){
                                 (childLayout.getChildAt(mIndex - 1) as LinearLayout).removeAllViews()
                                 return@forEachIndexed
@@ -884,7 +1003,12 @@ class FormDisplayPageFragment : BaseFragment() {
                         if(mView.javaClass.simpleName == "TextView"){
                             if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.POST_PREGNANCY_DANGER){
                                 val finalLayout = childLayout.getChildAt(mIndex + 2) as LinearLayout
-                                if(idx == 0) addQuestion(mSections[0].questions[13], finalLayout) else finalLayout.removeAllViews()
+                                val iterator = viewModel.selectOneFields.iterator()
+                                while (iterator.hasNext()) {
+                                    val it = iterator.next()
+                                    if (it.concept == mSections[0].questions[13].questionOptions?.concept) { iterator.remove() }
+                                }
+                                if(idx == 0){ addQuestion(mSections[0].questions[13], finalLayout) } else finalLayout.removeAllViews()
                                 return@forEachIndexed
                             }
                         }
@@ -953,21 +1077,25 @@ class FormDisplayPageFragment : BaseFragment() {
 
     fun validateInputFields(): Boolean {
         var isValid = true
+
+        val aa = viewModel.inputFields
+        val bb = viewModel.selectOneFields
+        return false
+
+
         for (field in viewModel.inputFields) {
-            if(field.numberValue == InputField.DEFAULT_NUMBER_VALUE && field.textValue == InputField.DEFAULT_TEXT_VALUE){
+            if(field.mRequired && field.numberValue == InputField.DEFAULT_NUMBER_VALUE && field.textValue == InputField.DEFAULT_TEXT_VALUE){
                 isValid = false
-                ToastUtil.error(getString(R.string.empty_field_error_message))
                 break
             }
         }
         for (radioGroupField in viewModel.selectOneFields) {
-            if (radioGroupField.chosenAnswer == null || radioGroupField.chosenAnswer!!.concept!!.isEmpty()){
+            if (radioGroupField.mRequired && radioGroupField.chosenAnswer == null || radioGroupField.chosenAnswer!!.concept!!.isEmpty()){
                 isValid = false
-                ToastUtil.error(getString(R.string.empty_field_error_message))
                 break
             }
         }
-
+        if(!isValid) ToastUtil.error(getString(R.string.empty_field_error_message))
         return isValid
     }
 

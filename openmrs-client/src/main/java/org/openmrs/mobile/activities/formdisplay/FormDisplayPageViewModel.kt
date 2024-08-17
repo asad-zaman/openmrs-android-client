@@ -27,10 +27,10 @@ class FormDisplayPageViewModel @Inject constructor(savedStateHandle: SavedStateH
         }
     }
 
-    fun getOrCreateInputField(concept: String): InputField {
+    fun getOrCreateInputField(concept: String, mRequired: Boolean): InputField {
         var inputField = findInputFieldByConcept(concept)
         if (inputField == null) {
-            inputField = InputField(concept)
+            inputField = InputField(concept, mRequired)
             inputFields.add(inputField)
         }
         return inputField
