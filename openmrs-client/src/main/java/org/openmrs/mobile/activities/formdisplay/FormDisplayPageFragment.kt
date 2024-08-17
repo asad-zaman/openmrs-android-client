@@ -88,25 +88,10 @@ class FormDisplayPageFragment : BaseFragment() {
         }
     }
 
-    private fun createNewContainer() : Int {
-        val mContainer = LinearLayout(activity).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-        }
-        containerList.add(mContainer)
-        val lastIndex = containerList.size - 1
-        binding.sectionsPrimaryContainer.addView(containerList[lastIndex])
-        return lastIndex
-    }
-
     private fun createContainer(dOrientation: Int = LinearLayout.VERTICAL, dHeight: Int = LinearLayout.LayoutParams.WRAP_CONTENT, dWidth: Int = LinearLayout.LayoutParams.MATCH_PARENT, prevContainer: LinearLayout) : LinearLayout {
         val mContainer = LinearLayout(activity).apply {
             orientation = dOrientation
             layoutParams = LinearLayout.LayoutParams(dWidth, dHeight)
-//            setBackgroundColor(Color.parseColor("#FF5722"))
         }
         prevContainer.addView(mContainer)
         return mContainer
@@ -555,220 +540,234 @@ class FormDisplayPageFragment : BaseFragment() {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 spinnerField.setAnswer(i)
                 when (mLabel) {
-                    ApplicationConstants.FormQuestionKeys.PREGNANCY_INFORMATION -> {
-                        val lastIndex = 1
-                        val mParent = containerList[0][lastIndex] as LinearLayout
-                        val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                        when (i) {
-                            0, 5 -> {}
-                            1 -> {
-                                addQuestion(mSections[0].questions[1], childLayout)
-                                addQuestion(mSections[0].questions[2], childLayout)
-                                addQuestion(mSections[0].questions[3], childLayout)
-                            }
-                            2 -> {
-                                addQuestion(mSections[0].questions[4], childLayout)
-                                addQuestion(mSections[0].questions[5], childLayout)
-                                addQuestion(mSections[0].questions[6], childLayout)
-                                addQuestion(mSections[0].questions[7], childLayout)
-                                addQuestion(mSections[0].questions[8], childLayout)
-                                addQuestion(mSections[0].questions[9], childLayout)
-                                addQuestion(mSections[0].questions[10], childLayout)
-                                addQuestion(mSections[0].questions[11], childLayout)
-                                createContainer(prevContainer = childLayout).apply {
-                                    addQuestion(mSections[0].questions[12], this)
-                                }
-                            }
-                            3 -> {
-                                addQuestion(mSections[0].questions[16], childLayout)
-                                addQuestion(mSections[0].questions[17], childLayout)
-                            }
-                            4 -> {
-                                addQuestion(mSections[0].questions[18], childLayout)
-                            }
-                        }
-                    }
-                    ApplicationConstants.FormQuestionKeys.PREGNANCY_RESULT -> {
-                        val lastIndex = 1
-                        val mParent = containerList[0][lastIndex] as LinearLayout
-                        val cLayout1 = mParent.getChildAt(mParent.childCount - 1) as LinearLayout
-                        val cLayout2= cLayout1.getChildAt(cLayout1.childCount - 1) as LinearLayout
-                        val childLayout = cLayout2.getChildAt(cLayout2.childCount - 1) as LinearLayout
-                        val finalLayout = getChildLayout(childLayout.getChildAt(childLayout.childCount - 1) as LinearLayout)
-                        when (i) {
-                            0 -> {}
-                            1 -> {
-                                addQuestion(mSections[0].questions[13], finalLayout)
-                                addQuestion(mSections[0].questions[15], finalLayout)
-                            }
-                            2 -> {
-                                addQuestion(mSections[0].questions[14], finalLayout)
-                            }
-                        }
-                    }
-                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE -> {
-                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
-                            val lastIndex = 1
-                            val mParent = containerList[0][lastIndex] as LinearLayout
-                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    addQuestion(mSections[0].questions[1], childLayout)
-                                    addQuestion(mSections[0].questions[2], childLayout)
-                                }
-                            }
-                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE) {
-                            val lastIndex = 1
-                            val mParent = containerList[0][lastIndex] as LinearLayout
-                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    addQuestion(mSections[0].questions[1], childLayout)
-                                    addQuestion(mSections[0].questions[2], childLayout)
-                                    createContainer(prevContainer = childLayout).apply {
-                                        addQuestion(mSections[0].questions[3], this)
-                                    }
-                                    addQuestion(mSections[0].questions[4], childLayout)
-                                    addQuestion(mSections[0].questions[5], childLayout)
-                                    createContainer(prevContainer = childLayout).apply {
-                                        addQuestion(mSections[0].questions[6], this)
-                                        addQuestion(mSections[0].questions[7], this)
-                                    }
-                                    addQuestion(mSections[0].questions[8], childLayout)
-                                    addQuestion(mSections[0].questions[9], childLayout)
-                                    addQuestion(mSections[0].questions[10], childLayout)
-                                    addQuestion(mSections[0].questions[11], childLayout)
-                                    addQuestion(mSections[0].questions[12], childLayout, true)
-                                    addQuestion(mSections[0].questions[14], childLayout)
-                                }
-                            }
-                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE){
-                            val lastIndex = 1
-                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    addQuestion(mSections[0].questions[1], childLayout)
-                                    addQuestion(mSections[0].questions[2], childLayout)
-                                }
-                            }
-                        }
-                    }
-                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE_WITH_SPACE -> {
-                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE) {
-                            val lastIndex = 1
-                            val mParent = containerList[0][lastIndex] as LinearLayout
-                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    createContainer(prevContainer = childLayout).apply {
-                                        addQuestion(mSections[0].questions[1], this)
-                                    }
-                                    addQuestion(mSections[0].questions[2], childLayout)
-                                    createContainer(prevContainer = childLayout).apply {
-                                        addQuestion(mSections[0].questions[3], this)
-                                    }
-                                    addQuestion(mSections[0].questions[4], childLayout)
-                                    addQuestion(mSections[0].questions[5], childLayout)
-                                    createContainer(prevContainer = childLayout).apply {
-                                        addQuestion(mSections[0].questions[6], this)
-                                        addQuestion(mSections[0].questions[7], this)
-                                    }
-                                    addQuestion(mSections[0].questions[8], childLayout)
-                                    addQuestion(mSections[0].questions[9], childLayout)
-                                    addQuestion(mSections[0].questions[10], childLayout)
-                                    addQuestion(mSections[0].questions[11], childLayout)
-                                    addQuestion(mSections[0].questions[12], childLayout)
-                                    addQuestion(mSections[0].questions[13], childLayout)
-                                    addQuestion(mSections[0].questions[14], childLayout)
-                                    addQuestion(mSections[0].questions[15], childLayout, true)
-                                    addQuestion(mSections[0].questions[17], childLayout)
-                                    addQuestion(mSections[0].questions[18], childLayout)
-                                    addQuestion(mSections[0].questions[19], childLayout)
-                                    addQuestion(mSections[0].questions[20], childLayout)
-                                }
-                            }
-                        }
-                    }
-                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION -> {
-                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
-                            val lastIndex = 2
-                            val mParent = containerList[0][lastIndex] as LinearLayout
-                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    addQuestion(mSections[0].questions[4], childLayout)
-                                }
-                            }
-                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE){
-                            val lastIndex = 2
-                            val mParent = containerList[0][lastIndex] as LinearLayout
-                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> { addQuestion(mSections[0].questions[22], childLayout) }
-                            }
-                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
-                            val lastIndex = 2
-                            val mParent = containerList[0][lastIndex] as LinearLayout
-                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    addQuestion(mSections[0].questions[16], childLayout)
-                                }
-                            }
-                        }
-                    }
-                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION_NO_SPACE -> {
-                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE){
-                            val lastIndex = 2
-                            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    addQuestion(mSections[0].questions[22], childLayout)
-                                    addQuestion(mSections[0].questions[23], childLayout)
-                                    addQuestion(mSections[0].questions[24], childLayout)
-                                    addQuestion(mSections[0].questions[25], childLayout)
-                                }
-                            }
-                        }
-                    }
-                    ApplicationConstants.FormQuestionKeys.DONE_REFER -> {
-                        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
-                            val lastIndex = 3
-                            val mParent = containerList[0][lastIndex] as LinearLayout
-                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    addQuestion(mSections[0].questions[6], childLayout)
-                                    addQuestion(mSections[0].questions[7], childLayout)
-                                }
-                            }
-                        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
-                            val lastIndex = 3
-                            val mParent = containerList[0][lastIndex] as LinearLayout
-                            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
-                            when (i) {
-                                0, 2 -> {}
-                                1 -> {
-                                    addQuestion(mSections[0].questions[18], childLayout)
-                                    addQuestion(mSections[0].questions[19], childLayout)
-                                }
-                            }
-                        }
-                    }
+                    ApplicationConstants.FormQuestionKeys.PREGNANCY_INFORMATION -> { handlePregnancyInformationSpinner(i) }
+                    ApplicationConstants.FormQuestionKeys.PREGNANCY_RESULT -> { handlePregnancyResultSpinner(i) }
+                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE -> { handleHealthServiceDone(i) }
+                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_SERVICE_WITH_SPACE -> { handleHealthServiceWithSpaceDone(i) }
+                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION -> { handleHealthEducationDone(i) }
+                    ApplicationConstants.FormQuestionKeys.DONE_HEALTH_EDUCATION_NO_SPACE -> { handleHealthEducationNoSpaceDone(i) }
+                    ApplicationConstants.FormQuestionKeys.DONE_REFER -> { handleReferDone(i) }
                 }
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
                 spinnerField.setAnswer(-1)
+            }
+        }
+    }
+
+    private fun handlePregnancyInformationSpinner(idx: Int) {
+        val lastIndex = 1
+        val mParent = containerList[0][lastIndex] as LinearLayout
+        val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+        when (idx) {
+            0, 5 -> {}
+            1 -> {
+                addQuestion(mSections[0].questions[1], childLayout)
+                addQuestion(mSections[0].questions[2], childLayout)
+                addQuestion(mSections[0].questions[3], childLayout)
+            }
+            2 -> {
+                addQuestion(mSections[0].questions[4], childLayout)
+                addQuestion(mSections[0].questions[5], childLayout)
+                addQuestion(mSections[0].questions[6], childLayout)
+                addQuestion(mSections[0].questions[7], childLayout)
+                addQuestion(mSections[0].questions[8], childLayout)
+                addQuestion(mSections[0].questions[9], childLayout)
+                addQuestion(mSections[0].questions[10], childLayout)
+                addQuestion(mSections[0].questions[11], childLayout)
+                createContainer(prevContainer = childLayout).apply {
+                    addQuestion(mSections[0].questions[12], this)
+                }
+            }
+            3 -> {
+                addQuestion(mSections[0].questions[16], childLayout)
+                addQuestion(mSections[0].questions[17], childLayout)
+            }
+            4 -> {
+                addQuestion(mSections[0].questions[18], childLayout)
+            }
+        }
+    }
+
+    private fun handlePregnancyResultSpinner(idx: Int) {
+        val lastIndex = 1
+        val mParent = containerList[0][lastIndex] as LinearLayout
+        val cLayout1 = mParent.getChildAt(mParent.childCount - 1) as LinearLayout
+        val cLayout2= cLayout1.getChildAt(cLayout1.childCount - 1) as LinearLayout
+        val childLayout = cLayout2.getChildAt(cLayout2.childCount - 1) as LinearLayout
+        val finalLayout = getChildLayout(childLayout.getChildAt(childLayout.childCount - 1) as LinearLayout)
+        when (idx) {
+            0 -> {}
+            1 -> {
+                addQuestion(mSections[0].questions[13], finalLayout)
+                addQuestion(mSections[0].questions[15], finalLayout)
+            }
+            2 -> {
+                addQuestion(mSections[0].questions[14], finalLayout)
+            }
+        }
+    }
+
+    private fun handleHealthServiceDone(idx: Int) {
+        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+            val lastIndex = 1
+            val mParent = containerList[0][lastIndex] as LinearLayout
+            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    addQuestion(mSections[0].questions[1], childLayout)
+                    addQuestion(mSections[0].questions[2], childLayout)
+                }
+            }
+        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE) {
+            val lastIndex = 1
+            val mParent = containerList[0][lastIndex] as LinearLayout
+            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    addQuestion(mSections[0].questions[1], childLayout)
+                    addQuestion(mSections[0].questions[2], childLayout)
+                    createContainer(prevContainer = childLayout).apply {
+                        addQuestion(mSections[0].questions[3], this)
+                    }
+                    addQuestion(mSections[0].questions[4], childLayout)
+                    addQuestion(mSections[0].questions[5], childLayout)
+                    createContainer(prevContainer = childLayout).apply {
+                        addQuestion(mSections[0].questions[6], this)
+                        addQuestion(mSections[0].questions[7], this)
+                    }
+                    addQuestion(mSections[0].questions[8], childLayout)
+                    addQuestion(mSections[0].questions[9], childLayout)
+                    addQuestion(mSections[0].questions[10], childLayout)
+                    addQuestion(mSections[0].questions[11], childLayout)
+                    addQuestion(mSections[0].questions[12], childLayout, true)
+                    addQuestion(mSections[0].questions[14], childLayout)
+                }
+            }
+        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE){
+            val lastIndex = 1
+            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    addQuestion(mSections[0].questions[1], childLayout)
+                    addQuestion(mSections[0].questions[2], childLayout)
+                }
+            }
+        }
+    }
+
+    private fun handleHealthServiceWithSpaceDone(idx: Int) {
+        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE) {
+            val lastIndex = 1
+            val mParent = containerList[0][lastIndex] as LinearLayout
+            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    createContainer(prevContainer = childLayout).apply {
+                        addQuestion(mSections[0].questions[1], this)
+                    }
+                    addQuestion(mSections[0].questions[2], childLayout)
+                    createContainer(prevContainer = childLayout).apply {
+                        addQuestion(mSections[0].questions[3], this)
+                    }
+                    addQuestion(mSections[0].questions[4], childLayout)
+                    addQuestion(mSections[0].questions[5], childLayout)
+                    createContainer(prevContainer = childLayout).apply {
+                        addQuestion(mSections[0].questions[6], this)
+                        addQuestion(mSections[0].questions[7], this)
+                    }
+                    addQuestion(mSections[0].questions[8], childLayout)
+                    addQuestion(mSections[0].questions[9], childLayout)
+                    addQuestion(mSections[0].questions[10], childLayout)
+                    addQuestion(mSections[0].questions[11], childLayout)
+                    addQuestion(mSections[0].questions[12], childLayout)
+                    addQuestion(mSections[0].questions[13], childLayout)
+                    addQuestion(mSections[0].questions[14], childLayout)
+                    addQuestion(mSections[0].questions[15], childLayout, true)
+                    addQuestion(mSections[0].questions[17], childLayout)
+                    addQuestion(mSections[0].questions[18], childLayout)
+                    addQuestion(mSections[0].questions[19], childLayout)
+                    addQuestion(mSections[0].questions[20], childLayout)
+                }
+            }
+        }
+    }
+
+    private fun handleHealthEducationDone(idx: Int) {
+        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+            val lastIndex = 2
+            val mParent = containerList[0][lastIndex] as LinearLayout
+            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    addQuestion(mSections[0].questions[4], childLayout)
+                }
+            }
+        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE){
+            val lastIndex = 2
+            val mParent = containerList[0][lastIndex] as LinearLayout
+            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> { addQuestion(mSections[0].questions[22], childLayout) }
+            }
+        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
+            val lastIndex = 2
+            val mParent = containerList[0][lastIndex] as LinearLayout
+            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    addQuestion(mSections[0].questions[16], childLayout)
+                }
+            }
+        }
+    }
+
+    private fun handleHealthEducationNoSpaceDone(idx: Int) {
+        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE){
+            val lastIndex = 2
+            val childLayout = getChildLayout(containerList[0][lastIndex] as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    addQuestion(mSections[0].questions[22], childLayout)
+                    addQuestion(mSections[0].questions[23], childLayout)
+                    addQuestion(mSections[0].questions[24], childLayout)
+                    addQuestion(mSections[0].questions[25], childLayout)
+                }
+            }
+        }
+    }
+
+    private fun handleReferDone(idx: Int) {
+        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE){
+            val lastIndex = 3
+            val mParent = containerList[0][lastIndex] as LinearLayout
+            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    addQuestion(mSections[0].questions[6], childLayout)
+                    addQuestion(mSections[0].questions[7], childLayout)
+                }
+            }
+        } else if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
+            val lastIndex = 3
+            val mParent = containerList[0][lastIndex] as LinearLayout
+            val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout)
+            when (idx) {
+                0, 2 -> {}
+                1 -> {
+                    addQuestion(mSections[0].questions[18], childLayout)
+                    addQuestion(mSections[0].questions[19], childLayout)
+                }
             }
         }
     }
