@@ -1,22 +1,28 @@
 package org.openmrs.mobile.activities.memberProfile
 
+import android.content.Context
 import android.content.Intent
 import android.view.View
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import com.google.gson.Gson
 import com.openmrs.android_sdk.library.api.repository.ConceptRepository
+import com.openmrs.android_sdk.library.api.repository.EncounterRepository
 import com.openmrs.android_sdk.library.api.repository.PatientRepository
+import com.openmrs.android_sdk.library.dao.EncounterDAO
 import com.openmrs.android_sdk.library.dao.PatientDAO
-import com.openmrs.android_sdk.library.models.ConceptAnswers
-import com.openmrs.android_sdk.library.models.OperationType
-import com.openmrs.android_sdk.library.models.Patient
+import com.openmrs.android_sdk.library.models.*
 import com.openmrs.android_sdk.utilities.ApplicationConstants
 import com.openmrs.android_sdk.utilities.DateUtils
+import com.openmrs.android_sdk.utilities.execute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.openmrs.mobile.activities.BaseViewModel
+import org.openmrs.mobile.activities.formdisplay.FormDisplayActivity
 import org.openmrs.mobile.databinding.ActivityMemberProfileBinding
 import org.openmrs.mobile.listeners.ItemClickListener
+import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -24,7 +30,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MemberProfileViewModel @Inject constructor(
     private val patientDAO: PatientDAO,
+    private val encounterDAO: EncounterDAO,
     private val patientRepository: PatientRepository,
+    private val encounterRepository: EncounterRepository,
     private val conceptRepository: ConceptRepository,
     private val savedStateHandle: SavedStateHandle
     ) : BaseViewModel<Patient>(), ItemClickListener {
@@ -43,12 +51,17 @@ class MemberProfileViewModel @Inject constructor(
     private val _rxMaritalStatus = MutableLiveData<String>()
     val rxMaritalStatus: LiveData<String> get() = _rxMaritalStatus
 
+    private val _rxEncounterList = MutableLiveData<List<Encounter>>()
+    val rxEncounterList: LiveData<List<Encounter>> get() = _rxEncounterList
+
     var mobile: String = ""
     var nid: String = ""
     var age: String = ""
 
     private val _rxFormList = MutableLiveData<List<String>>()
     val rxFormList: LiveData<List<String>> get() = _rxFormList
+
+    var chipStateUpdated: Boolean = false
 
     fun populateProfileData() {
         firstName = patient.person.names[0].givenName ?: ""
@@ -77,7 +90,7 @@ class MemberProfileViewModel @Inject constructor(
     }
 
     fun populateServiceForm() {
-        if (rxMaritalStatus.value!! == ApplicationConstants.AttributeValues.MARRIED && age.toInt() > 15 && patient.person.gender == "F"){
+        if (rxMaritalStatus.value!! == ApplicationConstants.AttributeValues.MARRIED && age.toInt() > 15 && patient.person.gender == ApplicationConstants.GENDER.FEMALE){
             _rxFormList.value = mutableListOf(
                 ApplicationConstants.FormListKeys.PREGNANCY_SERVICE,
                 ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE,
@@ -117,6 +130,29 @@ class MemberProfileViewModel @Inject constructor(
             )
         )
     }
+
+    fun gotoFormDisplay(formName: String, mContext: Context) {
+        val encounterType = encounterDAO.getEncounterTypeByFormName(EncounterType.ADMISSION).uuid
+        Intent(mContext, FormDisplayActivity::class.java).apply {
+            putExtra(ApplicationConstants.BundleKeys.FORM_NAME, formName)
+            putExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY, Gson().toJson(patient))
+            putExtra(ApplicationConstants.BundleKeys.VALUEREFERENCE, "")
+            putExtra(ApplicationConstants.BundleKeys.ENCOUNTERTYPE, encounterType)
+            startActivity(mContext, this, null)
+        }
+    }
+
+    fun populateServiceHistory() {
+        addSubscription(encounterRepository.getAllEncounterResourcesByPatientUuid(patient.uuid!!)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { encounterList: List<Encounter> -> _rxEncounterList.value = encounterList },
+                { setError(it, OperationType.EncounterListSearching) }
+            )
+        )
+    }
+
+
 
     fun fetchMembers() {
         setLoading()

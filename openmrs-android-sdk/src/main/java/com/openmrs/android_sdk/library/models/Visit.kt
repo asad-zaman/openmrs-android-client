@@ -27,7 +27,7 @@ import com.openmrs.android_sdk.library.databases.entities.LocationEntity
 @Entity
 class Visit : Resource() {
 
-    override var id: Long? = null
+//    override var id: Long? = null
 
     @Expose
     lateinit var patient: Patient

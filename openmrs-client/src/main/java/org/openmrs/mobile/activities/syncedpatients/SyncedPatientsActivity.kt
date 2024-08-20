@@ -91,7 +91,7 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
 
         mViewModel.loadMemberList.observe(this, Observer { gotoMemberList() })
 
-        mViewModel.loadAddMember.observe(this, Observer { gotoAddMember() })
+        mViewModel.loadAddMember.observe(this, Observer { gotoRegisterPatient() })
 
         mViewModel.loadReferredMemberList.observe(this, Observer { gotoReferredMemberList() })
 
@@ -144,7 +144,7 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
 
             override fun onQueryTextChange(query: String): Boolean {
                 val syncedPatientsFragment = supportFragmentManager.findFragmentById(R.id.syncedPatientsContentFrame) as SyncedPatientsFragment?
-                if(NetworkUtils.isOnline()){
+                if(NetworkUtils.isOnline() && query.isNotEmpty()){
                     syncedPatientsFragment?.fetchSyncedPatientsOnRefresh(query)
                 } else {
                     syncedPatientsFragment?.fetchSyncedPatients(query)
@@ -209,12 +209,6 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-    fun gotoAddMember() {
-        openCloseDrawer()
-        val intent = Intent(this, AddEditPatientActivity::class.java)
-        startActivity(intent)
-    }
-
     fun gotoReferredMemberList() {
         openCloseDrawer()
         val intent = Intent(this, MemberListActivity::class.java)
@@ -223,8 +217,8 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
 
     fun gotoMemberProfile() {
         openCloseDrawer()
-        val intent = Intent(this, MemberProfileActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent(this, MemberProfileActivity::class.java)
+//        startActivity(intent)
     }
 
     override fun onRestart() {

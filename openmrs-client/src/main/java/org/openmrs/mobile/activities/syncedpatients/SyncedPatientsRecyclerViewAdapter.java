@@ -14,11 +14,14 @@
 
 package org.openmrs.mobile.activities.syncedpatients;
 
+import static org.openmrs.mobile.utilities.ViewUtils.adjustOpacity;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -108,7 +111,7 @@ public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<Sync
             holder.mIdentifier.setText(patientIdentifier);
         }
         if (null != patient.getName()) {
-            holder.mDisplayName.setText(patient.getName().getNameString());
+            holder.mDisplayName.setText(patient.getPerson().getDisplay());
         }
         if (null != patient.getGender()) {
             if (patient.getPhoto() != null) {
@@ -127,7 +130,7 @@ public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<Sync
             holder.mRowLayout.setCardBackgroundColor(mContext.getResources().getColor(R.color.deceased_red));
         }
         try {
-            holder.mBirthDate.setText(DateUtils.convertTime(DateUtils.convertTime(patient.getBirthdate())));
+            holder.mBirthDate.setText(patient.getBirthdate());
         } catch (Exception e) {
             holder.mBirthDate.setText("");
         }
@@ -144,24 +147,22 @@ public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<Sync
         private TextView mDisplayName;
         private ImageView mGender;
         private TextView mBirthDate;
-        private ColorStateList cardBackgroundColor;
 
         public PatientViewHolder(View itemView) {
             super(itemView);
             mRowLayout = (CardView) itemView;
+            mRowLayout.setBackgroundColor(adjustOpacity(Color.RED, 0.05f));
             mIdentifier = itemView.findViewById(R.id.syncedPatientIdentifier);
             mDisplayName = itemView.findViewById(R.id.syncedPatientDisplayName);
             mGender = itemView.findViewById(R.id.syncedPatientGender);
             mBirthDate = itemView.findViewById(R.id.syncedPatientBirthDate);
-
-            cardBackgroundColor = mRowLayout.getCardBackgroundColor();
         }
 
         void selectItem(Patient item) {
             if (multiSelect) {
                 if (selectedItems.contains(item)) {
                     selectedItems.remove(item);
-                    mRowLayout.setCardBackgroundColor(cardBackgroundColor);
+                    mRowLayout.setBackgroundColor(adjustOpacity(Color.RED, 0.05f));
                 } else {
                     selectedItems.add(item);
                     mRowLayout.setCardBackgroundColor(mContext.getResources().getColor(R.color.selected_card));
@@ -173,7 +174,7 @@ public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<Sync
             if (selectedItems.contains(value)) {
                 mRowLayout.setCardBackgroundColor(mContext.getResources().getColor(R.color.selected_card));
             } else {
-                mRowLayout.setCardBackgroundColor(cardBackgroundColor);
+                mRowLayout.setBackgroundColor(adjustOpacity(Color.RED, 0.05f));
             }
             itemView.setOnLongClickListener(view -> {
                 ((AppCompatActivity) mContext.requireActivity()).startSupportActionMode(actionModeCallbacks);

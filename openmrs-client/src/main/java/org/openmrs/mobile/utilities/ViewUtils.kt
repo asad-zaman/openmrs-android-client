@@ -13,6 +13,7 @@
  */
 package org.openmrs.mobile.utilities
 
+import android.graphics.Color
 import android.widget.EditText
 import com.hbb20.CountryCodePicker
 
@@ -29,6 +30,15 @@ object ViewUtils {
     @JvmStatic
     fun isEmpty(etText: EditText): Boolean {
         return etText.text.toString().trim { it <= ' ' }.isEmpty()
+    }
+
+    @JvmStatic
+    fun adjustOpacity(color: Int, alpha: Float): Int {
+        val a = (Color.alpha(color) * alpha).toInt()
+        val r = Color.red(color)
+        val g = Color.green(color)
+        val b = Color.blue(color)
+        return Color.argb(a, r, g, b)
     }
 
     @JvmStatic

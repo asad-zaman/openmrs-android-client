@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
 import com.google.gson.Gson
+import com.openmrs.android_sdk.library.models.EncounterType
 import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.library.models.Result
 import com.openmrs.android_sdk.utilities.ApplicationConstants
@@ -65,7 +66,10 @@ class ServiceFormFragment : BaseFragment() {
             mViewModel.populateServiceForm()
         })
         mViewModel.rxFormList.observe(viewLifecycleOwner, Observer {
-            if(mViewModel.rxFormList.value!!.isNotEmpty()) generateFormChips()
+            if(mViewModel.rxFormList.value!!.isNotEmpty() && !mViewModel.chipStateUpdated) {
+                generateFormChips()
+                mViewModel.chipStateUpdated = true
+            }
         })
     }
 
@@ -78,17 +82,7 @@ class ServiceFormFragment : BaseFragment() {
                     binding.formChipGroup.removeView(selectedChip)
                 }
                 setOnClickListener {
-                    /*val intent = Intent(activity, DynamicFormActivity::class.java)
-                    intent.putExtra(ApplicationConstants.BundleKeys.FORM_TYPE, mForm)
-                    startActivity(intent)*/
-
-                    Intent(context, FormDisplayActivity::class.java).apply {
-                        putExtra(ApplicationConstants.BundleKeys.FORM_NAME, formName)
-                        putExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY, Gson().toJson(patient))
-                        putExtra(ApplicationConstants.BundleKeys.VALUEREFERENCE, "")
-                        putExtra(ApplicationConstants.BundleKeys.ENCOUNTERTYPE, "")
-                        startActivity(this)
-                    }
+                    mViewModel.gotoFormDisplay(formName, context)
                 }
             }
             binding.formChipGroup.addView(chip)

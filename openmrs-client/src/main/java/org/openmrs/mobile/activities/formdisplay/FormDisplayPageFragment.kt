@@ -13,9 +13,8 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
+import android.text.*
+import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
@@ -40,6 +39,7 @@ import org.openmrs.mobile.bundle.FormFieldsWrapper
 import org.openmrs.mobile.databinding.FragmentFormDisplayBinding
 import org.openmrs.mobile.utilities.ViewUtils.isEmpty
 import java.util.*
+import android.text.style.ForegroundColorSpan
 
 @AndroidEntryPoint
 class FormDisplayPageFragment : BaseFragment() {
@@ -116,8 +116,7 @@ class FormDisplayPageFragment : BaseFragment() {
                 mContainer.addView(questionGroupContainer)
                 question.questions.forEach { subQuestion -> addQuestion(subQuestion, questionGroupContainer) }
             }
-            "number" -> createAndAttachNumericQuestionEditText(question, mContainer)
-            "text" -> createAndAttachNumericQuestionEditText(question, mContainer)
+            "number", "text" -> createAndAttachNumericQuestionEditText(question, mContainer)
             "select" -> createAndAttachSelectQuestionDropdown(question, mContainer)
             "radio" -> createAndAttachSelectQuestionRadioButton(question, mContainer, createAsNew)
             "date" -> createDateView(question, mContainer)
@@ -132,7 +131,7 @@ class FormDisplayPageFragment : BaseFragment() {
         val labelTextView = TextView(activity).apply {
             text = questionLabel
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-            setTextColor(ContextCompat.getColor(requireActivity(), R.color.primary))
+            setTextColor(ContextCompat.getColor(requireActivity(), R.color.red))
         }
         questionGroupContainer.addView(labelTextView, layoutParams)
         return questionGroupContainer
@@ -147,7 +146,7 @@ class FormDisplayPageFragment : BaseFragment() {
             val marginInPxLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.toFloat(), resources.displayMetrics).toInt()
             setMargins(marginInPxLeft, marginInPxTop, 0, 0)
         }
-        sectionContainer.addView(generateTextView(question.label))
+        sectionContainer.addView(generateTextView(question))
 
         val inputField = viewModel.getOrCreateInputField(question.questionOptions!!.concept!!, question.required ?: true)
 
@@ -202,7 +201,7 @@ class FormDisplayPageFragment : BaseFragment() {
             }
         }
 
-        val mTextview = generateTextView(question.label)
+        val mTextview = generateTextView(question)
 
         // new added
         val mAnswers = mutableListOf(Answer("", getString(R.string.choose_one))).apply { addAll(question.questionOptions!!.answers!!) }
@@ -231,12 +230,12 @@ class FormDisplayPageFragment : BaseFragment() {
     }
 
     private fun createRepeatingView(question: Question, mContainer: LinearLayout) {
-        mContainer.addView(generateTextView(question.label))
+        mContainer.addView(generateTextView(question))
         question.questions.forEach { addQuestion(it, mContainer) }
     }
 
     private fun createMultipleCheckboxView(question: Question, mContainer: LinearLayout) {
-        mContainer.addView(generateTextView(question.label))
+        mContainer.addView(generateTextView(question))
 
         val topLayout = LinearLayout(activity).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -407,9 +406,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     DatePickerDialog(
                         fa,
                         { _, selectedYear, selectedMonth, selectedDay ->
-                            val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                            dateText.text = selectedDate
-                            inputField.textValue = selectedDate
+                            dateText.text = "$selectedDay-${selectedMonth + 1}-$selectedYear"
+                            inputField.textValue = "$selectedYear-${selectedMonth + 1}-$selectedDay"
                         },
                         year, month, day
                     )
@@ -421,7 +419,7 @@ class FormDisplayPageFragment : BaseFragment() {
         dateTextLinearLayout.addView(dateText)
         dateTextLinearLayout.addView(dateButton)
 
-        questionLinearLayout.addView(generateTextView(question.label))
+        questionLinearLayout.addView(generateTextView(question))
         questionLinearLayout.addView(dateTextLinearLayout)
 
         sectionContainer.layoutParams = LinearLayout.LayoutParams(
@@ -464,7 +462,7 @@ class FormDisplayPageFragment : BaseFragment() {
         }
         val radioGroupField = SelectOneField(question.questionOptions!!.answers!!, question.questionOptions!!.concept!!, question.required ?: true)
 
-        sectionContainer.addView(textView)
+        sectionContainer.addView(generateTextView(question))
         sectionContainer.addView(radioGroup)
 
         if(createAsNew){
@@ -941,7 +939,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
                     childLayout.children.forEachIndexed { mIndex, mView ->
                         if(mView.javaClass.simpleName == "TextView"){
-                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.PREGNANCY_DANGER){
+                            val tValue = if((mView as TextView).text is String){ mView.text as String } else { (mView.text as Spanned).toString() }
+                            if(tValue == ApplicationConstants.FormQuestionKeys.PREGNANCY_DANGER || tValue == "${ApplicationConstants.FormQuestionKeys.PREGNANCY_DANGER} *"){
                                 val finalLayout = childLayout.getChildAt(mIndex + 2) as LinearLayout
                                 val iterator = viewModel.selectOneFields.iterator()
                                 while (iterator.hasNext()) {
@@ -960,7 +959,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
                     childLayout.children.forEachIndexed { mIndex, mView ->
                         if(mView.javaClass.simpleName == "TextView"){
-                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.HEIGHT_NOT_MEASURABLE){
+                            val tValue = if((mView as TextView).text is String){ mView.text as String } else { (mView.text as Spanned).toString() }
+                            if(tValue == ApplicationConstants.FormQuestionKeys.HEIGHT_NOT_MEASURABLE || tValue == "${ApplicationConstants.FormQuestionKeys.HEIGHT_NOT_MEASURABLE} *"){
                                 (childLayout.getChildAt(mIndex - 1) as LinearLayout).removeAllViews()
                                 return@forEachIndexed
                             }
@@ -974,7 +974,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
                     childLayout.children.forEachIndexed { mIndex, mView ->
                         if(mView.javaClass.simpleName == "TextView"){
-                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.WEIGHT_NOT_MEASURABLE || (mView as TextView).text == ApplicationConstants.FormQuestionKeys.NOT_MEASURABLE){
+                            val tValue = if((mView as TextView).text is String){ mView.text as String } else { (mView.text as Spanned).toString() }
+                            if(tValue == ApplicationConstants.FormQuestionKeys.WEIGHT_NOT_MEASURABLE || tValue == ApplicationConstants.FormQuestionKeys.NOT_MEASURABLE || tValue == "${ApplicationConstants.FormQuestionKeys.WEIGHT_NOT_MEASURABLE} *" || tValue == "${ApplicationConstants.FormQuestionKeys.NOT_MEASURABLE} *"){
                                 (childLayout.getChildAt(mIndex - 1) as LinearLayout).removeAllViews()
                                 return@forEachIndexed
                             }
@@ -988,7 +989,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
                     childLayout.children.forEachIndexed { mIndex, mView ->
                         if(mView.javaClass.simpleName == "TextView"){
-                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_SITUATION_NOT_MEASURABLE || (mView as TextView).text == ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_NOT_MEASURABLE){
+                            val tValue = if((mView as TextView).text is String){ mView.text as String } else { (mView.text as Spanned).toString() }
+                            if(tValue == ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_SITUATION_NOT_MEASURABLE || tValue == ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_NOT_MEASURABLE || tValue == "${ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_SITUATION_NOT_MEASURABLE} *" || tValue == "${ApplicationConstants.FormQuestionKeys.BLOOD_PRESSURE_NOT_MEASURABLE} *"){
                                 (childLayout.getChildAt(mIndex - 1) as LinearLayout).removeAllViews()
                                 return@forEachIndexed
                             }
@@ -1001,7 +1003,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     val childLayout = getChildLayout(mParent.getChildAt(mParent.childCount - 1) as LinearLayout, true)
                     childLayout.children.forEachIndexed { mIndex, mView ->
                         if(mView.javaClass.simpleName == "TextView"){
-                            if((mView as TextView).text == ApplicationConstants.FormQuestionKeys.POST_PREGNANCY_DANGER){
+                            val tValue = if((mView as TextView).text is String){ mView.text as String } else { (mView.text as Spanned).toString() }
+                            if(tValue == ApplicationConstants.FormQuestionKeys.POST_PREGNANCY_DANGER || tValue == "${ApplicationConstants.FormQuestionKeys.POST_PREGNANCY_DANGER} *"){
                                 val finalLayout = childLayout.getChildAt(mIndex + 2) as LinearLayout
                                 val iterator = viewModel.selectOneFields.iterator()
                                 while (iterator.hasNext()) {
@@ -1029,7 +1032,7 @@ class FormDisplayPageFragment : BaseFragment() {
         return layoutParams
     }
 
-    private fun generateTextView(text: String?): View {
+    private fun generateTextView(question: Question): View {
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -1039,7 +1042,17 @@ class FormDisplayPageFragment : BaseFragment() {
                 setMargins(marginInPxLeft, marginInPxTop, 0, 0)
             }
         val textView = TextView(activity)
-        textView.text = text
+        val mRequired : Boolean= if(question.required != null) question.required!! else true
+        if(mRequired) {
+            val finalText = "${question.label} *"
+            val ss = SpannableString(finalText).apply {
+                setSpan(StyleSpan(Typeface.BOLD), finalText.length - 1, finalText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                setSpan(ForegroundColorSpan(Color.RED), finalText.length - 1, finalText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            textView.text = ss
+        } else {
+            textView.text = question.label!!
+        }
         textView.textSize = 17f
         textView.setTypeface(null, Typeface.BOLD)
         textView.setTextColor(Color.DKGRAY)
@@ -1078,11 +1091,6 @@ class FormDisplayPageFragment : BaseFragment() {
     fun validateInputFields(): Boolean {
         var isValid = true
 
-        val aa = viewModel.inputFields
-        val bb = viewModel.selectOneFields
-        return false
-
-
         for (field in viewModel.inputFields) {
             if(field.mRequired && field.numberValue == InputField.DEFAULT_NUMBER_VALUE && field.textValue == InputField.DEFAULT_TEXT_VALUE){
                 isValid = false
@@ -1090,9 +1098,13 @@ class FormDisplayPageFragment : BaseFragment() {
             }
         }
         for (radioGroupField in viewModel.selectOneFields) {
-            if (radioGroupField.mRequired && radioGroupField.chosenAnswer == null || radioGroupField.chosenAnswer!!.concept!!.isEmpty()){
-                isValid = false
-                break
+            if(radioGroupField.mRequired){
+                if (radioGroupField.chosenAnswer == null || radioGroupField.chosenAnswer!!.concept!!.isEmpty()){
+                    if(radioGroupField.chosenAnswers.isEmpty()){
+                        isValid = false
+                        break
+                    }
+                }
             }
         }
         if(!isValid) ToastUtil.error(getString(R.string.empty_field_error_message))

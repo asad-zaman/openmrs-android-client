@@ -27,6 +27,7 @@ import com.openmrs.android_sdk.utilities.ApplicationConstants
 import dagger.hilt.android.AndroidEntryPoint
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.BaseFragment
+import org.openmrs.mobile.activities.addeditpatient.AddEditPatientActivity
 import org.openmrs.mobile.activities.formlist.FormListActivity
 import org.openmrs.mobile.databinding.FragmentSyncedPatientsBinding
 import org.openmrs.mobile.utilities.makeGone
@@ -58,6 +59,7 @@ class SyncedPatientsFragment : BaseFragment(), View.OnClickListener{
             syncedPatientRecyclerView.setHasFixedSize(true)
             syncedPatientRecyclerView.layoutManager = linearLayoutManager
             syncedPatientRecyclerView.adapter = SyncedPatientsRecyclerViewAdapter(this@SyncedPatientsFragment, ArrayList())
+
             setupListeners()
             setupObserver()
             fetchSyncedPatients()
@@ -143,10 +145,9 @@ class SyncedPatientsFragment : BaseFragment(), View.OnClickListener{
     }
 
     private fun gotoRegisterPatient() {
-//        val intent = Intent(activity, AddEditPatientActivity::class.java)
-//        val intent = Intent(activity, DynamicFormActivity::class.java)
-        val intent = Intent(activity, FormListActivity::class.java)
-        intent.putExtra(ApplicationConstants.BundleKeys.PATIENT_ID_BUNDLE, "1e9a8f47-e50e-4cd1-a4f6-68d412629671")
+        val intent = Intent(activity, AddEditPatientActivity::class.java)
+        /*val intent = Intent(activity, FormListActivity::class.java)
+        intent.putExtra(ApplicationConstants.BundleKeys.PATIENT_ID_BUNDLE, "1e9a8f47-e50e-4cd1-a4f6-68d412629671")*/
         startActivity(intent)
     }
 

@@ -115,6 +115,11 @@ interface VisitRoomDAO {
     @Query("SELECT * FROM visits WHERE patient_id = :patientId AND (stop_date IS NULL OR stop_date = '')  ORDER BY start_date DESC")
     fun getActiveVisitByPatientId(patientId: Long): Single<VisitEntity>?
 
+
+    // newly added
+    @Query("SELECT * FROM visits WHERE patient_id = :patientUUID AND (stop_date IS NULL OR stop_date = '')  ORDER BY start_date DESC")
+    fun getActiveVisitByPatientUUID(patientUUID: String): Single<VisitEntity>?
+
     /**
      * Gets visit by id.
      *

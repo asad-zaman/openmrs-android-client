@@ -36,6 +36,7 @@ class MemberProfileActivity : ACBaseActivity(), View.OnClickListener {
         observeData()
         initViewPager()
         mViewModel.populateProfileData()
+        mViewModel.populateServiceHistory()
 
         supportActionBar?.let {
             it.elevation = 0f

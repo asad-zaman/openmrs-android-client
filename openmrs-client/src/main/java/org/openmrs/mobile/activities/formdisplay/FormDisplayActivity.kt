@@ -21,6 +21,7 @@ import androidx.core.util.forEach
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.gson.Gson
+import com.openmrs.android_sdk.library.models.Encountercreate
 import com.openmrs.android_sdk.library.models.Page
 import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.library.models.ResultType
@@ -149,6 +150,9 @@ class FormDisplayActivity : ACBaseActivity() {
             inputFields += formPageFragment.getInputFields()
             radioGroupFields += formPageFragment.getSelectOneFields()
         }
+
+        viewModel.submitForm(inputFields, radioGroupFields)
+        return
 
 //        enableSubmitButton(false)
         viewModel.submitForm(inputFields, radioGroupFields).observeOnce(this, Observer { result ->

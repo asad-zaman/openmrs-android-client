@@ -24,7 +24,7 @@ import java.io.Serializable
  */
 class Encounter : Resource(), Serializable {
 
-    override var id: Long? = null
+//    override var id: Long? = null
 
     @SerializedName("encounterDatetime")
     @Expose

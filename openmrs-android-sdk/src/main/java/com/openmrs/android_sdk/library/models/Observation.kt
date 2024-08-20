@@ -24,7 +24,7 @@ import java.io.Serializable
  */
 class Observation : Resource(), Serializable {
 
-    override var id: Long? = null
+//    override var id: Long? = null
 
     @SerializedName("concept")
     @Expose

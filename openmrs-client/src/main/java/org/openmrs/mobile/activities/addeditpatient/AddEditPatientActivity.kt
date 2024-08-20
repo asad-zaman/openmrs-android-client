@@ -52,8 +52,7 @@ class AddEditPatientActivity : ACBaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (addEditPatientFragment!!.isAnyFieldNotEmpty()) showInfoLostDialog()
-        else if (!addEditPatientFragment!!.isLoading()) super.onBackPressed()
+        super.onBackPressed()
     }
 
     /**

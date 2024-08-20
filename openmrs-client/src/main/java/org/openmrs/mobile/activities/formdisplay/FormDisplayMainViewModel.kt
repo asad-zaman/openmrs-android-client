@@ -24,6 +24,7 @@ import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_NA
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.PATIENT_ID_BUNDLE
 import com.openmrs.android_sdk.utilities.InputField
 import com.openmrs.android_sdk.utilities.SelectOneField
+import com.openmrs.android_sdk.utilities.ToastUtil
 import com.openmrs.android_sdk.utilities.execute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.joda.time.LocalDateTime
@@ -52,6 +53,7 @@ class FormDisplayMainViewModel @Inject constructor(
         val enc = Encountercreate()
         enc.patientId = patient.id
         enc.observations = createObservationsFromInputFields(inputFields) + createObservationsFromRadioGroupFields(radioGroupFields)
+        createRecords(enc)
         return MutableLiveData<ResultType>()
 //        return if (isUpdateEncounter) updateRecords(encounterUuid!!, enc) else createRecords(enc)
     }
@@ -126,15 +128,13 @@ class FormDisplayMainViewModel @Inject constructor(
                     person = patient.uuid
                 }
             } else if (radioGroupField.chosenAnswers.size > 0){
-                val chosenAnswerString = StringBuilder()
                 radioGroupField.chosenAnswers.forEach {
-                    chosenAnswerString.append("${it.concept} " )
-                }
-                observations += Obscreate().apply {
-                    concept = radioGroupField.concept
-                    value = chosenAnswerString.toString()
-                    obsDatetime = LocalDateTime().toString()
-                    person = patient.uuid
+                    observations += Obscreate().apply {
+                        concept = radioGroupField.concept
+                        value = it.concept
+                        obsDatetime = LocalDateTime().toString()
+                        person = patient.uuid
+                    }
                 }
             }
         }

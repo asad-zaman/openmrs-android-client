@@ -121,6 +121,11 @@ object ApplicationConstants {
         const val TAG_ADMISSION_LOCATION = "Admission Location"
     }
 
+    object GENDER {
+        const val FEMALE = "F"
+        const val MALE = "M"
+    }
+
     object MemberProfileKeys {
         const val MEMBER_PROFILE_NID = "nid"
         const val MEMBER_PROFILE_RELIGION = "relegion"
@@ -181,6 +186,7 @@ object ApplicationConstants {
         const val NOT_MEASURABLE = "পরিমাপ করা সম্ভব হচ্ছেনা"
         const val BLOOD_PRESSURE_SITUATION_NOT_MEASURABLE = "রক্তচাপের অবস্থা পরিমাপ করা সম্ভব হচ্ছেনা"
         const val BLOOD_PRESSURE_NOT_MEASURABLE = "রক্তচাপ পরিমাপ করা সম্ভব হচ্ছেনা"
+
     }
 
     object UserKeys {
@@ -231,6 +237,7 @@ object ApplicationConstants {
         const val ALLERGY_UUID = "allergy_uuid"
         const val PATIENT_UUID = "patient_uuid"
         const val PATIENT_ENTITY = "patient_entity"
+        const val ENCOUNTER_ENTITY = "encounter_entity"
         const val FORM_TYPE = "form_type"
     }
 

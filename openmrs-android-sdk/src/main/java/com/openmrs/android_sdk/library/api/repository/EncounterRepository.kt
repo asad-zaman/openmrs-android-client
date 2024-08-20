@@ -45,18 +45,24 @@ class EncounterRepository @Inject constructor(
         return AppDatabaseHelper.createObservableIO(Callable {
 //            val patient = PatientDAO().findPatientByID(encounterCreate.patientId.toString())
             val patient = PatientDAO().findPatientByUUID(encounterCreate.patient)
-            val activeVisit = VisitDAO().getActiveVisitByPatientId(encounterCreate.patientId!!).execute()
-            if (patient == null || activeVisit == null || encounterCreate.synced) {
+
+            /**
+             * commented below line to align with api requirement change and relevant conditions.
+             */
+//            val activeVisit = VisitDAO().getActiveVisitByPatientId(encounterCreate.patientId!!).execute()
+
+            if (patient == null || encounterCreate.synced) {
                 return@Callable ResultType.EncounterSubmissionError
             }
 
-            encounterCreate.visit = activeVisit.uuid
+//            encounterCreate.visit = activeVisit.uuid
             val encId = encounterCreate.id
             if (encId == null || getEncounterCreateFromDB(encId).execute() == null) {
                 encounterCreate.id = saveEncounterCreateToDB(encounterCreate).execute()
             }
 
             if (patient.isSynced && NetworkUtils.isOnline()) {
+                return@Callable ResultType.EncounterSubmissionSuccess
                 restApi.createEncounter(encounterCreate).execute().run {
                     if (isSuccessful) {
                         val encounter: Encounter = body()!!
@@ -116,13 +122,17 @@ class EncounterRepository @Inject constructor(
      * @param uuid the UUID of the patient
      * @return Observable<List<Resource>>
      */
-    fun getAllEncounterResourcesByPatientUuid(uuid: String): Observable<List<Resource>> {
+    fun getAllEncounterResourcesByPatientUuid(uuid: String): Observable<List<Encounter>> {
         return AppDatabaseHelper.createObservableIO(Callable {
-            if (!NetworkUtils.isOnline()) throw Exception("Must be online to fetch encounters")
-
             restApi.getAllEncountersForPatientByPatientUuid(uuid).execute().run {
-                if (isSuccessful) {
-                    return@Callable this.body()?.results!!
+                val encounterList: MutableList<Encounter> = mutableListOf()
+                if (isSuccessful && this.body() != null) {
+                    val resourceList: List<Resource> = this.body()!!.results
+                    for (resource in resourceList) {
+                        val encounter = getEncounterByUuid(resource.uuid!!).execute()
+                        encounterList.add(encounter)
+                    }
+                    return@Callable encounterList.toList()
                 } else {
                     throw Exception("Get Encounters error: ${message()}")
                 }
@@ -179,10 +189,8 @@ class EncounterRepository @Inject constructor(
      * @return Observable<Encounter>
      */
 
-    fun getEncounterByUuid(uuid: String): Observable<Encounter> {
+    private fun getEncounterByUuid(uuid: String): Observable<Encounter> {
         return AppDatabaseHelper.createObservableIO(Callable{
-            if (!NetworkUtils.isOnline()) throw Exception("Must be online to fetch encounters")
-
             restApi.getEncounterByUuid(uuid).execute().run{
                 if (isSuccessful && body() != null) {
                     return@Callable this.body()!!
