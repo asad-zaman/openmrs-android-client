@@ -10,6 +10,8 @@ http://www.androprogrammer.com/2015/06/view-pager-with-circular-indicator.html*/
  */
 package org.openmrs.mobile.activities.formdisplay
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.WindowManager
@@ -151,10 +153,7 @@ class FormDisplayActivity : ACBaseActivity() {
             radioGroupFields += formPageFragment.getSelectOneFields()
         }
 
-        viewModel.submitForm(inputFields, radioGroupFields)
-        return
-
-//        enableSubmitButton(false)
+        enableSubmitButton(false)
         viewModel.submitForm(inputFields, radioGroupFields).observeOnce(this, Observer { result ->
             when (result) {
                 ResultType.EncounterSubmissionSuccess -> {
@@ -163,6 +162,10 @@ class FormDisplayActivity : ACBaseActivity() {
                 }
                 ResultType.EncounterSubmissionLocalSuccess -> {
                     ToastUtil.notify(getString(R.string.form_data_sync_is_off_message))
+                    val resultData = "Success"
+                    val resultIntent = Intent().apply { putExtra(ApplicationConstants.ResultKeys.FORM_DISPLAY_LOCAL_SUCCESS_RESULT_KEY, resultData) }
+                    setResult(Activity.RESULT_OK, resultIntent)
+                    onBackPressed()
                     finish()
                 }
                 else -> ToastUtil.error(getString(R.string.form_data_submit_error))

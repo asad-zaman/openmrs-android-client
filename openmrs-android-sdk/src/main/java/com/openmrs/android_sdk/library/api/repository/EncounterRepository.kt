@@ -62,7 +62,7 @@ class EncounterRepository @Inject constructor(
             }
 
             if (patient.isSynced && NetworkUtils.isOnline()) {
-                return@Callable ResultType.EncounterSubmissionSuccess
+//                return@Callable ResultType.EncounterSubmissionLocalSuccess
                 restApi.createEncounter(encounterCreate).execute().run {
                     if (isSuccessful) {
                         val encounter: Encounter = body()!!
@@ -353,6 +353,14 @@ class EncounterRepository @Inject constructor(
             return@Callable db.encounterCreateRoomDAO().getCreatedEncountersByID(id)
         })
     }
+
+
+    fun getLocalEncounterCreateByPatientUUID(uuid: String): Observable<List<Encountercreate>?> {
+        return AppDatabaseHelper.createObservableIO(Callable {
+            return@Callable db.encounterCreateRoomDAO().getCreatedEncountersByPatientsUUID(uuid)
+        })
+    }
+
 
     /**
      * Saves Encountercreate object to database to be used to create an encounter in the server later.

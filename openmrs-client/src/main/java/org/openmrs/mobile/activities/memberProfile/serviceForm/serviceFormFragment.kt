@@ -1,15 +1,17 @@
 package org.openmrs.mobile.activities.memberProfile
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
 import com.google.gson.Gson
-import com.openmrs.android_sdk.library.models.EncounterType
 import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.library.models.Result
 import com.openmrs.android_sdk.utilities.ApplicationConstants
@@ -66,9 +68,8 @@ class ServiceFormFragment : BaseFragment() {
             mViewModel.populateServiceForm()
         })
         mViewModel.rxFormList.observe(viewLifecycleOwner, Observer {
-            if(mViewModel.rxFormList.value!!.isNotEmpty() && !mViewModel.chipStateUpdated) {
+            if(mViewModel.rxFormList.value!!.isNotEmpty()) {
                 generateFormChips()
-                mViewModel.chipStateUpdated = true
             }
         })
     }
@@ -82,10 +83,28 @@ class ServiceFormFragment : BaseFragment() {
                     binding.formChipGroup.removeView(selectedChip)
                 }
                 setOnClickListener {
-                    mViewModel.gotoFormDisplay(formName, context)
+                    val mEncounterType = mViewModel.fetchEncounterType()
+                    Intent(context, FormDisplayActivity::class.java).apply {
+                        putExtra(ApplicationConstants.BundleKeys.FORM_NAME, formName)
+                        putExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY, Gson().toJson(patient))
+                        putExtra(ApplicationConstants.BundleKeys.VALUEREFERENCE, "")
+                        putExtra(ApplicationConstants.BundleKeys.ENCOUNTERTYPE, mEncounterType)
+                        startActivityForResult(this, ApplicationConstants.RequestCodes.FORM_DISPLAY_LOCAL_SUCCESS_CODE)
+                    }
                 }
             }
             binding.formChipGroup.addView(chip)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ApplicationConstants.RequestCodes.FORM_DISPLAY_LOCAL_SUCCESS_CODE && resultCode == Activity.RESULT_OK) {
+            val result = data?.getStringExtra(ApplicationConstants.ResultKeys.FORM_DISPLAY_LOCAL_SUCCESS_RESULT_KEY)
+            if(result == "Success"){
+                binding.formChipGroup.removeAllViews()
+                mViewModel.processFormViews()
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package org.openmrs.mobile.activities.memberProfile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -86,6 +87,7 @@ class ServiceHistoryFragment : BaseFragment() {
 
     private fun showServiceHistoryList(serviceHistoryList: List<Encounter>) {
         with(mBinding) {
+            rvServiceHistoryList.removeAllViews()
             if (serviceHistoryList.isEmpty()) {
                 rvServiceHistoryList.makeGone()
                 showEmptyListText()

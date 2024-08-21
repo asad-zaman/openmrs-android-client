@@ -169,6 +169,15 @@ object ApplicationConstants {
         const val GENERAL_PATIENT_SERVICE = "সাধারন রোগীর সেবা"
     }
 
+    object FormTypeKeys {
+        const val FORM_PREGNANCY_UUID = "9b6d25fb-c1d2-4635-ad2e-2af5277dd205"
+        const val FORM_PREGNANCY_ANC_UUID = "85a9e937-bb18-473c-9d5e-2e7d6b6a6e4d"
+        const val FORM_PREGNANCY_PNC_UUID = "8f0c2fdf-efa8-4341-8afb-02f3e69601c8"
+        const val FORM_PREGNANCY_ABORTION_UUID = "c634c9ee-1edc-4a0d-83f5-12467d38ed17"
+        const val FORM_PREGNANCY_MR_UUID = "122c3767-d053-4922-9cfc-28966bd603a1"
+        const val FORM_PREGNANCY_NOTHING_UUID = "5be0fa04-94c3-48d1-85f0-01934c62b08b"
+    }
+
     object FormQuestionKeys {
         const val PREGNANCY_INFORMATION = "গর্ভাবস্থা সম্পর্কিত তথ্য"
         const val PREGNANCY_RESULT = "প্রসবের ফলাফল"
@@ -271,6 +280,11 @@ object ApplicationConstants {
         const val START_SETTINGS_REQ_CODE = 102
         const val IMAGE_REQUEST = 1
         const val GALLERY_IMAGE_REQUEST = 2
+        const val FORM_DISPLAY_LOCAL_SUCCESS_CODE = 11
+    }
+
+    object ResultKeys {
+        const val FORM_DISPLAY_LOCAL_SUCCESS_RESULT_KEY = "result_key"
     }
 
     object OpenMRSThemes {

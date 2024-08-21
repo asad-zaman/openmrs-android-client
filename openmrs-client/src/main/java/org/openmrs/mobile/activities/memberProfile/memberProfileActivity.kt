@@ -1,5 +1,6 @@
 package org.openmrs.mobile.activities.memberProfile
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -71,6 +72,13 @@ class MemberProfileActivity : ACBaseActivity(), View.OnClickListener {
         mViewModel.rxBloodGroup.observe(this, Observer {
             mBinding.tvMemberBloodGroup.text = it
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ApplicationConstants.RequestCodes.FORM_DISPLAY_LOCAL_SUCCESS_CODE && resultCode == Activity.RESULT_OK) {
+            // Your initialization code or updates here
+        }
     }
 
     override fun onBackPressed() {

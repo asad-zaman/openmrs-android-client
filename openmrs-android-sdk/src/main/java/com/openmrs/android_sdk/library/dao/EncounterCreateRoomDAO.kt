@@ -50,4 +50,9 @@ interface EncounterCreateRoomDAO {
      */
     @Query("Select * FROM encountercreate WHERE _id =:id")
     fun getCreatedEncountersByID(id: Long): Encountercreate
+
+
+
+    @Query("Select * FROM encountercreate WHERE patient =:uuid")
+    fun getCreatedEncountersByPatientsUUID(uuid: String): List<Encountercreate>
 }

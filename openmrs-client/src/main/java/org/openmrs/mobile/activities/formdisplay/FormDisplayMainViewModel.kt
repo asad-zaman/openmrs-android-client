@@ -53,9 +53,8 @@ class FormDisplayMainViewModel @Inject constructor(
         val enc = Encountercreate()
         enc.patientId = patient.id
         enc.observations = createObservationsFromInputFields(inputFields) + createObservationsFromRadioGroupFields(radioGroupFields)
-        createRecords(enc)
-        return MutableLiveData<ResultType>()
-//        return if (isUpdateEncounter) updateRecords(encounterUuid!!, enc) else createRecords(enc)
+//        return createRecords(enc)
+        return if (isUpdateEncounter) updateRecords(encounterUuid!!, enc) else createRecords(enc)
     }
 
     private fun createRecords(enc: Encountercreate): LiveData<ResultType> {

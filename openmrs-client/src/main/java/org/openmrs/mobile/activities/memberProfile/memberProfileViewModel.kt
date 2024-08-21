@@ -1,8 +1,10 @@
 package org.openmrs.mobile.activities.memberProfile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -61,8 +63,6 @@ class MemberProfileViewModel @Inject constructor(
     private val _rxFormList = MutableLiveData<List<String>>()
     val rxFormList: LiveData<List<String>> get() = _rxFormList
 
-    var chipStateUpdated: Boolean = false
-
     fun populateProfileData() {
         firstName = patient.person.names[0].givenName ?: ""
         lastName = patient.person.names[0].familyName ?: ""
@@ -91,14 +91,59 @@ class MemberProfileViewModel @Inject constructor(
 
     fun populateServiceForm() {
         if (rxMaritalStatus.value!! == ApplicationConstants.AttributeValues.MARRIED && age.toInt() > 15 && patient.person.gender == ApplicationConstants.GENDER.FEMALE){
-            _rxFormList.value = mutableListOf(
-                ApplicationConstants.FormListKeys.PREGNANCY_SERVICE,
-                ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE,
-                ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE,
-                ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE,
-                ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE
-            )
+            val mList = encounterRepository.getLocalEncounterCreateByPatientUUID(patient.uuid!!).execute()
+            if(mList != null && mList.isNotEmpty()){
+                var breakLoop = false
+                val eList = mList.reversed()
+                eList.forEach { ec ->
+                    if (breakLoop) return@forEach
+                    ec.observations.forEach { ob ->
+                        if(ob.concept == ApplicationConstants.FormTypeKeys.FORM_PREGNANCY_UUID){
+                            when (ob.value) {
+                                ApplicationConstants.FormTypeKeys.FORM_PREGNANCY_ANC_UUID -> {
+                                    _rxFormList.value = mutableListOf(
+                                        ApplicationConstants.FormListKeys.PREGNANCY_SERVICE,
+                                        ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE,
+                                        ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE
+                                    )
+                                }
+                                ApplicationConstants.FormTypeKeys.FORM_PREGNANCY_PNC_UUID -> {
+                                    _rxFormList.value = mutableListOf(
+                                        ApplicationConstants.FormListKeys.PREGNANCY_SERVICE,
+                                        ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE,
+                                        ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE,
+                                        ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE
+                                    )
+                                }
+                                else -> {
+                                    _rxFormList.value = mutableListOf(
+                                        ApplicationConstants.FormListKeys.PREGNANCY_SERVICE,
+                                        ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE,
+                                        ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE
+                                    )
+                                }
+                            }
+                            breakLoop = true
+                            return@forEach
+                        }
+                    }
+                }
+            } else {
+                _rxFormList.value = mutableListOf(
+                    ApplicationConstants.FormListKeys.PREGNANCY_SERVICE,
+                    ApplicationConstants.FormListKeys.FAMILY_PLANNING_SERVICE,
+                    ApplicationConstants.FormListKeys.GENERAL_PATIENT_SERVICE
+                )
+            }
         }
+    }
+
+    fun processFormViews() {
+        _rxFormList.value = mutableListOf()
+        populateServiceForm()
+
+        _rxEncounterList.value = mutableListOf()
+        populateServiceHistory()
     }
 
     private fun fetchReligion(value: String) {
@@ -131,16 +176,7 @@ class MemberProfileViewModel @Inject constructor(
         )
     }
 
-    fun gotoFormDisplay(formName: String, mContext: Context) {
-        val encounterType = encounterDAO.getEncounterTypeByFormName(EncounterType.ADMISSION).uuid
-        Intent(mContext, FormDisplayActivity::class.java).apply {
-            putExtra(ApplicationConstants.BundleKeys.FORM_NAME, formName)
-            putExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY, Gson().toJson(patient))
-            putExtra(ApplicationConstants.BundleKeys.VALUEREFERENCE, "")
-            putExtra(ApplicationConstants.BundleKeys.ENCOUNTERTYPE, encounterType)
-            startActivity(mContext, this, null)
-        }
-    }
+    fun fetchEncounterType() = encounterDAO.getEncounterTypeByFormName(EncounterType.ADMISSION).uuid!!
 
     fun populateServiceHistory() {
         addSubscription(encounterRepository.getAllEncounterResourcesByPatientUuid(patient.uuid!!)
