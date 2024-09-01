@@ -60,6 +60,7 @@ import com.openmrs.android_sdk.library.models.PatientPhoto;
 import com.openmrs.android_sdk.library.models.ProgramCreate;
 import com.openmrs.android_sdk.library.models.ProgramGet;
 import com.openmrs.android_sdk.library.models.Provider;
+import com.openmrs.android_sdk.library.models.ReferredPatientResponse;
 import com.openmrs.android_sdk.library.models.Resource;
 import com.openmrs.android_sdk.library.models.Results;
 import com.openmrs.android_sdk.library.models.SearchRequest;
@@ -67,6 +68,7 @@ import com.openmrs.android_sdk.library.models.SearchUserResponse;
 import com.openmrs.android_sdk.library.models.Session;
 import com.openmrs.android_sdk.library.models.SystemProperty;
 import com.openmrs.android_sdk.library.models.SystemSetting;
+import com.openmrs.android_sdk.library.models.TextBody;
 import com.openmrs.android_sdk.library.models.TimeSlot;
 import com.openmrs.android_sdk.library.models.User;
 import com.openmrs.android_sdk.library.models.Visit;
@@ -192,6 +194,13 @@ public interface RestApi {
     @GET("patient")
     Call<Results<Patient>> getPatients(@Query("q") String searchQuery,
                                        @Query("v") String representation);
+
+    /**
+     * Gets referred patients.
+     * @return the patients
+     */
+    @POST("custom-person/refered")
+    Call<ReferredPatientResponse> getReferredPatients(@Body TextBody queryString);
 
     /**
      * Gets patients.

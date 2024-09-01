@@ -38,6 +38,7 @@ import org.openmrs.mobile.activities.lastviewedpatients.LastViewedPatientsActivi
 import org.openmrs.mobile.activities.memberList.MemberListActivity
 import org.openmrs.mobile.activities.memberProfile.MemberProfileActivity
 import org.openmrs.mobile.activities.providermanagerdashboard.ProviderManagerDashboardActivity
+import org.openmrs.mobile.activities.referedMemberList.ReferedMembersActivity
 import org.openmrs.mobile.databinding.ActivityNewDashboardBinding
 
 
@@ -94,8 +95,6 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
         mViewModel.loadAddMember.observe(this, Observer { gotoRegisterPatient() })
 
         mViewModel.loadReferredMemberList.observe(this, Observer { gotoReferredMemberList() })
-
-        mViewModel.loadMemberProfile.observe(this, Observer { gotoMemberProfile() })
 
     }
 
@@ -211,14 +210,8 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
 
     fun gotoReferredMemberList() {
         openCloseDrawer()
-        val intent = Intent(this, MemberListActivity::class.java)
+        val intent = Intent(this, ReferedMembersActivity::class.java)
         startActivity(intent)
-    }
-
-    fun gotoMemberProfile() {
-        openCloseDrawer()
-//        val intent = Intent(this, MemberProfileActivity::class.java)
-//        startActivity(intent)
     }
 
     override fun onRestart() {

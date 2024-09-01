@@ -152,7 +152,7 @@
                 android:fontFamily="@font/montserrat"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:text="@string/places_cancel"
+                android:text="Cancel"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 

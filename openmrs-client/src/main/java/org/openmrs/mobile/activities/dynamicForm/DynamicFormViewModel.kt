@@ -3,7 +3,7 @@ package org.openmrs.mobile.activities.dynamicForm
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import com.google.android.libraries.places.api.net.PlacesClient
+//import com.google.android.libraries.places.api.net.PlacesClient
 import com.openmrs.android_sdk.library.api.repository.ConceptRepository
 import com.openmrs.android_sdk.library.api.repository.LocationRepository
 import com.openmrs.android_sdk.library.api.repository.PatientRepository

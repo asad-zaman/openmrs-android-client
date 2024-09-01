@@ -32,7 +32,7 @@ import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_FI
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_PAGE_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.list_gallery_or_camera_item.view.*
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+//import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.BaseFragment
 import org.openmrs.mobile.bundle.FormFieldsWrapper
@@ -152,14 +152,14 @@ class FormDisplayPageFragment : BaseFragment() {
 
         val options = question.questionOptions!!
         if (options.min != null && options.max != null && !options.isAllowDecimal) {
-            val dsb = DiscreteSeekBar(activity).apply {
+            /*val dsb = DiscreteSeekBar(activity).apply {
                 min = options.min!!.toInt()
                 max = options.max!!.toInt()
                 id = inputField.id
             }
             dsb.progress = inputField.numberValue.toInt()
             sectionContainer.addView(dsb, layoutParams)
-            setOnProgressChangeListener(dsb, inputField)
+            setOnProgressChangeListener(dsb, inputField)*/
         } else {
             val ed = RangeEditText(activity).apply {
                 name = question.label
@@ -488,7 +488,7 @@ class FormDisplayPageFragment : BaseFragment() {
         }
     }
 
-    private fun setOnProgressChangeListener(dsb: DiscreteSeekBar, inputField: InputField) {
+    /*private fun setOnProgressChangeListener(dsb: DiscreteSeekBar, inputField: InputField) {
         dsb.setOnProgressChangeListener(object : DiscreteSeekBar.OnProgressChangeListener {
             override fun onProgressChanged(seekBar: DiscreteSeekBar?, value: Int, fromUser: Boolean) {
                 inputField.numberValue = value.toDouble()
@@ -503,7 +503,7 @@ class FormDisplayPageFragment : BaseFragment() {
             }
 
         })
-    }
+    }*/
 
     private fun setOnTextChangedListener(renderType: String, et: EditText, inputField: InputField) {
         et.addTextChangedListener(object : TextWatcher {
@@ -1074,8 +1074,8 @@ class FormDisplayPageFragment : BaseFragment() {
                     }
                 }
             } catch (e: ClassCastException) {
-                val dsb: DiscreteSeekBar = requireActivity().findViewById(field.id)
-                if (dsb.progress > dsb.min) allEmpty = false
+                /*val dsb: DiscreteSeekBar = requireActivity().findViewById(field.id)
+                if (dsb.progress > dsb.min) allEmpty = false*/
             }
         }
         for (radioGroupField in viewModel.selectOneFields) {

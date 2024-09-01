@@ -38,6 +38,7 @@ import androidx.work.Data;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 
+import com.google.gson.annotations.SerializedName;
 import com.openmrs.android_sdk.R;
 import com.openmrs.android_sdk.library.OpenmrsAndroid;
 import com.openmrs.android_sdk.library.api.RestApi;
@@ -55,12 +56,15 @@ import com.openmrs.android_sdk.library.models.PatientDto;
 import com.openmrs.android_sdk.library.models.PatientDtoUpdate;
 import com.openmrs.android_sdk.library.models.PatientIdentifier;
 import com.openmrs.android_sdk.library.models.PatientPhoto;
+import com.openmrs.android_sdk.library.models.ReferredPatient;
+import com.openmrs.android_sdk.library.models.ReferredPatientResponse;
 import com.openmrs.android_sdk.library.models.ResultType;
 import com.openmrs.android_sdk.library.models.Results;
 import com.openmrs.android_sdk.library.models.SearchRequest;
 import com.openmrs.android_sdk.library.models.SearchUser;
 import com.openmrs.android_sdk.library.models.SearchUserResponse;
 import com.openmrs.android_sdk.library.models.SystemProperty;
+import com.openmrs.android_sdk.library.models.TextBody;
 import com.openmrs.android_sdk.utilities.ApplicationConstants;
 import com.openmrs.android_sdk.utilities.ModuleUtils;
 import com.openmrs.android_sdk.utilities.NetworkUtils;
@@ -348,13 +352,26 @@ public class PatientRepository extends BaseRepository {
      */
     public Observable<List<Patient>> findPatients(String query) {
         return AppDatabaseHelper.createObservableIO(() -> {
-//            Call<Results<Patient>> call = restApi.getPatients(query, ApplicationConstants.API.FULL);
             Response<Results<Patient>> response = restApi.getPatients(query, ApplicationConstants.API.FULL).execute();
             List<Patient> pList = response.body().getResults();
             if (response.isSuccessful()) {
                 return response.body().getResults();
             } else {
                 throw new Exception("Error with finding patients: " + response.message());
+            }
+        });
+    }
+
+
+    public Observable<List<ReferredPatient>> findReferredPatients(String query) {
+        return AppDatabaseHelper.createObservableIO(() -> {
+            TextBody requestBody = new TextBody(query);
+            Response<ReferredPatientResponse> response = restApi.getReferredPatients(requestBody).execute();
+            List<ReferredPatient> pList = response.body().getPersons();
+            if (response.isSuccessful()) {
+                return pList;
+            } else {
+                throw new Exception("Error with finding referred patients: " + response.message());
             }
         });
     }

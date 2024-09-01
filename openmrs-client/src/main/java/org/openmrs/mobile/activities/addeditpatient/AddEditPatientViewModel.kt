@@ -3,7 +3,7 @@ package org.openmrs.mobile.activities.addeditpatient
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import com.google.android.libraries.places.api.net.PlacesClient
+//import com.google.android.libraries.places.api.net.PlacesClient
 import com.openmrs.android_sdk.library.api.repository.ConceptRepository
 import com.openmrs.android_sdk.library.api.repository.LocationRepository
 import com.openmrs.android_sdk.library.api.repository.PatientRepository
@@ -108,7 +108,7 @@ class AddEditPatientViewModel @Inject constructor(
             patientValidator.isPatientUnidentified = value
         }
 
-    var placesClient: PlacesClient? = null
+//    var placesClient: PlacesClient? = null
     var dateHolder: DateTime? = null
     var identifierDateHolder: DateTime? = null
     var capturedPhotoFile: File? = null

@@ -15,7 +15,7 @@ package org.openmrs.mobile.utilities
 
 import android.graphics.Color
 import android.widget.EditText
-import com.hbb20.CountryCodePicker
+//import com.hbb20.CountryCodePicker
 
 object ViewUtils {
     @JvmStatic
@@ -41,8 +41,8 @@ object ViewUtils {
         return Color.argb(a, r, g, b)
     }
 
-    @JvmStatic
+    /*@JvmStatic
     fun isCountryCodePickerEmpty(countryCodePicker: CountryCodePicker): Boolean {
         return countryCodePicker.selectedCountryName == null
-    }
+    }*/
 }

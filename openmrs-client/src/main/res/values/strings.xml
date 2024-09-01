@@ -157,6 +157,7 @@
     <string name="action_member_profile">Member profile</string>
     <string name="action_synced_patients">Synced Patients</string>
     <string name="action_member_list">Member List</string>
+    <string name="action_referred_patient_list">Referred Patient List</string>
     <string name="action_download_patients">Download Patients</string>
     <string name="search_patient_hint">Patient name</string>
     <string name="search_patient_no_results">No patients exist in database</string>

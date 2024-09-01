@@ -49,12 +49,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.google.android.gms.common.api.ApiException
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.google.android.libraries.places.api.model.TypeFilter
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+//import com.google.android.gms.common.api.ApiException
+//import com.google.android.libraries.places.api.Places
+//import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+//import com.google.android.libraries.places.api.model.TypeFilter
+//import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+//import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.material.snackbar.Snackbar
 import com.openmrs.android_sdk.library.models.*
 import com.openmrs.android_sdk.library.models.OperationType.FetchingSearchUser
@@ -96,7 +96,7 @@ import org.openmrs.mobile.databinding.FragmentPatientInfoBinding
 import org.openmrs.mobile.listeners.watcher.PatientBirthdateValidatorWatcher
 import org.openmrs.mobile.utilities.ImageUtils
 import org.openmrs.mobile.utilities.ViewUtils.getInput
-import org.openmrs.mobile.utilities.ViewUtils.isCountryCodePickerEmpty
+//import org.openmrs.mobile.utilities.ViewUtils.isCountryCodePickerEmpty
 import org.openmrs.mobile.utilities.ViewUtils.isEmpty
 import org.openmrs.mobile.utilities.makeGone
 import org.openmrs.mobile.utilities.makeVisible
@@ -737,7 +737,7 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
     }
 
     private fun initPlaces() {
-        if (viewModel.placesClient != null) return
+        /*if (viewModel.placesClient != null) return
         with(requireActivity()) {
             val applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
             val placesApiKey = applicationInfo.metaData.getString("com.google.android.geo.API_KEY")
@@ -745,7 +745,7 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
                 Places.initialize(applicationContext, placesApiKey)
                 viewModel.placesClient = Places.createClient(this)
             }
-        }
+        }*/
     }
 
     private fun initSpinners() {

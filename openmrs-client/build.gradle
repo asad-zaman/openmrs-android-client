@@ -178,11 +178,11 @@ dependencies {
     releaseImplementation "com.github.chuckerteam.chucker:library-no-op:${versions.chuckerLibrary}"
 
     // Third Party UI Libraries
-    implementation "org.adw.library:discrete-seekbar:${versions.seekbar}"
+//    implementation "org.adw.library:discrete-seekbar:${versions.seekbar}"
     implementation "com.github.PhilJay:MPAndroidChart:${versions.MPAndroidChart}"
     implementation "com.github.amlcurran.showcaseview:library:${versions.showcaseview}"
     implementation "org.mindrot:jbcrypt:${versions.jbcrypt}"
-    implementation "com.hbb20:ccp:${versions.countryCodePicker}"
+//    implementation "com.hbb20:ccp:${versions.countryCodePicker}"
     implementation "com.github.AppIntro:AppIntro:${versions.AppIntro}"
     implementation 'com.github.yalantis:ucrop:2.2.5'
     implementation "com.github.permissions-dispatcher:permissionsdispatcher-ktx:${versions.permissionsdispatcher}"
@@ -194,7 +194,7 @@ dependencies {
     implementation "com.google.guava:guava:${versions.guava}"
 
     // Google place api
-    implementation "com.google.android.libraries.places:places:${versions.placesAPI}"
+//    implementation "com.google.android.libraries.places:places:${versions.placesAPI}"
 
     // Hilt Dependency Injection
     implementation "com.google.dagger:hilt-android:${versions.hilt}"
@@ -237,7 +237,7 @@ dependencies {
     // Leak Canary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${versions.leakcanary}"
     // Debug database
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+//    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 }
 
 kapt {

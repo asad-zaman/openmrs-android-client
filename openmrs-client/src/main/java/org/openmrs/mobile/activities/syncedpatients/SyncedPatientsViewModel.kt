@@ -33,7 +33,6 @@ class SyncedPatientsViewModel @Inject constructor(private val patientDAO: Patien
     var loadManageProviders : MutableLiveData<Boolean> = MutableLiveData()
     var loadMemberList : MutableLiveData<Boolean> = MutableLiveData()
     var loadReferredMemberList : MutableLiveData<Boolean> = MutableLiveData()
-    var loadMemberProfile : MutableLiveData<Boolean> = MutableLiveData()
     var loadAddMember : MutableLiveData<Boolean> = MutableLiveData()
 
     fun loadDrawerItems(context: Context) {
@@ -161,13 +160,6 @@ class SyncedPatientsViewModel @Inject constructor(private val patientDAO: Patien
                 loadAddMember.value = true
             else {
                 loadAddMember.value = loadAddMember.value != true
-            }
-        }
-        else if(navDrawer.id == Constants.ITEM_MEMBER_PROFILE) {
-            if(loadMemberProfile.value == null)
-                loadMemberProfile.value = true
-            else {
-                loadMemberProfile.value = loadMemberProfile.value != true
             }
         }
     }
