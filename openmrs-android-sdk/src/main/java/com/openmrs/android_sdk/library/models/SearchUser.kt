@@ -81,10 +81,7 @@ class SearchUser : Serializable {
 
 
 data class SearchRequest(
-    @SerializedName("type")
-    @Expose var rtype: String?,
-    @SerializedName("dob")
-    @Expose var rdob: String?,
-    @SerializedName("text")
-    @Expose var rtext: String?
+    @SerializedName("type") @Expose var rtype: String?,
+    @SerializedName("dob") @Expose var rdob: String?,
+    @SerializedName("text") @Expose var rtext: String?
 ) : Serializable

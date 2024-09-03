@@ -17,7 +17,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -200,7 +199,7 @@ public interface RestApi {
      * @return the patients
      */
     @POST("custom-person/refered")
-    Call<ReferredPatientResponse> getReferredPatients(@Body TextBody queryString);
+    Call<ReferredPatientResponse> getReferredPatients(@Body TextBody queryBody);
 
     /**
      * Gets patients.

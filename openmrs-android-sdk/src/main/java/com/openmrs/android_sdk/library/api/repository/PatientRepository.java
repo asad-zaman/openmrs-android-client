@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -38,8 +37,6 @@ import androidx.work.Data;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 
-import com.google.gson.annotations.SerializedName;
-import com.openmrs.android_sdk.R;
 import com.openmrs.android_sdk.library.OpenmrsAndroid;
 import com.openmrs.android_sdk.library.api.RestApi;
 import com.openmrs.android_sdk.library.api.RestServiceBuilder;
@@ -363,18 +360,36 @@ public class PatientRepository extends BaseRepository {
     }
 
 
+    /*public Observable<List<ReferredPatient>> findReferredPatients(String query) throws Exception {
+        try{
+            return AppDatabaseHelper.createObservableIO(() -> {
+                TextBody requestBody = new TextBody(query);
+                Response<ReferredPatientResponse> response = restApi.getReferredPatients(requestBody).execute();
+                if (response.isSuccessful()) {
+                    List<ReferredPatient> pList = response.body().getPersons();
+                    return pList;
+                } else {
+                    throw new Exception("Error with finding referred patients: " + response.message());
+                }
+            });
+        } catch (Exception e){
+            throw new Exception("Error with finding referred patients: " + e.getMessage());
+        }
+    }*/
+
     public Observable<List<ReferredPatient>> findReferredPatients(String query) {
         return AppDatabaseHelper.createObservableIO(() -> {
             TextBody requestBody = new TextBody(query);
-            Response<ReferredPatientResponse> response = restApi.getReferredPatients(requestBody).execute();
-            List<ReferredPatient> pList = response.body().getPersons();
-            if (response.isSuccessful()) {
-                return pList;
+            Call<ReferredPatientResponse> call = restApi.getReferredPatients(requestBody);
+            Response<ReferredPatientResponse> response = call.execute();
+            if (response.isSuccessful() && response.body() != null) {
+                return response.body().getPersons();
             } else {
                 throw new Exception("Error with finding referred patients: " + response.message());
             }
         });
     }
+
 
     /**
      * Load more patients.

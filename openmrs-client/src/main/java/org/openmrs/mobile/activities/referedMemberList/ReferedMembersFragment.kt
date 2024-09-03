@@ -11,17 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.openmrs.android_sdk.library.models.Patient
 import dagger.hilt.android.AndroidEntryPoint
 import org.openmrs.mobile.activities.BaseFragment
-import org.openmrs.mobile.databinding.FragmentMemberListBinding
 import com.openmrs.android_sdk.library.models.Result
-import kotlinx.android.synthetic.main.fragment_refered_members.*
 import org.openmrs.mobile.R
-import org.openmrs.mobile.activities.syncedpatients.SyncedPatientsRecyclerViewAdapter
-import org.openmrs.mobile.base.BaseRecyclerViewAdapter
 import org.openmrs.mobile.databinding.FragmentReferedMembersBinding
 import org.openmrs.mobile.utilities.makeGone
 import org.openmrs.mobile.utilities.makeInvisible
 import org.openmrs.mobile.utilities.makeVisible
-import java.lang.reflect.Member
 
 @AndroidEntryPoint
 class ReferedMembersFragment : BaseFragment() {

@@ -58,15 +58,27 @@
             app:layout_constraintTop_toBottomOf="@id/guideline" />
 
         <ImageView
-            android:id="@+id/referedPatientGender"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="12dp"
+            android:id="@+id/referedPatientWithRisk"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="@dimen/five_dp"
             android:scaleType="fitXY"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_warning"
+            app:layout_constraintBottom_toTopOf="@+id/referedPatientGender"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/referedPatientGender"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="@dimen/five_dp"
+            android:scaleType="fitXY"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@+id/referedPatientWithRisk"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"

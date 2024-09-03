@@ -42,7 +42,6 @@ import java.util.List;
 public class ReferedMembersRecyclerViewAdapter extends RecyclerView.Adapter<ReferedMembersRecyclerViewAdapter.PatientViewHolder> {
     private ReferedMembersFragment mContext;
     private List<Patient> mItems;
-    private boolean multiSelect = false;
     private ArrayList<Patient> selectedItems = new ArrayList<>();
 
     public ReferedMembersRecyclerViewAdapter(ReferedMembersFragment context, List<Patient> items) {
@@ -53,7 +52,6 @@ public class ReferedMembersRecyclerViewAdapter extends RecyclerView.Adapter<Refe
     public void updateList(List<Patient> patientList) {
         this.mItems = patientList;
         this.selectedItems = new ArrayList();
-        this.multiSelect = false;
         notifyDataSetChanged();
     }
 
@@ -91,6 +89,9 @@ public class ReferedMembersRecyclerViewAdapter extends RecyclerView.Adapter<Refe
         } else {
             holder.mGender.setImageResource(R.drawable.patient_male);
         }
+        /*if (patient.isDeceased() != null && patient.isDeceased()) {
+            holder.mRowLayout.setCardBackgroundColor(mContext.getResources().getColor(R.color.deceased_green));
+        }*/
         if (patient.isDeceased() != null && patient.isDeceased()) {
             holder.mRowLayout.setCardBackgroundColor(mContext.getResources().getColor(R.color.deceased_green));
         }
@@ -106,6 +107,7 @@ public class ReferedMembersRecyclerViewAdapter extends RecyclerView.Adapter<Refe
         private TextView mIdentifier;
         private TextView mDisplayName;
         private ImageView mGender;
+        private ImageView isRisk;
 
         public PatientViewHolder(View itemView) {
             super(itemView);
@@ -114,39 +116,19 @@ public class ReferedMembersRecyclerViewAdapter extends RecyclerView.Adapter<Refe
             mIdentifier = itemView.findViewById(R.id.referedPatientIdentifier);
             mDisplayName = itemView.findViewById(R.id.referedPatientName);
             mGender = itemView.findViewById(R.id.referedPatientGender);
-        }
-
-        void selectItem(Patient item) {
-            if (multiSelect) {
-                if (selectedItems.contains(item)) {
-                    selectedItems.remove(item);
-                    mRowLayout.setBackgroundColor(adjustOpacity(Color.GREEN, 0.05f));
-                } else {
-                    selectedItems.add(item);
-                    mRowLayout.setCardBackgroundColor(mContext.getResources().getColor(R.color.selected_card));
-                }
-            }
+            isRisk = itemView.findViewById(R.id.referedPatientWithRisk);
         }
 
         void update(final Patient value) {
-            if (selectedItems.contains(value)) {
-                mRowLayout.setCardBackgroundColor(mContext.getResources().getColor(R.color.selected_card));
-            } else {
-                mRowLayout.setBackgroundColor(adjustOpacity(Color.GREEN, 0.05f));
-            }
             itemView.setOnClickListener(view -> {
-                if (!multiSelect) {
-                    Intent intent = new Intent(mContext.getActivity(), MemberProfileActivity.class);
-                    try{
-                        String personObj = new Gson().toJson(value);
-                        intent.putExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY, personObj);
-                    } catch (Exception e) {
-                        Log.d("", e.toString());
-                    }
-                    mContext.startActivity(intent);
-                } else {
-                    selectItem(value);
+                Intent intent = new Intent(mContext.getActivity(), MemberProfileActivity.class);
+                try{
+                    String personObj = new Gson().toJson(value);
+                    intent.putExtra(ApplicationConstants.BundleKeys.PATIENT_ENTITY, personObj);
+                } catch (Exception e) {
+                    Log.d("", e.toString());
                 }
+                mContext.startActivity(intent);
             });
         }
     }
