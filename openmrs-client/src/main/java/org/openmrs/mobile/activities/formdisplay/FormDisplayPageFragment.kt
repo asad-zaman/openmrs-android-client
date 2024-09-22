@@ -8,21 +8,32 @@
  */
 package org.openmrs.mobile.activities.formdisplay
 
+//import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.*
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.core.view.get
 import androidx.fragment.app.viewModels
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.openmrs.android_sdk.library.models.Answer
 import com.openmrs.android_sdk.library.models.Page
 import com.openmrs.android_sdk.library.models.Question
@@ -31,15 +42,14 @@ import com.openmrs.android_sdk.utilities.*
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_FIELDS_BUNDLE
 import com.openmrs.android_sdk.utilities.ApplicationConstants.BundleKeys.FORM_PAGE_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.list_gallery_or_camera_item.view.*
-//import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.BaseFragment
 import org.openmrs.mobile.bundle.FormFieldsWrapper
 import org.openmrs.mobile.databinding.FragmentFormDisplayBinding
+import org.openmrs.mobile.iot.IOTActivity
 import org.openmrs.mobile.utilities.ViewUtils.isEmpty
 import java.util.*
-import android.text.style.ForegroundColorSpan
+
 
 @AndroidEntryPoint
 class FormDisplayPageFragment : BaseFragment() {
@@ -51,6 +61,7 @@ class FormDisplayPageFragment : BaseFragment() {
     private var formLabel: String = ""
     private var mSections: List<Section> = listOf()
     private val containerList: MutableList<LinearLayout> = mutableListOf()
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFormDisplayBinding.inflate(inflater, container, false)
@@ -58,6 +69,42 @@ class FormDisplayPageFragment : BaseFragment() {
         mSections = viewModel.page.sections
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         createFormViews()
+
+        if(formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.PRE_PREGNANCY_SERVICE
+            || formLabel.isNotEmpty() && formLabel == ApplicationConstants.FormListKeys.POST_PREGNANCY_SERVICE){
+            val formFab = FloatingActionButton(requireContext()).apply {
+                setImageResource(R.drawable.ic_bluetooth)
+                size = FloatingActionButton.SIZE_NORMAL
+                layoutParams = CoordinatorLayout.LayoutParams(
+                    CoordinatorLayout.LayoutParams.WRAP_CONTENT,
+                    CoordinatorLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    gravity = Gravity.BOTTOM or Gravity.END
+                    marginEnd = 20
+                    bottomMargin = 16
+                }
+                imageTintList = ContextCompat.getColorStateList(requireContext(), android.R.color.white)
+                backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.primary)
+            }
+            (binding.root as? CoordinatorLayout)?.addView(formFab)
+
+            activityResultLauncher = registerForActivityResult<Intent, ActivityResult>(
+                StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data = result.data
+                    if (data != null) {
+                        val returnedValue = data.getStringExtra("resultKey")
+                        ToastUtil.success("Received: $returnedValue")
+                    }
+                } else if (result.resultCode == Activity.RESULT_CANCELED) { }
+            }
+
+            formFab.setOnClickListener {
+                val intent = Intent(requireActivity(), IOTActivity::class.java)
+                activityResultLauncher.launch(intent)
+            }
+        }
         return binding.root
     }
 

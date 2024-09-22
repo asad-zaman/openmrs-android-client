@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select a Bluetooth Device"
+            android:textSize="18sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"/>
+
+        <!-- Refresh Icon (ProgressBar for spinning animation) -->
+        <ProgressBar
+            android:id="@+id/refreshBLEAnimation"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dashboard_icon_margin"
+            android:layout_marginTop="@dimen/dashboard_icon_margin"
+            android:layout_centerVertical="true"
+            android:indeterminate="true" />
+    </RelativeLayout>
+
+    <!-- List of BLE devices -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/device_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/stopScanButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Stop Scanning"
+        android:paddingHorizontal="@dimen/custom_fab_bottom_margin_55"
+        android:layout_marginVertical="@dimen/padding_16"/>
+</LinearLayout>
