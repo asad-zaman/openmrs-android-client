@@ -11,7 +11,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.ACBaseActivity
 import androidx.databinding.DataBindingUtil
-import kotlinx.android.synthetic.main.fragment_member_list.view.*
 import org.openmrs.mobile.databinding.ActivityReferedMembersBinding
 import org.openmrs.mobile.databinding.FragmentReferedMembersBinding
 
@@ -91,7 +90,6 @@ class ReferedMembersActivity : ACBaseActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         val contentDashboard = mBinding.referedMembersContentFrame
         when (v?.id) {
-            contentDashboard.fabAddMember.id -> {}
         }
     }
 }

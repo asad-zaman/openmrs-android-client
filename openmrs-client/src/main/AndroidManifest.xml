@@ -44,7 +44,9 @@
         android:icon="@drawable/ic_openmrs"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Openmrs">
+        android:theme="@style/Theme.Openmrs"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="tiramisu">
         <activity
             android:name=".activities.community.contact.AboutActivity"
             android:label="@string/action_about_activity"
@@ -52,7 +54,8 @@
         <activity
             android:name=".activities.introduction.SplashActivity"
             android:noHistory="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -96,7 +99,8 @@
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/action_synced_patients"
             android:launchMode="singleTop"
-            android:theme="@style/AppThemeOrig">
+            android:theme="@style/AppThemeOrig"
+            android:exported="true">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -194,7 +198,8 @@
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/action_active_visits"
             android:launchMode="singleTop"
-            android:theme="@style/AppThemeOrig">
+            android:theme="@style/AppThemeOrig"
+            android:exported="true">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -288,7 +293,8 @@
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/action_download_patients"
             android:launchMode="singleTop"
-            android:theme="@style/AppThemeOrig">
+            android:theme="@style/AppThemeOrig"
+            android:exported="true">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -362,10 +368,10 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <provider
+        <!--<provider
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove"/>
+            tools:node="remove"/>-->
     </application>
 
 </manifest>

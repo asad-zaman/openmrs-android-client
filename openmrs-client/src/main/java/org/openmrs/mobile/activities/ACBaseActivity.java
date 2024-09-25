@@ -47,6 +47,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -74,6 +75,7 @@ import org.openmrs.mobile.net.AuthorizationManager;
 import org.openmrs.mobile.utilities.ForceClose;
 import org.openmrs.mobile.utilities.LanguageUtils;
 import org.openmrs.mobile.utilities.ThemeUtils;
+import androidx.core.content.ContextCompat;
 
 @AndroidEntryPoint
 public abstract class ACBaseActivity extends AppCompatActivity {
@@ -129,7 +131,12 @@ public abstract class ACBaseActivity extends AppCompatActivity {
                 && !(this instanceof ContactUsActivity) && !(this instanceof SplashActivity)) {
             mAuthorizationManager.moveToLoginActivity();
         }
-        registerReceiver(mPasswordChangedReceiver, mIntentFilter);
+        ContextCompat.registerReceiver(
+                this,
+                mPasswordChangedReceiver,
+                mIntentFilter,
+                ContextCompat.RECEIVER_NOT_EXPORTED
+        );
         ToastUtil.setAppVisible(true);
     }
 
@@ -272,7 +279,7 @@ public abstract class ACBaseActivity extends AppCompatActivity {
         bundle.setTitleViewMessage(getString(R.string.credentials_changed_dialog_title));
         bundle.setTextViewMessage(getString(R.string.credentials_changed_dialog_message));
         bundle.setRightButtonAction(CustomFragmentDialog.OnClickAction.LOGOUT);
-        bundle.setRightButtonText(getString(R.string.ok));
+        bundle.setRightButtonText("OK");
         mCustomFragmentDialog = CustomFragmentDialog.newInstance(bundle);
         mCustomFragmentDialog.setCancelable(false);
         mCustomFragmentDialog.setRetainInstance(true);

@@ -9,7 +9,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.activity.viewModels
 import com.openmrs.android_sdk.utilities.NetworkUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_member_list.view.*
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.ACBaseActivity
 import org.openmrs.mobile.databinding.ActivityMemberListBinding
@@ -91,7 +90,7 @@ class MemberListActivity : ACBaseActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         val contentDashboard = mBinding.membersContentFrame
         when (v?.id) {
-            contentDashboard.fabAddMember.id -> {}
+//            contentDashboard.fabAddMember.id -> {}
         }
     }
 }

@@ -28,7 +28,6 @@ import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.utilities.NetworkUtils
 import com.openmrs.android_sdk.utilities.StringUtils.notEmpty
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_new_dashboard.view.*
 import org.openmrs.mobile.R
 import org.openmrs.mobile.activities.ACBaseActivity
 import org.openmrs.mobile.activities.activevisits.ActiveVisitsActivity
@@ -74,7 +73,7 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
         mViewModel.loadDrawerItems(this)
         mBinding.drawerItemList.adapter = mViewModel.drawerItemListAdapter
 
-        mBinding.drawerView.buttonLogout.setOnClickListener(this)
+        mBinding.buttonLogout.setOnClickListener(this)
         observeData()
     }
 
@@ -222,7 +221,7 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            mBinding.drawerView.buttonLogout.id -> {}
+            mBinding.buttonLogout.id -> {}
         }
     }
 }

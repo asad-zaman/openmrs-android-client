@@ -8,6 +8,7 @@ plugins {
 }
 
 android {
+    namespace 'com.openmrs.android_sdk'
     compileSdkVersion 31
     buildToolsVersion "29.0.2"
 
@@ -57,11 +58,11 @@ android {
         implementation 'de.hdodenhof:circleimageview:3.0.0'
 
         // room
-        implementation 'androidx.room:room-runtime:2.3.0-alpha01'
+        implementation 'androidx.room:room-runtime:2.7.0-alpha08'
         implementation 'android.arch.persistence.room:rxjava2:1.1.1'
 
         //no inspection
-        kapt 'androidx.room:room-compiler:2.1.0-alpha04'
+        kapt 'androidx.room:room-compiler:2.7.0-alpha08'
 
         // joda time
         implementation 'joda-time:joda-time:2.10.6'
@@ -83,7 +84,7 @@ android {
         implementation "com.google.code.gson:gson:2.8.5"
 
         // Work Manager
-        implementation "androidx.work:work-runtime:2.3.4"
+        implementation "androidx.work:work-runtime:2.9.1"
 
         // test implementation
         testImplementation 'junit:junit:4.+'
@@ -111,15 +112,15 @@ android {
         releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.0"
 
         // Hilt Dependency Injection
-        implementation 'com.google.dagger:hilt-android:2.38.1'
-        kapt 'com.google.dagger:hilt-compiler:2.38.1'
-        implementation("androidx.hilt:hilt-work:1.0.0")
-        kapt("androidx.hilt:hilt-compiler:1.0.0") /* Use it for Kotlin Workers */
-        annotationProcessor("androidx.hilt:hilt-compiler:1.0.0") /* Use it for Java Workers */
+        implementation 'com.google.dagger:hilt-android:2.49'
+        kapt 'com.google.dagger:hilt-compiler:2.49'
+        implementation("androidx.hilt:hilt-work:1.2.0")
+        kapt("androidx.hilt:hilt-compiler:1.2.0") /* Use it for Kotlin Workers */
+        annotationProcessor("androidx.hilt:hilt-compiler:1.2.0") /* Use it for Java Workers */
 
         // Hilt local unit testing
-        testImplementation 'com.google.dagger:hilt-android-testing:2.38.1'
-        kaptTest 'com.google.dagger:hilt-compiler:2.38.1'
+        testImplementation 'com.google.dagger:hilt-android-testing:2.49'
+        kaptTest 'com.google.dagger:hilt-compiler:2.49'
     }
 
     kapt {
@@ -128,7 +129,7 @@ android {
 
     afterEvaluate {
         publishing {
-            publications {
+            /*publications {
                 release(MavenPublication) {
                     from components.release
 
@@ -136,7 +137,7 @@ android {
                     artifactId = 'openmrs'
                     version = '1.0.0'
                 }
-            }
+            }*/
         }
     }
 }

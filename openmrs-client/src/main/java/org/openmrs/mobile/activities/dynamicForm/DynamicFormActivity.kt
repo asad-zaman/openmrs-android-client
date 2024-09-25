@@ -29,7 +29,6 @@ import com.openmrs.android_sdk.utilities.ApplicationConstants
 import com.openmrs.android_sdk.utilities.ToastUtil
 import com.openmrs.android_sdk.utilities.ToastUtil.error
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_login.view.*
 import org.openmrs.mobile.activities.ACBaseActivity
 import org.openmrs.mobile.databinding.DynamicFormViewBinding
 import org.openmrs.mobile.listeners.ItemClickListener

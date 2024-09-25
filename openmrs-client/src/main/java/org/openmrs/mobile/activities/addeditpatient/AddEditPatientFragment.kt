@@ -78,9 +78,6 @@ import com.openmrs.android_sdk.utilities.ToastUtil
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCrop.REQUEST_CROP
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_add_provider.*
-import kotlinx.android.synthetic.main.fragment_matching_patients.*
-import kotlinx.android.synthetic.main.fragment_patient_info.*
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat

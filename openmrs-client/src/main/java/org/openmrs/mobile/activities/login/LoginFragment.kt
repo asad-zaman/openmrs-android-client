@@ -83,6 +83,7 @@ class LoginFragment : BaseFragment() {
                     when (result.operationType) {
                         OperationType.Login -> showLoadingAnimation()
                         OperationType.LocationsFetching -> showLocationLoadingAnimation()
+                        else -> {}
                     }
                 }
                 is Result.Success -> {

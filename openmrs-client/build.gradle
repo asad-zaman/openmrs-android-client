@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
@@ -13,13 +13,13 @@ plugins {
     id 'com.android.application'
     id 'com.github.triplet.play' version '2.2.1'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
-    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 
     // TODO AC-861
     //id 'jacoco-android'
-    id 'com.hiya.jacoco-android'
+//    id 'com.hiya.jacoco-android'
 }
 apply from: './versions.gradle'
 apply plugin: "androidx.navigation.safeargs"
@@ -28,6 +28,7 @@ def version = versions.appVersion
 def GOOGLE_PLACE_API_KEY = System.getenv('GOOGLE_PLACE_API_KEY') ?: "YOUR_API_KEY"
 
 android {
+    namespace 'org.openmrs.mobile'
     compileSdkVersion versions.compileSdk
 
     dataBinding {
@@ -65,7 +66,7 @@ android {
         ]
     }
 
-    configurations.all {
+    configurations.configureEach {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
     }
 
@@ -80,7 +81,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
         }
@@ -104,12 +105,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = "17"
     }
 
     testOptions {
@@ -127,7 +128,6 @@ android {
 repositories {
     maven { url 'https://yanzm.github.io/MaterialTabHost/repository' }
     mavenCentral()
-    jcenter()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     google()
 }
@@ -137,16 +137,17 @@ dependencies {
     // Android sdk library dependency
     implementation project(path: ':openmrs-android-sdk')
 
-    implementation "androidx.appcompat:appcompat:${versions.material}"
+    implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "com.google.android.material:material:${versions.material}"
     implementation "androidx.legacy:legacy-support-v13:${versions.supportVersion}"
     implementation "androidx.gridlayout:gridlayout:${versions.supportVersion}"
     implementation "androidx.recyclerview:recyclerview:${versions.recyclerView}"
     implementation "androidx.cardview:cardview:${versions.supportVersion}"
+
     implementation "androidx.constraintlayout:constraintlayout:${versions.constraintlayout}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.fragment:fragment-ktx:${versions.fragment}"
-    implementation "androidx.activity:activity-ktx:${versions.activity}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10"
+    implementation "androidx.fragment:fragment-ktx:1.8.3"
+    implementation "androidx.activity:activity-ktx:1.9.2"
 
     // Networking and Processing
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
@@ -154,8 +155,8 @@ dependencies {
     implementation "com.google.code.gson:gson:${versions.gson}"
 
     //Navigation Component
-    implementation "androidx.navigation:navigation-fragment-ktx:${versions.navfragment}"
-    implementation "androidx.navigation:navigation-ui-ktx:${versions.navui}"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.8.1"
+    implementation "androidx.navigation:navigation-ui-ktx:2.8.1"
 
     // Rx Java dependency
     implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
@@ -167,10 +168,10 @@ dependencies {
     implementation "android.arch.persistence.room:rxjava2:${versions.roomPersistence}"
 
     // Noinspection GradleDependency
-    annotationProcessor "androidx.room:room-compiler:${versions.roomCompiler}"
+    kapt "androidx.room:room-compiler:${versions.roomCompiler}"
 
     // Work Manager
-    implementation "androidx.work:work-runtime:${versions.workManager}"
+    implementation "androidx.work:work-runtime-ktx:${versions.workManager}"
 
     // http request Chucker Library
     testImplementation "com.github.chuckerteam.chucker:library:${versions.chuckerLibrary}"
@@ -186,7 +187,7 @@ dependencies {
     implementation "com.github.AppIntro:AppIntro:${versions.AppIntro}"
     implementation 'com.github.yalantis:ucrop:2.2.5'
     implementation "com.github.permissions-dispatcher:permissionsdispatcher-ktx:${versions.permissionsdispatcher}"
-    implementation "androidx.multidex:multidex:${versions.multidex}"
+    implementation "androidx.multidex:multidex:2.0.1"
     implementation "joda-time:joda-time:${versions.jodaTime}"
     implementation "net.sf.kxml:kxml2:${versions.kxml2}"
     implementation "commons-codec:commons-codec:${versions.codec}"
@@ -199,19 +200,18 @@ dependencies {
     // Hilt Dependency Injection
     implementation "com.google.dagger:hilt-android:${versions.hilt}"
     kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
-    implementation("androidx.hilt:hilt-work:1.0.0")
-    kapt("androidx.hilt:hilt-compiler:1.0.0") /* Use it for Kotlin Workers */
-    annotationProcessor("androidx.hilt:hilt-compiler:1.0.0") /* Use it for Java Workers */
+    implementation("androidx.hilt:hilt-work:1.2.0")
+    kapt("androidx.hilt:hilt-compiler:1.2.0") /* Use it for Kotlin Workers */
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle_version}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
     // LiveData
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle_version}")
-    implementation 'com.jakewharton.timber:timber:4.0.1'
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.6")
+    implementation 'com.jakewharton.timber:timber:5.0.1'
     // Test Implementations
     androidTestImplementation(
-            'androidx.test.ext:junit:1.1.1',
-            'androidx.test.espresso:espresso-core:3.1.0',
+            'androidx.test.ext:junit:1.2.1',
+            'androidx.test.espresso:espresso-core:3.6.1',
             'androidx.test:rules:1.1.0-alpha4',
             'androidx.test:runner:1.1.0-alpha4',
             'org.mockito:mockito-core:2.8.9',
@@ -224,7 +224,7 @@ dependencies {
             'org.mockito:mockito-core:2.8.9',
             'org.mockito:mockito-inline:2.13.0',
             "org.mockito.kotlin:mockito-kotlin:4.0.0",
-            'junit:junit:4.12',
+            'junit:junit:4.13.2',
             "org.junit.jupiter:junit-jupiter:5.8.2",
             'org.powermock:powermock-api-mockito2:2.0.2',
             'org.powermock:powermock-module-junit4:2.0.2',
