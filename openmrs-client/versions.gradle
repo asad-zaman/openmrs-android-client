@@ -26,7 +26,7 @@ versions.roomRuntime = '2.6.1'
 versions.roomPersistence = '1.1.1'
 versions.roomCompiler = '2.6.1'
 
-versions.chuckerLibrary = '3.4.0'
+versions.chuckerLibrary = '4.0.0'
 
 versions.workManager = '2.9.1'
 
