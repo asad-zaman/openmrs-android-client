@@ -1,4 +1,4 @@
-package org.openmrs.mobile.utilities
+package org.intelehealth.app.mpower.utilities
 
 import com.github.mikephil.charting.components.AxisBase
 import org.junit.Assert.*

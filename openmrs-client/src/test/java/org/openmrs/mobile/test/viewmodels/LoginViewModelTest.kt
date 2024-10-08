@@ -1,4 +1,4 @@
-package org.openmrs.mobile.test.viewmodels
+package org.intelehealth.app.mpower.test.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.openmrs.android_sdk.library.OpenmrsAndroid
@@ -31,10 +31,10 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
 import org.mockito.kotlin.times
-import org.openmrs.mobile.activities.login.LoginViewModel
-import org.openmrs.mobile.application.OpenMRS
-import org.openmrs.mobile.services.UserService
-import org.openmrs.mobile.test.ACUnitTestBaseRx
+import org.intelehealth.app.mpower.activities.login.LoginViewModel
+import org.intelehealth.app.mpower.application.OpenMRS
+import org.intelehealth.app.mpower.services.UserService
+import org.intelehealth.app.mpower.test.ACUnitTestBaseRx
 import rx.Observable
 
 @RunWith(JUnit4::class)
@@ -73,7 +73,9 @@ class LoginViewModelTest : ACUnitTestBaseRx() {
         `when`(OpenmrsAndroid.getServerUrl()).thenReturn(initialUrl)
 
         OpenMRSMock = Mockito.mockStatic(OpenMRS::class.java)
-        `when`(OpenMRS.getInstance()).thenReturn(OpenMRS())
+        `when`(OpenMRS.getInstance()).thenReturn(
+            OpenMRS()
+        )
 
         NetworkUtilsMock = Mockito.mockStatic(NetworkUtils::class.java)
         BCryptMock = Mockito.mockStatic(BCrypt::class.java)

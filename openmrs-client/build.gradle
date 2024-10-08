@@ -29,7 +29,7 @@ def version = versions.appVersion
 def GOOGLE_PLACE_API_KEY = System.getenv('GOOGLE_PLACE_API_KEY') ?: "YOUR_API_KEY"
 
 android {
-    namespace 'org.openmrs.mobile'
+    namespace 'org.intelehealth.app.mpower'
     compileSdkVersion versions.compileSdk
 
     dataBinding {
@@ -44,7 +44,7 @@ android {
     def buildVersionName = (travisTag) ? travisTag : applicationVersion + "-debug." + buildNumber
 
     defaultConfig {
-        applicationId "org.openmrs.mobile"
+        applicationId "org.intelehealth.app.mpower"
         versionName buildVersionName
         versionCode buildNumber
         multiDexEnabled true
@@ -52,7 +52,7 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
 
-        testApplicationId "org.openmrs.mobile.test"
+        testApplicationId "org.intelehealth.app.mpower.test"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         vectorDrawables.useSupportLibrary = true

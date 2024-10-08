@@ -1,4 +1,4 @@
-package org.openmrs.mobile.utilities
+package org.intelehealth.app.mpower.utilities
 
 import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.library.models.PersonAddress
@@ -6,7 +6,7 @@ import com.openmrs.android_sdk.library.models.PersonName
 import com.openmrs.android_sdk.library.models.Resource
 import org.junit.Test
 import org.junit.Assert.*
-import org.openmrs.mobile.test.ACUnitTestBase
+import org.intelehealth.app.mpower.test.ACUnitTestBase
 
 class PatientMergerTest : ACUnitTestBase() {
 

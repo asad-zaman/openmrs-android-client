@@ -1,4 +1,4 @@
-package org.openmrs.mobile.test.viewmodels
+package org.intelehealth.app.mpower.test.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
@@ -13,8 +13,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.openmrs.mobile.activities.patientdashboard.charts.PatientDashboardChartsViewModel
-import org.openmrs.mobile.test.ACUnitTestBaseRx
+import org.intelehealth.app.mpower.activities.patientdashboard.charts.PatientDashboardChartsViewModel
+import org.intelehealth.app.mpower.test.ACUnitTestBaseRx
 import rx.Observable
 
 @RunWith(JUnit4::class)

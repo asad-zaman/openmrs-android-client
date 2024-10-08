@@ -1,10 +1,10 @@
-package org.openmrs.mobile.utilities
+package org.intelehealth.app.mpower.utilities
 
 import com.openmrs.android_sdk.library.models.Patient
 import com.openmrs.android_sdk.utilities.PatientValidator
 import org.junit.Assert.assertFalse
 import org.junit.Test
-import org.openmrs.mobile.test.ACUnitTestBase
+import org.intelehealth.app.mpower.test.ACUnitTestBase
 
 class PatientValidatorTest : ACUnitTestBase() {
 

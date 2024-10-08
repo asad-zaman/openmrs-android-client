@@ -1,4 +1,4 @@
-package org.openmrs.mobile.test.viewmodels
+package org.intelehealth.app.mpower.test.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
@@ -18,8 +18,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyLong
-import org.openmrs.mobile.activities.visitdashboard.VisitDashboardViewModel
-import org.openmrs.mobile.test.ACUnitTestBaseRx
+import org.intelehealth.app.mpower.activities.visitdashboard.VisitDashboardViewModel
+import org.intelehealth.app.mpower.test.ACUnitTestBaseRx
 import rx.Observable
 
 @RunWith(JUnit4::class)

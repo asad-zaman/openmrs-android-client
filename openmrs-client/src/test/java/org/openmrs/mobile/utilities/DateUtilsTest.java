@@ -12,7 +12,7 @@
      * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
      */
 
-    package org.openmrs.mobile.utilities;
+    package org.intelehealth.app.mpower.utilities;
 
     import static junit.framework.Assert.assertFalse;
     import static junit.framework.TestCase.assertTrue;
@@ -43,7 +43,7 @@
     import org.mockito.Mock;
     import org.mockito.MockedStatic;
     import org.mockito.Mockito;
-    import org.openmrs.mobile.application.OpenMRS;
+    import org.intelehealth.app.mpower.application.OpenMRS;
     import org.powermock.core.classloader.annotations.PrepareForTest;
 
     @PrepareForTest({OpenMRS.class, Resources.class})

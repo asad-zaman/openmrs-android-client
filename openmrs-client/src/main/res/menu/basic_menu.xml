@@ -16,7 +16,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.openmrs.mobile.activities.ACBaseActivity">
+    tools:context="org.intelehealth.app.mpower.org.intelehealth.app.mpower.activities.ACBaseActivity">
     <item
         android:id="@+id/syncbutton"
         android:icon="@drawable/ic_sync_off"

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "971382487208",
+    "firebase_url": "https://intelhealth-mpower-default-rtdb.firebaseio.com",
+    "project_id": "intelhealth-mpower",
+    "storage_bucket": "intelhealth-mpower.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971382487208:android:5981a642a11593a5bdaa9d",
+        "android_client_info": {
+          "package_name": "org.intelehealth.app.mpower"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "971382487208-j560lcphoadn1g7vs83828v7opj19qq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPdO9wLCNtpLxvTZXFhKhqwvqt2V_mMq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110202445555012147496",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

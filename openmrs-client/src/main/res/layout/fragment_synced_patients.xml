@@ -21,7 +21,7 @@
     <data>
         <variable
             name="vm"
-            type="org.openmrs.mobile.activities.syncedpatients.SyncedPatientsViewModel" />
+            type="org.intelehealth.app.mpower.activities.syncedpatients.SyncedPatientsViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -1,4 +1,4 @@
-package org.openmrs.mobile.test.viewmodels
+package org.intelehealth.app.mpower.test.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.openmrs.android_sdk.library.dao.VisitDAO
@@ -13,8 +13,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.openmrs.mobile.activities.formentrypatientlist.FormEntryPatientListViewModel
-import org.openmrs.mobile.test.ACUnitTestBaseRx
+import org.intelehealth.app.mpower.activities.formentrypatientlist.FormEntryPatientListViewModel
+import org.intelehealth.app.mpower.test.ACUnitTestBaseRx
 import rx.Observable
 
 @RunWith(JUnit4::class)

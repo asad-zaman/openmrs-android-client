@@ -5,11 +5,11 @@
     <data>
         <variable
             name="navdrawer"
-            type="org.openmrs.mobile.models.NavDrawerItem"/>
+            type="org.intelehealth.app.mpower.models.NavDrawerItem"/>
 
         <variable
             name="viewModel"
-            type="org.openmrs.mobile.activities.syncedpatients.SyncedPatientsViewModel" />
+            type="org.intelehealth.app.mpower.activities.syncedpatients.SyncedPatientsViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView

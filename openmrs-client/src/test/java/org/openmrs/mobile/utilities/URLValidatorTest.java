@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.mobile.utilities;
+package org.intelehealth.app.mpower.utilities;
 
 import org.junit.Test;
 

@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewModel"
-            type="org.openmrs.mobile.activities.referedMemberList.ReferedMembersViewModel" />
+            type="org.intelehealth.app.mpower.activities.referedMemberList.ReferedMembersViewModel" />
     </data>
 
     <LinearLayout

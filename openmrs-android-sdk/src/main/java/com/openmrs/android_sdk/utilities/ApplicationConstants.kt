@@ -266,7 +266,7 @@ object ApplicationConstants {
     object BroadcastActions {
         const val CONCEPT_DOWNLOAD_BROADCAST_INTENT_ID = "com.openmrs.mobile.services.conceptdownloadservice.action.broadcastintent"
         const val CONCEPT_DOWNLOAD_BROADCAST_INTENT_KEY_COUNT = "com.openmrs.mobile.services.conceptdownloadservice.broadcastintent.key.count"
-        const val AUTHENTICATION_CHECK_BROADCAST_ACTION = "org.openmrs.mobile.services.AuthenticateCheckService"
+        const val AUTHENTICATION_CHECK_BROADCAST_ACTION = "org.intelehealth.app.mpower.services.AuthenticateCheckService"
     }
 
     object ServiceNotificationId {

@@ -1,4 +1,4 @@
-package org.openmrs.mobile.test.viewmodels
+package org.intelehealth.app.mpower.test.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.openmrs.android_sdk.library.dao.PatientDAO
@@ -16,8 +16,8 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import org.openmrs.mobile.activities.syncedpatients.SyncedPatientsViewModel
-import org.openmrs.mobile.test.ACUnitTestBaseRx
+import org.intelehealth.app.mpower.activities.syncedpatients.SyncedPatientsViewModel
+import org.intelehealth.app.mpower.test.ACUnitTestBaseRx
 import rx.Observable
 
 @RunWith(JUnit4::class)

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.mobile.listeners.watcher.dao;
+package org.intelehealth.app.mpower.listeners.watcher.dao;
 
 import static org.junit.Assert.assertEquals;
 

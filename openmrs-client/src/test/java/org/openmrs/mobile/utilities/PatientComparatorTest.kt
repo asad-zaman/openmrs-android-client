@@ -1,4 +1,4 @@
-package org.openmrs.mobile.utilities
+package org.intelehealth.app.mpower.utilities
 
 import android.graphics.Bitmap
 import com.openmrs.android_sdk.library.models.Patient

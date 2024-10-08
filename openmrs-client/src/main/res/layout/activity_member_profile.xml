@@ -8,7 +8,7 @@
     <data>
         <variable
             name="viewModel"
-            type="org.openmrs.mobile.activities.memberProfile.MemberProfileViewModel" />
+            type="org.intelehealth.app.mpower.activities.memberProfile.MemberProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

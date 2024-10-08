@@ -1,4 +1,4 @@
-package org.openmrs.mobile.test.viewmodels
+package org.intelehealth.app.mpower.test.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import com.openmrs.android_sdk.library.models.Page
@@ -11,9 +11,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.openmrs.mobile.activities.formdisplay.FormDisplayPageViewModel
-import org.openmrs.mobile.bundle.FormFieldsWrapper
-import org.openmrs.mobile.test.ACUnitTestBaseRx
+import org.intelehealth.app.mpower.activities.formdisplay.FormDisplayPageViewModel
+import org.intelehealth.app.mpower.bundle.FormFieldsWrapper
+import org.intelehealth.app.mpower.test.ACUnitTestBaseRx
 
 @RunWith(JUnit4::class)
 class FormDisplayPageViewModelTest : ACUnitTestBaseRx() {

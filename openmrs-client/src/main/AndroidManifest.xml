@@ -15,7 +15,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.openmrs.mobile">
+    package="org.intelehealth.app.mpower">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -39,7 +39,7 @@
         android:required="false" />
 
     <application
-        android:name=".application.OpenMRS"
+        android:name="org.intelehealth.app.mpower.application.OpenMRS"
         android:allowBackup="false"
         android:icon="@drawable/ic_openmrs"
         android:label="@string/app_name"
@@ -68,14 +68,14 @@
             android:value="0" />
 
         <receiver
-            android:name=".api.SyncStateReceiver"
+            android:name="org.intelehealth.app.mpower.api.SyncStateReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="org.openmrs.mobile.intent.action.SYNC_PATIENTS" />
+                <action android:name="org.intelehealth.app.mpower.intent.action.SYNC_PATIENTS" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".services.ConceptDownloadService" />
+        <service android:name="org.intelehealth.app.mpower.services.ConceptDownloadService" />
 
         <activity
             android:name=".activities.dashboard.DashboardActivity"
@@ -241,7 +241,7 @@
             android:theme="@style/AppThemeOrig">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.openmrs.mobile.activities.formlist.FormListActivity" />
+                android:value="org.intelehealth.app.mpower.activities.formlist.FormListActivity" />
         </activity>
         <activity
             android:name=".activities.formentrypatientlist.FormEntryPatientListActivity"
@@ -267,12 +267,12 @@
         </activity>
 
         <activity
-            android:name=".webrtc.activity.IDAChatActivity"
+            android:name="org.intelehealth.app.mpower.webrtc.activity.IDAChatActivity"
             android:exported="true"
             android:theme="@style/AppThemeMaterialNew"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".webrtc.activity.IDAVideoActivity"
+            android:name="org.intelehealth.app.mpower.webrtc.activity.IDAVideoActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTask"
@@ -288,16 +288,16 @@
             android:windowSoftInputMode="adjustPan" />
 
         <service
-            android:name=".services.PatientService"
+            android:name="org.intelehealth.app.mpower.services.PatientService"
             android:enabled="true" />
         <service
-            android:name=".services.EncounterService"
+            android:name="org.intelehealth.app.mpower.services.EncounterService"
             android:enabled="true" />
         <service
-            android:name=".services.FormListService"
+            android:name="org.intelehealth.app.mpower.services.FormListService"
             android:enabled="true" />
         <service
-            android:name=".services.AuthenticateCheckService"
+            android:name="org.intelehealth.app.mpower.services.AuthenticateCheckService"
             android:enabled="true" />
 
         <service
@@ -323,7 +323,7 @@
             android:theme="@style/AppThemeOrig">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.openmrs.mobile.activities.formlist.FormListActivity" />
+                android:value="org.intelehealth.app.mpower.activities.formlist.FormListActivity" />
         </activity>
         <activity
             android:name=".activities.lastviewedpatients.LastViewedPatientsActivity"
@@ -345,13 +345,13 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.matchingpatients.MatchingPatientsActivity" />
+        <activity android:name="org.intelehealth.app.mpower.activities.matchingpatients.MatchingPatientsActivity" />
         <activity
-            android:name=".iot.IOTActivity"
+            android:name="org.intelehealth.app.mpower.iot.IOTActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.openmrs.mobile.iot.IOTActivity" />
+                android:value="org.intelehealth.app.mpower.org.intelehealth.app.mpower.iot.IOTActivity" />
         </activity>
         <activity
             android:name=".activities.patientdashboard.details.PatientPhotoActivity"
@@ -359,7 +359,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.openmrs.mobile.activities.patientdashboard.PatientDashboardActivity" />
+                android:value="org.intelehealth.app.mpower.activities.patientdashboard.PatientDashboardActivity" />
         </activity>
         <activity
             android:name=".activities.logs.LogsActivity"
@@ -367,7 +367,7 @@
             android:parentActivityName=".activities.settings.SettingsActivity"
             android:theme="@style/AppThemeOrig" />
         <activity
-            android:name=".activities.patientdashboard.charts.ChartsViewActivity"
+            android:name="org.intelehealth.app.mpower.activities.patientdashboard.charts.ChartsViewActivity"
             android:parentActivityName=".activities.patientdashboard.PatientDashboardActivity" />
         <activity
             android:name=".activities.providermanagerdashboard.ProviderManagerDashboardActivity"

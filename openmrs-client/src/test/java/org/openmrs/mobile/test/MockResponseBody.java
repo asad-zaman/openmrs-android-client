@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.mobile.test;
+package org.intelehealth.app.mpower.test;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;

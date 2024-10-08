@@ -1,4 +1,4 @@
-package org.openmrs.mobile.test;
+package org.intelehealth.app.mpower.test;
 
 
 import java.io.IOException;

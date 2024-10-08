@@ -20,7 +20,7 @@
     <data>
         <variable
             name="viewModel"
-            type="org.openmrs.mobile.activities.addeditpatient.AddEditPatientViewModel" />
+            type="org.intelehealth.app.mpower.activities.addeditpatient.AddEditPatientViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
