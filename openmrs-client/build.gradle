@@ -22,6 +22,7 @@ plugins {
 //    id 'com.hiya.jacoco-android'
 }
 apply from: './versions.gradle'
+apply from: './resdir.gradle'
 apply plugin: "androidx.navigation.safeargs"
 
 def version = versions.appVersion
@@ -136,6 +137,8 @@ dependencies {
 
     // Android sdk library dependency
     implementation project(path: ':openmrs-android-sdk')
+    implementation project(':klivekit')
+    implementation project(':fcm')
 
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "com.google.android.material:material:${versions.material}"

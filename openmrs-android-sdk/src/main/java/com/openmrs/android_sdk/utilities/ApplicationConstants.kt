@@ -24,6 +24,8 @@ object ApplicationConstants {
     const val AUTHORIZATION_TOKEN = "authorisation"
     const val SECRET_KEY = "secretKey"
     const val LOCATION = "location"
+    const val PROVIDER_ID = "provider_id"
+    const val HW_NAME = "hw_name"
     const val FIRST = true
 //    const val CHOOSE_ONE = "choose one"
     const val CHOOSE_ONE = "choose one"
@@ -34,6 +36,12 @@ object ApplicationConstants {
     const val DEFAULT_OPEN_MRS_URL = "https://openmrs-o3.mpower-social.com/openmrs"
 //    const val DEFAULT_OPEN_MRS_URL = "https://openmrs-o3-dev.mpower-social.com/openmrs"
 //    const val DEFAULT_OPEN_MRS_URL = "https://o3.openmrs.org/openmrs"
+
+    const val LIVE_KIT_URL = "wss://demo.intelehealth.org:9090"
+    const val SOCKET_URL = "wss://intelehealth-o3.mpower-social.com:3004/"
+    const val RTC_SERVER_URL = "https://intelehealth-o3.mpower-social.com:3000"
+
+
     const val DB_NAME = "openmrs.db"
     const val DB_PASSWORD_BCRYPT_PEPPER = "$2a$08\$iUp3M1VapYpjcAXQBNX6uu"
     const val DB_PASSWORD_LITERAL_PEPPER = "Open Sesame"

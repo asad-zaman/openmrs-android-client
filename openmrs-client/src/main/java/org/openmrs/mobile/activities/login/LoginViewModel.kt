@@ -11,6 +11,7 @@ import com.openmrs.android_sdk.library.dao.LocationDAO
 import com.openmrs.android_sdk.library.databases.entities.LocationEntity
 import com.openmrs.android_sdk.library.models.OperationType
 import com.openmrs.android_sdk.library.models.ResultType
+import com.openmrs.android_sdk.library.models.Session
 import com.openmrs.android_sdk.utilities.ApplicationConstants
 import com.openmrs.android_sdk.utilities.ApplicationConstants.DEFAULT_VISIT_TYPE_UUID
 import com.openmrs.android_sdk.utilities.ApplicationConstants.EMPTY_STRING
@@ -84,18 +85,20 @@ class LoginViewModel @Inject constructor(
         addSubscription(loginRepository.getSession(username, password)
                 .map { session ->
                     if (!session.isAuthenticated) return@map ResultType.LoginInvalidCredentials
-
                     OpenmrsAndroid.deleteSecretKey()
                     if (wipeDatabase) {
                         OpenMRS.getInstance().deleteDatabase(ApplicationConstants.DB_NAME)
-                        setData(session.sessionId!!, url, username, password)
+                        setData(session.sessionId!!, url, username, password, session)
                     }
                     if (AuthorizationManager().isUserNameOrServerEmpty()) {
-                        setData(session.sessionId!!, url, username, password)
+                        setData(session.sessionId!!, url, username, password, session)
                     } else {
                         OpenmrsAndroid.setSessionToken(session.sessionId)
                         OpenmrsAndroid.setPasswordAndHashedPassword(password)
+                        OpenmrsAndroid.setProviderId(session.user?.uuid)
+                        OpenmrsAndroid.setCHWName(session.user?.display)
                     }
+                    OpenMRS.getInstance().initSocketConnection()
                     val visitType = visitRepository.getVisitType().execute()
                     val visitTypeUuid = visitType?.uuid ?: DEFAULT_VISIT_TYPE_UUID
                     OpenmrsAndroid.setVisitTypeUUID(visitTypeUuid)
@@ -163,11 +166,13 @@ class LoginViewModel @Inject constructor(
     }
 
     /* Use this method to populate the OpenMRS username, password and everything else. */
-    private fun setData(sessionToken: String, url: String, username: String, password: String) {
+    private fun setData(sessionToken: String, url: String, username: String, password: String, mSession: Session) {
         OpenmrsAndroid.setSessionToken(sessionToken)
         OpenmrsAndroid.setServerUrl(url)
         OpenmrsAndroid.setUsername(username)
         OpenmrsAndroid.setPasswordAndHashedPassword(password)
+        OpenmrsAndroid.setProviderId(mSession.user?.uuid)
+        OpenmrsAndroid.setCHWName(mSession.user?.display)
     }
 
     private fun setLogin(isLogin: Boolean, serverUrl: String) {

@@ -20,20 +20,32 @@ import java.io.File;
 import dagger.hilt.android.HiltAndroidApp;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.hilt.work.HiltWorkerFactory;
 import androidx.multidex.MultiDexApplication;
 import androidx.work.Configuration;
 
+import com.github.ajalt.timberkt.Timber;
 import com.openmrs.android_sdk.library.OpenMRSLogger;
 import com.openmrs.android_sdk.library.OpenmrsAndroid;
+import com.openmrs.android_sdk.utilities.ApplicationConstants;
 
+import org.intelehealth.klivekit.RtcEngine;
+import org.intelehealth.klivekit.socket.SocketManager;
+import org.intelehealth.klivekit.utils.DateTimeResource;
+import org.intelehealth.klivekit.utils.Manager;
 import org.jetbrains.annotations.NotNull;
 import org.openmrs.mobile.services.AuthenticateCheckService;
 import org.openmrs.mobile.services.FormListService;
+import org.openmrs.mobile.utilities.SessionManager;
+import org.openmrs.mobile.webrtc.activity.IDACallLogActivity;
+import org.openmrs.mobile.webrtc.activity.IDAChatActivity;
+import org.openmrs.mobile.webrtc.activity.IDAVideoActivity;
 
 @HiltAndroidApp
 public class OpenMRS extends MultiDexApplication implements Configuration.Provider {
+    private static final String TAG = OpenMRS.class.getSimpleName();
     private static final String OPENMRS_DIR_NAME = "OpenMRS";
     private static final String OPENMRS_DIR_PATH = File.separator + OPENMRS_DIR_NAME;
     private static String mExternalDirectoryPath;
@@ -42,6 +54,10 @@ public class OpenMRS extends MultiDexApplication implements Configuration.Provid
     OpenMRSLogger mLogger;
     @Inject
     HiltWorkerFactory workerFactory;
+
+    SessionManager sessionManager;
+
+    private final SocketManager socketManager = SocketManager.getInstance();
 
     public static OpenMRS getInstance() {
         return instance;
@@ -52,6 +68,7 @@ public class OpenMRS extends MultiDexApplication implements Configuration.Provid
         super.onCreate();
         instance = this;
         OpenmrsAndroid.initializeSdk(this);
+        sessionManager = new SessionManager(this);
 
         if (mExternalDirectoryPath == null) {
             mExternalDirectoryPath = this.getExternalFilesDir(null).toString();
@@ -60,6 +77,8 @@ public class OpenMRS extends MultiDexApplication implements Configuration.Provid
         startService(i);
         Intent intent = new Intent(this, AuthenticateCheckService.class);
         startService(intent);
+
+        initSocketConnection();
     }
 
     @NotNull
@@ -73,10 +92,46 @@ public class OpenMRS extends MultiDexApplication implements Configuration.Provid
 
     @Override
     public void onTerminate() {
+        Timber.tag("APP").d("onTerminate");
+        disconnectSocket();
         super.onTerminate();
+    }
+
+    public void disconnectSocket() {
+        socketManager.disconnect();
     }
 
     public boolean isRunningKitKatVersionOrHigher() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
+
+
+    public void initSocketConnection() {
+        DateTimeResource.build(this);
+        Log.d(TAG, "initSocketConnection: ");
+        String providerId = OpenmrsAndroid.getProviderId();
+        String hwName = OpenmrsAndroid.getCHWName();
+        if (providerId != null && !providerId.isEmpty()) {
+            Manager.getInstance().setBaseUrl(ApplicationConstants.RTC_SERVER_URL);
+            String socketUrl = ApplicationConstants.RTC_SERVER_URL + "?userId="
+                    + providerId
+                    + "&name=" + hwName;
+            if (!socketManager.isConnected()) socketManager.connect(socketUrl);
+            initRtcConfig();
+        }
+    }
+
+    private void initRtcConfig() {
+        String providerId = OpenmrsAndroid.getProviderId();
+        String hwName = OpenmrsAndroid.getCHWName();
+        new RtcEngine.Builder()
+                .callUrl(ApplicationConstants.LIVE_KIT_URL)
+                .socketUrl(ApplicationConstants.SOCKET_URL + "?userId="
+                        + providerId
+                        + "&name=" + hwName)
+                .callIntentClass(IDAVideoActivity.class)
+                .chatIntentClass(IDAChatActivity.class)
+                .callLogIntentClass(IDACallLogActivity.class)
+                .build().saveConfig(this);
     }
 }

@@ -1,2 +1,4 @@
 include ':openmrs-android-sdk'
 include ':openmrs-client'
+include ':klivekit'
+include ':fcm'

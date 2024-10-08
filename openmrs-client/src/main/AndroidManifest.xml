@@ -266,6 +266,27 @@
                 android:value=".activities.addeditpatient.AddEditPatientActivity" />
         </activity>
 
+        <activity
+            android:name=".webrtc.activity.IDAChatActivity"
+            android:exported="true"
+            android:theme="@style/AppThemeMaterialNew"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".webrtc.activity.IDAVideoActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:showOnLockScreen="true"
+            android:taskAffinity=""
+            android:theme="@style/AppThemeMaterialNew"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".webrtc.activity.IDACallLogActivity"
+            android:exported="true"
+            android:theme="@style/AppThemeMaterialNew"
+            android:windowSoftInputMode="adjustPan" />
+
         <service
             android:name=".services.PatientService"
             android:enabled="true" />
@@ -278,6 +299,22 @@
         <service
             android:name=".services.AuthenticateCheckService"
             android:enabled="true" />
+
+        <service
+            android:name=".webrtc.service.FCMMessageService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".webrtc.receiver.FCMNotificationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.intelehealth.ekalarogya.FCM_BACKGROUND_BROADCAST_ACTION" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".activities.formdisplay.FormDisplayActivity"
@@ -367,6 +404,13 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_openmrs" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/color_accent" />
 
         <!--<provider
             android:name="androidx.work.impl.WorkManagerInitializer"

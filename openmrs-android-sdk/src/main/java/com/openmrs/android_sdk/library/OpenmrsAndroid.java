@@ -322,6 +322,30 @@ public class OpenmrsAndroid {
         editor.apply();
     }
 
+
+    public static String getProviderId() {
+        SharedPreferences prefs = getOpenMRSSharedPreferences();
+        return prefs.getString(ApplicationConstants.PROVIDER_ID, ApplicationConstants.EMPTY_STRING);
+    }
+
+    public static void setProviderId(String userUUID) {
+        SharedPreferences.Editor editor = getOpenMRSSharedPreferences().edit();
+        editor.putString(ApplicationConstants.PROVIDER_ID, userUUID);
+        editor.apply();
+    }
+
+
+    public static String getCHWName() {
+        SharedPreferences prefs = getOpenMRSSharedPreferences();
+        return prefs.getString(ApplicationConstants.HW_NAME, ApplicationConstants.EMPTY_STRING);
+    }
+
+    public static void setCHWName(String hwName) {
+        SharedPreferences.Editor editor = getOpenMRSSharedPreferences().edit();
+        editor.putString(ApplicationConstants.HW_NAME, hwName);
+        editor.apply();
+    }
+
     /**
      * Gets visit type uuid.
      *
