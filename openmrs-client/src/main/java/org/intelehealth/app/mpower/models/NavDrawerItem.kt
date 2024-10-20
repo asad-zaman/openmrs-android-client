@@ -24,6 +24,7 @@ class NavDrawerItem(
             items.add(NavDrawerItem(c.getString(R.string.drawer_active_visits), R.drawable.ic_add, Constants.ITEM_ACTIVE_VISITS))
             items.add(NavDrawerItem(c.getString(R.string.drawer_form_entry), R.drawable.ic_add, Constants.ITEM_FORM_ENTRY))
             items.add(NavDrawerItem(c.getString(R.string.drawer_manage_providers), R.drawable.ic_add, Constants.ITEM_MANAGE_PROVIDERS))
+            items.add(NavDrawerItem(c.getString(R.string.drawer_video_call), R.drawable.ic_add, Constants.ITEM_VIDEO_CALL))
 
             return items
         }

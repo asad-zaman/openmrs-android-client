@@ -30,6 +30,7 @@
     <string name="drawer_active_visits">Active visits</string>
     <string name="drawer_form_entry">Form entry</string>
     <string name="drawer_manage_providers">Manage providers</string>
+    <string name="drawer_video_call">Video call</string>
 
     <string name="alphanumeric_postal_code">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 </string>
 

@@ -38,6 +38,7 @@ import org.intelehealth.app.mpower.activities.memberList.MemberListActivity
 import org.intelehealth.app.mpower.activities.memberProfile.MemberProfileActivity
 import org.intelehealth.app.mpower.activities.providermanagerdashboard.ProviderManagerDashboardActivity
 import org.intelehealth.app.mpower.activities.referedMemberList.ReferedMembersActivity
+import org.intelehealth.app.mpower.activities.videoCall.VideoCallsActivity
 import org.intelehealth.app.mpower.databinding.ActivityNewDashboardBinding
 
 
@@ -57,7 +58,7 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
         supportActionBar?.let {
             it.elevation = 0f
             it.setDisplayHomeAsUpEnabled(true)
-            it.setTitle(R.string.action_synced_patients)
+            it.setTitle(R.string.action_patients_list)
             it.setHomeAsUpIndicator(R.drawable.ic_drawer)
         }
         // Create fragment
@@ -94,6 +95,8 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
         mViewModel.loadAddMember.observe(this, Observer { gotoRegisterPatient() })
 
         mViewModel.loadReferredMemberList.observe(this, Observer { gotoReferredMemberList() })
+
+        mViewModel.loadVideoCalls.observe(this, Observer { gotoVideoCalls() })
 
     }
 
@@ -210,6 +213,12 @@ class SyncedPatientsActivity : ACBaseActivity(), View.OnClickListener {
     fun gotoReferredMemberList() {
         openCloseDrawer()
         val intent = Intent(this, ReferedMembersActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoVideoCalls() {
+        openCloseDrawer()
+        val intent = Intent(this, VideoCallsActivity::class.java)
         startActivity(intent)
     }
 

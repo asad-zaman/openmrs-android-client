@@ -176,6 +176,12 @@
             android:theme="@style/NoActionBarTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".activities.videoCall.VideoCallsActivity"
+            android:label="Calls"
+            android:launchMode="singleTop"
+            android:theme="@style/AppThemeOrig"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".activities.settings.SettingsActivity"
             android:configChanges="locale|orientation"
             android:label="@string/action_settings"

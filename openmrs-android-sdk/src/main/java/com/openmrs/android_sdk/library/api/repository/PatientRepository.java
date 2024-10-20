@@ -14,6 +14,7 @@
 
 package com.openmrs.android_sdk.library.api.repository;
 
+import static com.openmrs.android_sdk.library.databases.AppDatabaseHelper.createObservableIO;
 import static com.openmrs.android_sdk.utilities.ApplicationConstants.PRIMARY_KEY_ID;
 
 import javax.inject.Inject;
@@ -44,6 +45,7 @@ import com.openmrs.android_sdk.library.api.workers.UpdatePatientWorker;
 import com.openmrs.android_sdk.library.dao.EncounterCreateRoomDAO;
 import com.openmrs.android_sdk.library.dao.PatientDAO;
 import com.openmrs.android_sdk.library.databases.AppDatabaseHelper;
+import com.openmrs.android_sdk.library.models.CallTokenModel;
 import com.openmrs.android_sdk.library.models.Encountercreate;
 import com.openmrs.android_sdk.library.models.IdGenPatientIdentifiers;
 import com.openmrs.android_sdk.library.models.IdentifierType;
@@ -53,6 +55,7 @@ import com.openmrs.android_sdk.library.models.PatientDto;
 import com.openmrs.android_sdk.library.models.PatientDtoUpdate;
 import com.openmrs.android_sdk.library.models.PatientIdentifier;
 import com.openmrs.android_sdk.library.models.PatientPhoto;
+import com.openmrs.android_sdk.library.models.RTCToken;
 import com.openmrs.android_sdk.library.models.ReferredPatient;
 import com.openmrs.android_sdk.library.models.ReferredPatientResponse;
 import com.openmrs.android_sdk.library.models.ResultType;
@@ -94,7 +97,7 @@ public class PatientRepository extends BaseRepository {
      * @param patient the patient to be registered in the server
      */
     public Observable<Patient> syncPatient(final Patient patient) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             final List<PatientIdentifier> identifiers = new ArrayList<>();
             final PatientIdentifier identifier = new PatientIdentifier();
             identifier.setLocation(locationRepository.getLocation());
@@ -159,7 +162,7 @@ public class PatientRepository extends BaseRepository {
      * @return Observable result type of registration process
      */
     public Observable<Patient> registerPatient(final Patient patient) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             Long id = patientDAO.savePatient(patient).single().toBlocking().first();
             patient.setId(id);
             if (NetworkUtils.isOnline()) syncPatient(patient).single().toBlocking().first();
@@ -174,7 +177,7 @@ public class PatientRepository extends BaseRepository {
      * @return Observable result type
      */
     public Observable<ResultType> updatePatient(final Patient patient) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             if (NetworkUtils.isOnline()) {
                 Call<PatientDto> call = restApi.updatePatient(
                         patient.getUpdatedPatientDto(), patient.getUuid(), "full");
@@ -211,7 +214,7 @@ public class PatientRepository extends BaseRepository {
      * @param patient the locally merged patient
      */
     public Observable<Patient> updateMatchingPatient(final Patient patient) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
 
             PatientDtoUpdate patientDto = patient.getUpdatedPatientDto();
 
@@ -230,7 +233,7 @@ public class PatientRepository extends BaseRepository {
      * @return Patient observable
      */
     public Observable<Patient> downloadPatientByUuid(@NonNull final String uuid) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             Call<PatientDto> call = restApi.getPatientByUUID(uuid, "full");
             Response<PatientDto> response = call.execute();
             if (response.isSuccessful()) {
@@ -253,7 +256,7 @@ public class PatientRepository extends BaseRepository {
      * @return Photo bitmap or null bitmap observable
      */
     public Observable<Bitmap> downloadPatientPhotoByUuid(String uuid) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             Call<ResponseBody> call = restApi.downloadPatientPhoto(uuid);
             Response<ResponseBody> response = call.execute();
 
@@ -330,13 +333,30 @@ public class PatientRepository extends BaseRepository {
     }
 
     public Observable<SearchUser> getUserBySearchIdentifier(SearchRequest searchBody) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             Call<SearchUserResponse> call = restApi.getUserBySearch(searchBody);
             Response<SearchUserResponse> response = call.execute();
             if (response.isSuccessful() && response.body() != null) {
                 return response.body().getSearchUser();
             } else {
                 throw new Exception("Error with searching user by identifier: " + response.message());
+            }
+        });
+    }
+
+    public Observable<RTCToken> getGeneratedToken(CallTokenModel ctm) {
+        return AppDatabaseHelper.createObservableIO(() -> {
+            String endURL = ApplicationConstants.RTC_SERVER_URL + "/api/getToken";
+            Call<RTCToken> call = restApi.getCallToken(endURL, ctm.getDid(), ctm.getTid(), ctm.getPid());
+            try{
+                Response<RTCToken> response = call.execute();
+                if (response.isSuccessful() && response.body() != null) {
+                    return response.body();
+                } else {
+                    throw new Exception("Error with generating call token: " + response.message());
+                }
+            }catch (Exception e){
+                throw new Exception("Error with generating call token: ");
             }
         });
     }
@@ -348,7 +368,7 @@ public class PatientRepository extends BaseRepository {
      * @return observable list of patients with matching query
      */
     public Observable<List<Patient>> findPatients(String query) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             Response<Results<Patient>> response = restApi.getPatients(query, ApplicationConstants.API.FULL).execute();
             List<Patient> pList = response.body().getResults();
             if (response.isSuccessful()) {
@@ -378,7 +398,7 @@ public class PatientRepository extends BaseRepository {
     }*/
 
     public Observable<List<ReferredPatient>> findReferredPatients(String query) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             TextBody requestBody = new TextBody(query);
             Call<ReferredPatientResponse> call = restApi.getReferredPatients(requestBody);
             Response<ReferredPatientResponse> response = call.execute();
@@ -399,7 +419,7 @@ public class PatientRepository extends BaseRepository {
      * @return observable list of last viewed patients
      */
     public Observable<Results<Patient>> loadMorePatients(int limit, int startIndex) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             Call<Results<Patient>> call = restApi.getLastViewedPatients(limit, startIndex);
             Response<Results<Patient>> response = call.execute();
             if (response.isSuccessful()) {
@@ -416,7 +436,7 @@ public class PatientRepository extends BaseRepository {
      * @return Observable string UUID for cause of death Concept
      */
     public Observable<String> getCauseOfDeathGlobalConceptID() {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             Call<Results<SystemProperty>> call = restApi.getSystemProperty(ApplicationConstants.CAUSE_OF_DEATH, ApplicationConstants.API.FULL);
             Response<Results<SystemProperty>> response = call.execute();
             if (response.isSuccessful()) {
@@ -433,11 +453,11 @@ public class PatientRepository extends BaseRepository {
      * <br> 2. Fetch patients with similar names, then compare their other similarities locally.
      * <br> 3. Fetch locally saved patients, then compare their similarities.
      *
-     * @param patient to find similar patients to
+     * @param patient to find similar patients toSERVER_URL_RTC
      * @return Observable list of similar patients
      */
     public Observable<List<Patient>> fetchSimilarPatients(final Patient patient) {
-        return AppDatabaseHelper.createObservableIO(() -> {
+        return createObservableIO(() -> {
             if (!NetworkUtils.isOnline()) {
                 List<Patient> localPatients = patientDAO.getAllPatients().toBlocking().first();
                 return new PatientComparator().findSimilarPatient(localPatients, patient);

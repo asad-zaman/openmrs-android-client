@@ -59,6 +59,7 @@ import com.openmrs.android_sdk.library.models.PatientPhoto;
 import com.openmrs.android_sdk.library.models.ProgramCreate;
 import com.openmrs.android_sdk.library.models.ProgramGet;
 import com.openmrs.android_sdk.library.models.Provider;
+import com.openmrs.android_sdk.library.models.RTCToken;
 import com.openmrs.android_sdk.library.models.ReferredPatientResponse;
 import com.openmrs.android_sdk.library.models.Resource;
 import com.openmrs.android_sdk.library.models.Results;
@@ -158,6 +159,13 @@ public interface RestApi {
     @Headers({"Content-Type: application/json"})
     @POST("external-api")
     Call<SearchUserResponse> getUserBySearch(@Body SearchRequest searchBody);
+
+    @Headers({"Content-Type: application/json"})
+    @GET
+    Call<RTCToken> getCallToken(@Url String url,
+                                @Query("name") String name,
+                                @Query("roomId") String roomId,
+                                @Query("nurseName") String nurseName);
 
 
     @POST("")

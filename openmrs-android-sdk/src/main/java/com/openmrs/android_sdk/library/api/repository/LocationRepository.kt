@@ -16,7 +16,12 @@ package com.openmrs.android_sdk.library.api.repository
 import com.openmrs.android_sdk.library.OpenmrsAndroid
 import com.openmrs.android_sdk.library.databases.AppDatabaseHelper.createObservableIO
 import com.openmrs.android_sdk.library.databases.entities.LocationEntity
-import com.openmrs.android_sdk.library.models.*
+import com.openmrs.android_sdk.library.models.CallTokenModel
+import com.openmrs.android_sdk.library.models.LocationData
+import com.openmrs.android_sdk.library.models.PatientCreate
+import com.openmrs.android_sdk.library.models.RTCToken
+import com.openmrs.android_sdk.library.models.SearchRequest
+import com.openmrs.android_sdk.library.models.SearchUser
 import com.openmrs.android_sdk.utilities.ApplicationConstants
 import rx.Observable
 import java.util.concurrent.Callable

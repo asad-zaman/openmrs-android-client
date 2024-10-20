@@ -34,6 +34,7 @@ class SyncedPatientsViewModel @Inject constructor(private val patientDAO: Patien
     var loadMemberList : MutableLiveData<Boolean> = MutableLiveData()
     var loadReferredMemberList : MutableLiveData<Boolean> = MutableLiveData()
     var loadAddMember : MutableLiveData<Boolean> = MutableLiveData()
+    var loadVideoCalls : MutableLiveData<Boolean> = MutableLiveData()
 
     fun loadDrawerItems(context: Context) {
         drawerItemListAdapter.updateModuleItems(NavDrawerItem.getNavDrawerItems(context))
@@ -160,6 +161,13 @@ class SyncedPatientsViewModel @Inject constructor(private val patientDAO: Patien
                 loadAddMember.value = true
             else {
                 loadAddMember.value = loadAddMember.value != true
+            }
+        }
+        else if(navDrawer.id == Constants.ITEM_VIDEO_CALL) {
+            if(loadVideoCalls.value == null)
+                loadVideoCalls.value = true
+            else {
+                loadVideoCalls.value = loadVideoCalls.value != true
             }
         }
     }

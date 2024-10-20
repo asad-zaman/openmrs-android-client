@@ -85,3 +85,16 @@ data class SearchRequest(
     @SerializedName("dob") @Expose var rdob: String?,
     @SerializedName("text") @Expose var rtext: String?
 ) : Serializable
+
+
+data class CallTokenModel(
+    @SerializedName("name") @Expose var did: String,
+    @SerializedName("roomId") @Expose var tid: String,
+    @SerializedName("nurseName") @Expose var pid: String
+) : Serializable
+
+data class RTCToken(
+    @SerializedName("token") @Expose var token: String?,
+    @SerializedName("appToken") @Expose var appToken: String?,
+    @SerializedName("success") @Expose var success: Boolean?
+) : Serializable

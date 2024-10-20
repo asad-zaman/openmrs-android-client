@@ -24,6 +24,8 @@ plugins {
 apply from: './versions.gradle'
 apply from: './resdir.gradle'
 apply plugin: "androidx.navigation.safeargs"
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 def version = versions.appVersion
 def GOOGLE_PLACE_API_KEY = System.getenv('GOOGLE_PLACE_API_KEY') ?: "YOUR_API_KEY"
@@ -242,6 +244,8 @@ dependencies {
     // Debug database
 //    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 kapt {
     correctErrorTypes true

@@ -31,6 +31,7 @@ enum class OperationType {
     Login,
     LocationsFetching,
     FetchingSearchUser,
+    FetchingCallToken,
     EncounterListSearching
 }
 
