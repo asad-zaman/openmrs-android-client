@@ -1,13 +1,40 @@
 package com.openmrs.android_sdk.library.models
 
+import androidx.room.TypeConverters
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.openmrs.android_sdk.library.models.typeConverters.PersonAttributeConverter
 
-class PatientSaveDTO : Person() {
+class PatientSaveDTO{
 
     @SerializedName("deathDate")
     @Expose
     var deathDate: String? = null
+
+    @SerializedName("birthdate")
+    @Expose
+    var birthdate: String? = null
+
+    @SerializedName("uuid")
+    @Expose
+    var uuid: String? = null
+
+    @SerializedName("display")
+    @Expose
+    var display: String? = null
+
+    @TypeConverters(PersonAttributeConverter::class)
+    @SerializedName("attributes")
+    @Expose
+    var attributes: List<PersonAttribute> = ArrayList()
+
+    @SerializedName("gender")
+    @Expose
+    var gender: String? = null
+
+    @SerializedName("age")
+    @Expose
+    var age: Int? = null
 
     @SerializedName("birthtime")
     @Expose
@@ -17,15 +44,7 @@ class PatientSaveDTO : Person() {
     @Expose
     var deathdateEstimated: Boolean? = false
 
-    @SerializedName("preferredName")
-    @Expose
-    var preferredName: PreferredName? = null
-
-    @SerializedName("resourceVersion")
-    @Expose
-    var resourceVersion: String? = null
-
-    @SerializedName("personUUID")
+    @SerializedName("personUuid")
     @Expose
     var personUUID: String? = null
 
@@ -141,42 +160,89 @@ class PatientSaveDTO : Person() {
     @Expose
     var patientAddress: String? = null
 
-    @SerializedName("unionID")
+    @SerializedName("unionId")
     @Expose
-    var unionID: String? = "0"
+    var unionId: String? = "0"
 
-    @SerializedName("divisionID")
+    @SerializedName("divisionId")
     @Expose
-    var divisionID: String? = null
+    var divisionId: String? = null
 
-    @SerializedName("districtID")
+    @SerializedName("districtId")
     @Expose
-    var districtID: String? = null
+    var districtId: String? = null
 
-    @SerializedName("upazilaID")
+    @SerializedName("upazilaId")
     @Expose
-    var upazilaID: String? = null
+    var upazilaId: String? = null
 
-    @SerializedName("paurasavaID")
+    @SerializedName("paurasavaId")
     @Expose
-    var paurasavaID: String? = null
+    var paurasavaId: String? = null
 
-    @SerializedName("wardID")
+    @SerializedName("wardId")
     @Expose
-    var wardID: String? = "0"
+    var wardId: String? = null
 
     @SerializedName("location")
     @Expose
-    var location: Long? = 0
+    var location: Int? = 0
 
-    @SerializedName("countryID")
+    @SerializedName("countryId")
     @Expose
-    var countryID: Long? = 0
+    var countryId: Int? = 0
 
-    @SerializedName("blockID")
+    @SerializedName("blockId")
     @Expose
-    var blockID: Long? = 0
+    var blockId: Int? = 0
 
 }
 
-class PreferredName : Resource()
+
+
+data class TestResponse (
+    val id: Any? = null,
+    val person: Any? = null,
+    val personUUID: String,
+    val gender: String,
+    val birthdate: Long,
+    val firstName: String,
+    val lastName: String,
+    val identifier: String,
+    val nid: String,
+    val uuid: String,
+    val brn: Any? = null,
+    val epi: Any? = null,
+    val mobile: Any? = null,
+    val motherName: String,
+    val shrID: Any? = null,
+    val highRisk: Boolean,
+    val fatherName: Any? = null,
+    val spouseName: Any? = null,
+    val refered: Boolean,
+    val location: Long,
+    val country: Any? = null,
+    val division: String,
+    val district: String,
+    val upazila: String,
+    val paurasava: String,
+    val union: Any? = null,
+    val ward: String,
+    val block: Any? = null,
+    val occupation: Any? = null,
+    val relegion: Any? = null,
+    val bloodGroup: Any? = null,
+    val ethnicity: Any? = null,
+    val nationality: Any? = null,
+    val matritalStatus: Any? = null,
+    val countryID: Long,
+    val divisionID: Long,
+    val districtID: Long,
+    val upazilaID: Long,
+    val paurasavaID: Long,
+    val unionID: Long,
+    val wardID: Long,
+    val blockID: Long,
+    val referedDate: Any? = null
+)
+

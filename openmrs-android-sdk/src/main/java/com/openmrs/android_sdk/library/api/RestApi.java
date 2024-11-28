@@ -18,6 +18,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -72,6 +73,7 @@ import com.openmrs.android_sdk.library.models.SearchUserResponse;
 import com.openmrs.android_sdk.library.models.Session;
 import com.openmrs.android_sdk.library.models.SystemProperty;
 import com.openmrs.android_sdk.library.models.SystemSetting;
+import com.openmrs.android_sdk.library.models.TestResponse;
 import com.openmrs.android_sdk.library.models.TextBody;
 import com.openmrs.android_sdk.library.models.TimeSlot;
 import com.openmrs.android_sdk.library.models.User;
@@ -208,9 +210,16 @@ public interface RestApi {
     @POST("patient")
     Call<PatientDto> createPatientDTO(@Body PatientCreateDTO patientCreateDTO);
 
+    /**
+     * Gets patients.
+     *
+     * @return the patients
+     */
+
     @Headers({"Content-Type: application/json"})
     @POST("custom-person/save")
-    Call<ResponseBody> savePatientDTO(@Body PatientSaveDTO patientSaveDTO);
+    Call<TestResponse> savePatientDTO(@Body PatientSaveDTO patientSaveDTO);
+//    Call<TestResponse> savePatientDTO(@Header("Content-Type") String content_type, @Body PatientSaveDTO psDTO);
 
     /**
      * Gets patients.

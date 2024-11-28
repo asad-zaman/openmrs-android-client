@@ -35,7 +35,6 @@ import org.intelehealth.app.mpower.activities.addeditpatient.AddEditPatientActiv
 import org.intelehealth.app.mpower.activities.formentrypatientlist.FormEntryPatientListActivity
 import org.intelehealth.app.mpower.activities.lastviewedpatients.LastViewedPatientsActivity
 import org.intelehealth.app.mpower.activities.memberList.MemberListActivity
-import org.intelehealth.app.mpower.activities.memberProfile.MemberProfileActivity
 import org.intelehealth.app.mpower.activities.providermanagerdashboard.ProviderManagerDashboardActivity
 import org.intelehealth.app.mpower.activities.referedMemberList.ReferedMembersActivity
 import org.intelehealth.app.mpower.activities.videoCall.VideoCallsActivity

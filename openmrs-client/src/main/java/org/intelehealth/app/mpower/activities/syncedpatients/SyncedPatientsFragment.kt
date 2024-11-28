@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openmrs.android_sdk.library.models.Patient
@@ -33,6 +34,7 @@ import org.intelehealth.app.mpower.databinding.FragmentSyncedPatientsBinding
 import org.intelehealth.app.mpower.utilities.makeGone
 import org.intelehealth.app.mpower.utilities.makeInvisible
 import org.intelehealth.app.mpower.utilities.makeVisible
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SyncedPatientsFragment : BaseFragment(), View.OnClickListener{

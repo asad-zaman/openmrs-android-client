@@ -118,6 +118,7 @@ class AddEditPatientViewModel @Inject constructor(
     var capturedPhotoFile: File? = null
 
     var customAttrList : MutableList<PersonAttributeCustom> = mutableListOf()
+    var localAttrList : MutableList<PersonAttribute> = mutableListOf()
 
     init {
         // Initialize patient state
@@ -299,6 +300,9 @@ class AddEditPatientViewModel @Inject constructor(
             this.person = cp
             this.uuid = cp.uuid
         }
+        patient.person.attributes = localAttrList
+        patient.display = listOfNotNull(patient.person.names[0].givenName, patient.person.names[0].middleName, patient.person.names[0].familyName).joinToString(" ")
+        patient.uuid = null
         addSubscription(patientRepository.registerPatient(patient, pcm)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

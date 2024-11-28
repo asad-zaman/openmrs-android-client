@@ -76,6 +76,9 @@ interface PatientRoomDAO {
     @Query("SELECT * FROM patients WHERE synced = 0")
     fun getUnsyncedPatients(): Single<List<PatientEntity>>
 
+    @Query("SELECT * FROM patients WHERE synced = 1")
+    fun getAllSyncedPatients(): Single<List<PatientEntity>>
+
     /**
      * Find patient by id single.
      *

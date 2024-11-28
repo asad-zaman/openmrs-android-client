@@ -53,7 +53,6 @@ import androidx.lifecycle.Observer
 //import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 //import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.openmrs.android_sdk.library.models.*
 import com.openmrs.android_sdk.library.models.OperationType.PatientRegistering
 import com.openmrs.android_sdk.utilities.ApplicationConstants
@@ -65,6 +64,7 @@ import com.openmrs.android_sdk.utilities.DateUtils.convertTime
 import com.openmrs.android_sdk.utilities.DateUtils.convertTimeString
 import com.openmrs.android_sdk.utilities.DateUtils.getDateTimeFromDifference
 import com.openmrs.android_sdk.utilities.DateUtils.validateDate
+import com.openmrs.android_sdk.utilities.NetworkUnavailableException
 import com.openmrs.android_sdk.utilities.StringUtils.ILLEGAL_ADDRESS_CHARACTERS
 import com.openmrs.android_sdk.utilities.StringUtils.ILLEGAL_CHARACTERS
 import com.openmrs.android_sdk.utilities.StringUtils.isBlank
@@ -183,20 +183,26 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
                 }
                 is Result.Success -> if (result.operationType == PatientRegistering) {
                     hideLoading()
-                    val ff = result.data
-                    ToastUtil.success("yesssss")
-//                    finishActivity()
+                    ToastUtil.success("Patient registered successfully")
+                    finishActivity()
                 } else {
-                    startPatientDashboardActivity()
+//                    startPatientDashboardActivity()
 //                    finishActivity()
                 }
-                is Result.Error -> if (result.operationType == PatientRegistering) {
-                    hideLoading()
-                    ToastUtil.error(result.throwable.message!!.toString())
-                } else {
-                    hideLoading()
-                    ToastUtil.error(result.throwable.message!!.toString())
-                }
+                is Result.Error ->
+                    if (result.operationType == PatientRegistering) {
+                        hideLoading()
+                        if (result.throwable is NetworkUnavailableException) {
+                            ToastUtil.error(result.throwable.message ?: "Network is not available")
+//                            finishActivity()
+                        } else {
+                            ToastUtil.error("An error occurred: ${result.throwable.message}")
+                        }
+                        ToastUtil.error(result.throwable.message!!.toString())
+                    } else {
+                        hideLoading()
+                        ToastUtil.error(result.throwable.message!!.toString())
+                    }
                 else -> throw IllegalStateException()
             }
         })
@@ -718,7 +724,8 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
 
         viewModel.patient.person = mPerson
 
-        viewModel.customAttrList = setPatientAttributes()
+        viewModel.customAttrList = setCustomPatientAttributes()
+        viewModel.localAttrList = setPatientAttributes()
         println()
     }
 
@@ -729,7 +736,7 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
         return age
     }
 
-    private fun setPatientAttributes() : MutableList<PersonAttributeCustom>{
+    private fun setCustomPatientAttributes() : MutableList<PersonAttributeCustom>{
         val attrValues : MutableList<PersonAttributeCustom> = mutableListOf()
 
 
@@ -864,7 +871,7 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
             }
         }
         if(viewModel.rxSelectedUpazila.value?.locationId != null){
-            for (ld in viewModel.divisionList.value!!){
+            for (ld in viewModel.upazilaList.value!!){
                 if(ld.locationId == viewModel.rxSelectedUpazila.value?.locationId){
                     val pa = PersonAttributeCustom()
                     pa.attributeType = ApplicationConstants.PATIENTS_UPAZILA_UUID
@@ -952,6 +959,248 @@ class AddEditPatientFragment : BaseFragment(), onInputSelected {
 
         return attrValues
     }
+
+    private fun setPatientAttributes() : MutableList<PersonAttribute>{
+        val attrValues : MutableList<PersonAttribute> = mutableListOf()
+
+        if(binding.etSelectedIdentifierValue.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.uuid = ApplicationConstants.PATIENTS_NID_UUID
+            pa.display = ApplicationConstants.PATIENTS_NID_KEY
+            pa.value = binding.etSelectedIdentifierValue.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etBirthRegNumber.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.uuid = ApplicationConstants.PATIENTS_BRID_UUID
+            pa.display = ApplicationConstants.PATIENTS_BRID_KEY
+            pa.value = binding.etBirthRegNumber.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etMobileNo.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_MOBILE_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_MOBILE_UUID
+            pa.value = binding.etMobileNo.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etFullNameBangla.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_FULL_NAME_BANGLA_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_FULL_NAME_BANGLA_UUID
+            pa.value = binding.etFullNameBangla.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etMotherName.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_MOTHER_NAME_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_MOTHER_NAME_UUID
+            pa.value = binding.etMotherName.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etMotherNameBangla.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_MOTHER_NAME_BANGLA_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_MOTHER_NAME_BANGLA_UUID
+            pa.value = binding.etMotherNameBangla.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etFatherName.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_FATHER_NAME_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_FATHER_NAME_UUID
+            pa.value = binding.etFatherName.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etFatherNameBangla.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_FATHER_NAME_BANGLA_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_FATHER_NAME_BANGLA_UUID
+            pa.value = binding.etFatherNameBangla.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etBirthPlace.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_BIRTH_PLACE_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_BIRTH_PLACE_UUID
+            pa.value = binding.etBirthPlace.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etNationality.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_NATIONALITY_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_NATIONALITY_UUID
+            pa.value = binding.etNationality.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etOccupation.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_OCCUPATION_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_OCCUPATION_UUID
+            pa.value = binding.etOccupation.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etEducation.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_EDUCATION_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_EDUCATION_UUID
+            pa.value = binding.etEducation.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etDisabilityType.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_DISABILITY_TYPE_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_DISABILITY_TYPE_UUID
+            pa.value = binding.etDisabilityType.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.etEthnicity.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_ETHNICITY_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_ETHNICITY_UUID
+            pa.value = binding.etEthnicity.text.toString()
+            attrValues.add(pa)
+        }
+        if(binding.addressOne.text.toString().isNotEmpty()){
+            val pa = PersonAttribute()
+            pa.display = ApplicationConstants.PATIENTS_ADDRESS_KEY
+            pa.uuid = ApplicationConstants.PATIENTS_ADDRESS_UUID
+            pa.value = binding.addressOne.text.toString()
+            attrValues.add(pa)
+        }
+        if(viewModel.rxSelectedDivision.value?.locationId != null){
+            for (ld in viewModel.divisionList.value!!){
+                if(ld.locationId == viewModel.rxSelectedDivision.value?.locationId){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_DIVISION_UUID
+                    pa.display = ApplicationConstants.PATIENTS_DIVISION_KEY
+                    pa.value = ld.description
+                    attrValues.add(pa)
+                    val pa2 = PersonAttribute()
+                    pa2.uuid = ApplicationConstants.PATIENTS_DIVISION_ID_UUID
+                    pa2.display = ApplicationConstants.PATIENTS_DIVISION_ID_KEY
+                    pa2.value = ld.locationId.toString()
+                    attrValues.add(pa2)
+                }
+            }
+        }
+        if(viewModel.rxSelectedDistrict.value?.locationId != null){
+            for (ld in viewModel.districtList.value!!){
+                if(ld.locationId == viewModel.rxSelectedDistrict.value?.locationId){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_DISTRICT_UUID
+                    pa.display = ApplicationConstants.PATIENTS_DISTRICT_KEY
+                    pa.value = ld.description
+                    attrValues.add(pa)
+                    val pa2 = PersonAttribute()
+                    pa2.uuid = ApplicationConstants.PATIENTS_DISTRICT_ID_UUID
+                    pa2.display = ApplicationConstants.PATIENTS_DISTRICT_ID_KEY
+                    pa2.value = ld.locationId.toString()
+                    attrValues.add(pa2)
+                }
+            }
+        }
+        if(viewModel.rxSelectedUpazila.value?.locationId != null){
+            for (ld in viewModel.upazilaList.value!!){
+                if(ld.locationId == viewModel.rxSelectedUpazila.value?.locationId){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_UPAZILA_UUID
+                    pa.display = ApplicationConstants.PATIENTS_UPAZILA_KEY
+                    pa.value = ld.description
+                    attrValues.add(pa)
+                    val pa2 = PersonAttribute()
+                    pa2.uuid = ApplicationConstants.PATIENTS_UPAZILA_ID_UUID
+                    pa2.display = ApplicationConstants.PATIENTS_UPAZILA_ID_KEY
+                    pa2.value = ld.locationId.toString()
+                    attrValues.add(pa2)
+                }
+            }
+        }
+        if(viewModel.rxSelectedPaurasava.value?.locationId != null){
+            for (ld in viewModel.paurasavaList.value!!){
+                if(ld.locationId == viewModel.rxSelectedPaurasava.value?.locationId){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_PAURASAVA_UUID
+                    pa.display = ApplicationConstants.PATIENTS_PAURASAVA_KEY
+                    pa.value = ld.description
+                    attrValues.add(pa)
+                    val pa2 = PersonAttribute()
+                    pa2.uuid = ApplicationConstants.PATIENTS_PAURASAVA_ID_UUID
+                    pa2.display = ApplicationConstants.PATIENTS_PAURASAVA_ID_KEY
+                    pa2.value = ld.locationId.toString()
+                    attrValues.add(pa2)
+                }
+            }
+        }
+        if(viewModel.rxSelectedUnion.value?.locationId != null){
+            for (ld in viewModel.unionList.value!!){
+                if(ld.locationId == viewModel.rxSelectedUnion.value?.locationId){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_UNION_UUID
+                    pa.display = ApplicationConstants.PATIENTS_UNION_KEY
+                    pa.value = ld.description
+                    attrValues.add(pa)
+                    val pa2 = PersonAttribute()
+                    pa2.uuid = ApplicationConstants.PATIENTS_UNION_ID_UUID
+                    pa2.display = ApplicationConstants.PATIENTS_UNION_ID_KEY
+                    pa2.value = ld.locationId.toString()
+                    attrValues.add(pa2)
+                }
+            }
+        }
+        if(viewModel.rxSelectedWard.value?.locationId != null){
+            for (ld in viewModel.wardList.value!!){
+                if(ld.locationId == viewModel.rxSelectedWard.value?.locationId){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_WARD_UUID
+                    pa.display = ApplicationConstants.PATIENTS_WARD_KEY
+                    pa.value = ld.description
+                    attrValues.add(pa)
+                    val pa2 = PersonAttribute()
+                    pa2.uuid = ApplicationConstants.PATIENTS_WARD_ID_UUID
+                    pa2.display = ApplicationConstants.PATIENTS_WARD_ID_KEY
+                    pa2.value = ld.locationId.toString()
+                    attrValues.add(pa2)
+                }
+            }
+        }
+        if(viewModel.selectedMaritalStatusOption.uuid != null){
+            for (ld in viewModel.mStatusOptionList.value!!){
+                if(ld.uuid == viewModel.selectedMaritalStatusOption.uuid){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_MARITAL_STATUS_UUID
+                    pa.display = ApplicationConstants.PATIENTS_MARITAL_STATUS_KEY
+                    pa.value = ld.uuid
+                    attrValues.add(pa)
+                }
+            }
+        }
+        if(viewModel.selectedBloodGroupOption.uuid != null){
+            for (ld in viewModel.bloodGroupOptionList.value!!){
+                if(ld.uuid == viewModel.selectedBloodGroupOption.uuid){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_BLOOD_GROUP_UUID
+                    pa.display = ApplicationConstants.PATIENTS_BLOOD_GROUP_KEY
+                    pa.value = ld.uuid
+                    attrValues.add(pa)
+                }
+            }
+        }
+        if(viewModel.selectedReligionOption.uuid != null){
+            for (ld in viewModel.religionOptionList.value!!){
+                if(ld.uuid == viewModel.selectedReligionOption.uuid){
+                    val pa = PersonAttribute()
+                    pa.uuid = ApplicationConstants.PATIENTS_RELIGION_UUID
+                    pa.display = ApplicationConstants.PATIENTS_RELIGION_KEY
+                    pa.value = ld.uuid
+                    attrValues.add(pa)
+                }
+            }
+        }
+
+        return attrValues
+    }
+
 
     private fun showSimilarPatientsDialog(patients: List<Patient>, patient: Patient) {
         CustomDialogBundle().apply {

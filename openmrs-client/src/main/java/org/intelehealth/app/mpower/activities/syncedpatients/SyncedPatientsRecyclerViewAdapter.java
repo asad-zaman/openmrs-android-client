@@ -44,9 +44,7 @@ import com.openmrs.android_sdk.utilities.DateUtils;
 
 import org.intelehealth.app.mpower.R;
 import org.intelehealth.app.mpower.activities.ACBaseActivity;
-import org.intelehealth.app.mpower.activities.memberList.MemberListActivity;
 import org.intelehealth.app.mpower.activities.memberProfile.MemberProfileActivity;
-import org.intelehealth.app.mpower.activities.patientdashboard.PatientDashboardActivity;
 
 public class SyncedPatientsRecyclerViewAdapter extends RecyclerView.Adapter<SyncedPatientsRecyclerViewAdapter.PatientViewHolder> {
     private SyncedPatientsFragment mContext;

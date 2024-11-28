@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.openmrs.android_sdk.library.api.repository.PatientRepository
 import com.openmrs.android_sdk.library.dao.PatientDAO
 import com.openmrs.android_sdk.library.dao.VisitDAO
@@ -48,7 +50,7 @@ class SyncedPatientsViewModel @Inject constructor(private val patientDAO: Patien
 
     fun fetchSyncedPatients() {
         setLoading()
-        addSubscription(patientDAO.allPatients
+        addSubscription(patientDAO.allSyncedPatients
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { patients: List<Patient> -> setContent(patients) },
@@ -58,7 +60,7 @@ class SyncedPatientsViewModel @Inject constructor(private val patientDAO: Patien
 
     fun fetchSyncedPatients(query: String) {
         setLoading()
-        addSubscription(patientDAO.allPatients
+        addSubscription(patientDAO.allSyncedPatients
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { patients: List<Patient> ->

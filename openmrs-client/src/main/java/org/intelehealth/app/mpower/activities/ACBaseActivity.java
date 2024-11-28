@@ -74,6 +74,7 @@ import org.intelehealth.app.mpower.activities.settings.SettingsActivity;
 import org.intelehealth.app.mpower.application.OpenMRS;
 import org.intelehealth.app.mpower.bundle.CustomDialogBundle;
 import org.intelehealth.app.mpower.net.AuthorizationManager;
+import org.intelehealth.app.mpower.syncModule.SyncWorker;
 import org.intelehealth.app.mpower.utilities.ForceClose;
 import org.intelehealth.app.mpower.utilities.LanguageUtils;
 import org.intelehealth.app.mpower.utilities.ThemeUtils;
@@ -91,6 +92,10 @@ import org.intelehealth.app.mpower.utilities.ForceClose;
 import org.intelehealth.app.mpower.utilities.LanguageUtils;
 import org.intelehealth.app.mpower.utilities.ThemeUtils;
 import androidx.core.content.ContextCompat;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import org.intelehealth.klivekit.call.utils.CallHandlerUtils;
 import org.intelehealth.klivekit.call.utils.CallMode;
@@ -268,6 +273,8 @@ public abstract class ACBaseActivity extends AppCompatActivity implements Socket
                 return true;
             case R.id.syncbutton:
                 boolean syncState = OpenmrsAndroid.getSyncState();
+                OneTimeWorkRequest syncWorkRequest = new OneTimeWorkRequest.Builder(SyncWorker.class).build();
+                WorkManager.getInstance(this).enqueue(syncWorkRequest);
                 if (syncState) {
                     OpenmrsAndroid.setSyncState(false);
                     setSyncButtonState(false);
@@ -278,6 +285,10 @@ public abstract class ACBaseActivity extends AppCompatActivity implements Socket
                     setSyncButtonState(true);
                     Intent intent = new Intent("org.intelehealth.app.mpower.intent.action.SYNC_PATIENTS");
                     getApplicationContext().sendBroadcast(intent);
+
+                    /*OneTimeWorkRequest syncWorkRequest = new OneTimeWorkRequest.Builder(SyncWorker.class).build();
+                    WorkManager.getInstance(this).enqueue(syncWorkRequest);*/
+
                     ToastUtil.showShortToast(getApplicationContext(), ToastUtil.ToastType.NOTICE, R.string.reconn_server);
                     if (mSnackbar != null) {
                         mSnackbar.dismiss();

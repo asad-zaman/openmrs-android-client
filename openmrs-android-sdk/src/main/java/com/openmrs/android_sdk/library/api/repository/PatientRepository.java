@@ -37,6 +37,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import rx.Observable;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -82,9 +85,11 @@ import com.openmrs.android_sdk.library.models.SearchRequest;
 import com.openmrs.android_sdk.library.models.SearchUser;
 import com.openmrs.android_sdk.library.models.SearchUserResponse;
 import com.openmrs.android_sdk.library.models.SystemProperty;
+import com.openmrs.android_sdk.library.models.TestResponse;
 import com.openmrs.android_sdk.library.models.TextBody;
 import com.openmrs.android_sdk.utilities.ApplicationConstants;
 import com.openmrs.android_sdk.utilities.ModuleUtils;
+import com.openmrs.android_sdk.utilities.NetworkUnavailableException;
 import com.openmrs.android_sdk.utilities.NetworkUtils;
 import com.openmrs.android_sdk.utilities.PatientComparator;
 import com.openmrs.android_sdk.utilities.ToastUtil;
@@ -216,10 +221,11 @@ public class PatientRepository extends BaseRepository {
             Response<PatientDto> response = restApi.createPatientDTO(patientCreateDTO).execute();
             if (response.isSuccessful()) {
                 PatientDto returnedPatientDto = response.body();
-                patient.setUuid(returnedPatientDto.getUuid());
-                patient.getPerson().setAttributes(returnedPatientDto.getPerson().getAttributes());
+                /*patient.setUuid(returnedPatientDto.getUuid());
+                patient.getPerson().setAttributes(Objects.requireNonNull(returnedPatientDto.getPerson()).getAttributes());
+                patient.setPerson(returnedPatientDto.getPerson());
                 patient.setIdentifiers(returnedPatientDto.getIdentifiers());
-                patientDAO.updatePatient(patient.getId(), patient);
+                patientDAO.updatePatient(patient.getId(), patient);*/
 
 //                if (!patient.getEncounters().isEmpty()) {
 //                    addEncounters(patient);
@@ -232,18 +238,20 @@ public class PatientRepository extends BaseRepository {
         });
     }
 
-    public Observable<ResponseBody> savePatient(final PatientSaveDTO psDTO) {
+    public Observable<TestResponse> savePatient(final PatientSaveDTO psDTO) {
         return createObservableIO(() -> {
             try{
-                Response<ResponseBody> response = restApi.savePatientDTO(psDTO).execute();
+//                Call<TestResponse> call = restApi.savePatientDTO("application/json", psDTO);
+                Call<TestResponse> call = restApi.savePatientDTO(psDTO);
+                Response<TestResponse> response = call.execute();
                 if (response.isSuccessful()) {
-                    String aa = response.body().toString();
                     return response.body();
                 } else {
-                    throw new Exception("syncPatient error: " + response.message());
+                    String aa = response.message();
+                    throw new Exception("save patient error: " + aa);
                 }
             } catch (Exception ex) {
-                throw new Exception("syncPatient error: " + ex.toString());
+                throw new Exception("save patient error: " + ex.toString());
             }
         });
     }
@@ -255,8 +263,6 @@ public class PatientRepository extends BaseRepository {
         psDTO.setGender(rpDTO.getPerson().getGender());
         psDTO.setAge(rpDTO.getPerson().getAge());
         psDTO.setBirthdate(rpDTO.getPerson().getBirthdate());
-        psDTO.setBirthdateEstimated(rpDTO.getPerson().getBirthdateEstimated());
-        psDTO.setCauseOfDeath(rpDTO.getPerson().getCauseOfDeath());
         psDTO.setAttributes(rpDTO.getPerson().getAttributes());
         psDTO.setPersonUUID(rpDTO.getPerson().getUuid());
         psDTO.setIdentifier(parseAttributeValue(rpDTO.getIdentifiers().get(0).getDisplay(), "=").get(1));
@@ -268,10 +274,9 @@ public class PatientRepository extends BaseRepository {
             psDTO.setFirstName(finalList.get(0));
             psDTO.setLastName(finalList.get(1));
         }
-        psDTO.setCountryID(0L);
-        psDTO.setLocation(0L);
-        psDTO.setBlockID(0L);
-        psDTO.setBirthdateEstimated(false);
+        psDTO.setCountryId(0);
+        psDTO.setLocation(0);
+        psDTO.setBlockId(0);
         psDTO.setDeathdateEstimated(false);
         for (PersonAttribute pa : rpDTO.getPerson().getAttributes()) {
             ArrayList<String> values = parseAttributeValue(pa.getDisplay(), "=");
@@ -329,17 +334,17 @@ public class PatientRepository extends BaseRepository {
             } else if(attrUUID.equals(ApplicationConstants.PATIENTS_ADDRESS_KEY)){
                 psDTO.setPatientAddress(value);
             } else if(attrUUID.equals(ApplicationConstants.PATIENTS_UNION_ID_KEY)){
-                psDTO.setUnionID(value);
+                psDTO.setUnionId(value);
             } else if(attrUUID.equals(ApplicationConstants.PATIENTS_DIVISION_ID_KEY)){
-                psDTO.setDivisionID(value);
+                psDTO.setDivisionId(value);
             } else if(attrUUID.equals(ApplicationConstants.PATIENTS_DISTRICT_ID_KEY)){
-                psDTO.setDistrictID(value);
+                psDTO.setDistrictId(value);
             } else if(attrUUID.equals(ApplicationConstants.PATIENTS_UPAZILA_ID_KEY)){
-                psDTO.setUpazilaID(value);
+                psDTO.setUpazilaId(value);
             } else if(attrUUID.equals(ApplicationConstants.PATIENTS_PAURASAVA_ID_KEY)){
-                psDTO.setPaurasavaID(value);
+                psDTO.setPaurasavaId(value);
             } else if(attrUUID.equals(ApplicationConstants.PATIENTS_WARD_ID_KEY)){
-                psDTO.setWardID(value);
+                psDTO.setWardId(value);
             }
         }
         return psDTO;
@@ -400,17 +405,11 @@ public class PatientRepository extends BaseRepository {
         });
     }
 
-    public Observable<Patient> registerPatient(final Patient patient, final PatientCreateDTO patientCreateDTO) {
+    /*public Observable<Patient> registerPatient(final Patient patient, final PatientCreateDTO patientCreateDTO) {
         return createObservableIO(() -> {
             Long id = patientDAO.savePatient(patient).single().toBlocking().first();
             patient.setId(id);
             return patient;
-            /*if (NetworkUtils.isOnline()) {
-                syncPatient(patient, patientCreateDTO).single().toBlocking().first();
-            } else {
-                throw new IOException("Network is not available");
-            }
-            return patient;*/
         })
                 .flatMap(savedPatient -> {
                     if (NetworkUtils.isOnline()) {
@@ -433,6 +432,56 @@ public class PatientRepository extends BaseRepository {
                         throw new RuntimeException(ex);
                     }
                 });
+    }*/
+
+    public Observable<Patient> registerPatient(final Patient patient, final PatientCreateDTO patientCreateDTO) {
+        return createObservableIO(() -> {
+            /*Long id = patientDAO.savePatient(patient).single().toBlocking().first();
+            patient.setId(id);*/
+            return patient;
+        }).flatMap(savedPatient -> {
+            if (NetworkUtils.isOnline()) {
+                return syncPatient(savedPatient, patientCreateDTO)
+                        .flatMap(returnedPatientDto -> {
+                            try {
+                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                                PatientSaveDTO psDTO = toSavePatientDTO(returnedPatientDto);
+                                String mjson = gson.toJson(psDTO);
+
+                                return savePatient(psDTO)
+                                        .map(responseBody -> {
+                                            patient.setUuid(returnedPatientDto.getUuid());
+                                            return patient;
+                                        });
+                            } catch (Exception ex) {
+                                return Observable.error(new RuntimeException(ex));
+                            }
+                        });
+            } else {
+                return Observable.error(new NetworkUnavailableException("Network is not available, data saved in local"));
+            }
+        });
+    }
+
+    /*public Observable<Patient> postToServer(final Patient patient, final PatientCreateDTO patientCreateDTO) {
+        return createObservableIO(() -> syncPatient(patient, patientCreateDTO)
+                .flatMap(returnedPatientDto -> {
+                    try {
+                        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                        PatientSaveDTO psDTO = toSavePatientDTO(returnedPatientDto);
+                        return savePatient(psDTO)
+                                .map(responseBody -> {
+                                    patient.setUuid(returnedPatientDto.getUuid());
+                                    return patient;
+                                });
+                    } catch (Exception ex) {
+                        return Observable.error(new NetworkUnavailableException("Network is not available, data saved in local"));
+                    }
+                }));
+    }*/
+
+    public Observable<List<Patient>> fetchUnSyncedPatients() {
+        return createObservableIO(patientDAO::getUnSyncedPatients);
     }
 
     /**

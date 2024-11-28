@@ -98,6 +98,22 @@ public class PatientDAO {
         });
     }
 
+    public Observable<List<Patient>> getAllSyncedPatients() {
+        return AppDatabaseHelper.createObservableIO(() -> {
+            List<Patient> patients = new ArrayList<>();
+            List<PatientEntity> patientEntities = new ArrayList<>();
+            try {
+                patientEntities = patientRoomDAO.getAllSyncedPatients().blockingGet();
+                for (PatientEntity entity : patientEntities) {
+                    patients.add(AppDatabaseHelper.convert(entity));
+                }
+            } catch (Exception e) {
+                return new ArrayList<>();
+            }
+            return patients;
+        });
+    }
+
     /**
      * Is user already saved boolean.
      *

@@ -27,7 +27,6 @@ import org.intelehealth.app.mpower.databinding.ActivityMemberProfileBinding
 class MemberProfileActivity : ACBaseActivity(), View.OnClickListener {
     private lateinit var mBinding: ActivityMemberProfileBinding
     private val mViewModel: MemberProfileViewModel by viewModels()
-    private lateinit var mPatient: Patient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
